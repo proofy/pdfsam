@@ -9,6 +9,10 @@
 	<name>pdfsam parent</name>
 	<version>3.0.0.BETA-SNAPSHOT</version>
 	<url>http://www.pdfsam.org</url>
+	<organization>
+		<name>pdfsam.org</name>
+		<url>http://www.pdfsam.org</url>
+	</organization>
 
 	<profiles>
 		<profile>
