@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 01/feb/2013
- * Copyright 2013 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Created on 14/lug/2014
+ * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -16,27 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.gui.support;
+package org.pdfsam.ui.commons;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.Window;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.io.File;
+
+import org.junit.Test;
 
 /**
- * Utility methods related to Swing components
- * 
  * @author Andrea Vacondio
- * 
+ *
  */
-public final class SwingUtils {
+public class OpenFileRequestTest {
 
-    private SwingUtils() {
-        // hide
+    @Test(expected = IllegalArgumentException.class)
+    public void nullArg() {
+        new OpenFileRequest(null);
     }
 
-    public static void centrePositionOnScreen(Window window) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = window.getSize();
-        window.setLocation(screenSize.width - frameSize.width >> 1, screenSize.height - frameSize.height >> 1);
+    @Test
+    public void notNullArg() {
+        File arg = mock(File.class);
+        OpenFileRequest victim = new OpenFileRequest(arg);
+        assertEquals(arg, victim.getFile());
     }
 }

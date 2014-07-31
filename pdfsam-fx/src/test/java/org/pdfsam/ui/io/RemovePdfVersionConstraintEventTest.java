@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 06/dic/2013
- * Copyright 2013 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Created on 16/lug/2014
+ * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -16,14 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.event;
+package org.pdfsam.ui.io;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.sejda.model.pdf.PdfVersion;
 
 /**
- * Event to request a component to be shown
- * 
  * @author Andrea Vacondio
- * 
+ *
  */
-public class ShowStageRequest {
-    // nothing
+public class RemovePdfVersionConstraintEventTest {
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nullArg() {
+        new RemovePdfVersionConstraintEvent(null);
+    }
+
+    @Test
+    public void notNullArg() {
+        RemovePdfVersionConstraintEvent victim = new RemovePdfVersionConstraintEvent(PdfVersion.VERSION_1_3);
+        assertEquals(PdfVersion.VERSION_1_3, victim.getPdfVersion());
+    }
+
 }

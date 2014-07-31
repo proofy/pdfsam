@@ -18,6 +18,8 @@
  */
 package org.pdfsam.context;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 import java.util.prefs.Preferences;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,19 +32,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class DefaultUserContext implements UserContext {
 
+    public static final String DEFAULT_THEME = "green.css";
     private Preferences prefs;
     private UserWorkspacesContext workspaces;
 
-    private DefaultUserContext() {
+    public DefaultUserContext() {
         this.prefs = Preferences.userRoot().node("/pdfsam/user/conf");
         this.workspaces = new PreferencesUserWorkspacesContext();
-    }
-
-    /**
-     * @return the default application context instance
-     */
-    public static UserContext getInstance() {
-        return DefaultUserContextHolder.CONTEXT;
     }
 
     @Override
@@ -72,7 +68,7 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public String getTheme() {
-        return prefs.get(StringUserPreference.THEME.toString(), "green.css");
+        return defaultIfBlank(prefs.get(StringUserPreference.THEME.toString(), ""), DEFAULT_THEME);
     }
 
     @Override
@@ -119,21 +115,6 @@ public final class DefaultUserContext implements UserContext {
     @Override
     public UserWorkspacesContext getUserWorkspacesContext() {
         return workspaces;
-    }
-
-    /**
-     * Lazy initialization holder class idiom (Joshua Bloch, Effective Java second edition, item 71).
-     * 
-     * @author Andrea Vacondio
-     * 
-     */
-    private static final class DefaultUserContextHolder {
-
-        private DefaultUserContextHolder() {
-            // hide constructor
-        }
-
-        static final DefaultUserContext CONTEXT = new DefaultUserContext();
     }
 
 }

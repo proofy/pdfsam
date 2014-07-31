@@ -43,7 +43,7 @@ import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
 import org.pdfsam.pdf.PdfDocumentDescriptorProvider;
-import org.pdfsam.ui.event.ShowStageRequest;
+import org.pdfsam.ui.commons.ShowStageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,10 +129,8 @@ public class LoadingStatusIndicator extends Label implements ModuleOwned {
         switch (loadingStatus) {
         case ENCRYPTED:
             rotate.stop();
-            indicator(
-                    AwesomeIcon.LOCK,
-                    DefaultI18nContext.getInstance().i18n(
-                            "This document is encrypted, double click to provide a password."));
+            indicator(AwesomeIcon.LOCK,
+                    DefaultI18nContext.getInstance().i18n("This document is encrypted, click to provide a password."));
             break;
         case REQUESTED:
         case LOADING:

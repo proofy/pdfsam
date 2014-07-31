@@ -24,7 +24,7 @@ import java.io.File;
 
 import javafx.scene.control.Button;
 
-import org.pdfsam.ui.event.OpenFileRequest;
+import org.pdfsam.ui.commons.OpenFileRequest;
 import org.sejda.model.output.DirectoryTaskOutput;
 import org.sejda.model.output.FileTaskOutput;
 import org.sejda.model.output.StreamTaskOutput;
@@ -44,7 +44,7 @@ class OpenButton extends Button implements TaskOutputDispatcher {
     private File destination;
 
     public OpenButton() {
-        getStyleClass().add("pdfsam-footer-button");
+        getStyleClass().addAll("pdfsam-footer-button", "pdfsam-footer-open-button");
         setGraphic(AwesomeDude.createIconLabel(AwesomeIcon.FOLDER_OPEN));
         setOnAction(e -> {
             if (destination != null && destination.exists()) {

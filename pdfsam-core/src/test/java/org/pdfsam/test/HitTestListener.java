@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 19/feb/2014
+ * Created on 29/lug/2014
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,29 +16,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.event;
+package org.pdfsam.test;
 
-import static org.pdfsam.support.RequireUtils.requireNotNull;
-
-import java.io.File;
+import org.sejda.eventstudio.Listener;
 
 /**
- * Request to open a file or directory using the native viewer
+ * Test listener to verify an event has been fired
  * 
  * @author Andrea Vacondio
  *
  */
-public class OpenFileRequest {
+public class HitTestListener<T> implements Listener<T> {
 
-    private File file;
+    private boolean hit = false;
 
-    public OpenFileRequest(File file) {
-        requireNotNull(file, "Cannot open an empty file.");
-        this.file = file;
+    public void onEvent(T event) {
+        this.hit = true;
     }
 
-    public File getFile() {
-        return file;
+    public boolean isHit() {
+        return hit;
     }
 
 }

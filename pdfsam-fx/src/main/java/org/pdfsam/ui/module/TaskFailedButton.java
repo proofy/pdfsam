@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 10/feb/2014
- * Copyright 2013 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Created on 29/lug/2014
+ * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -16,26 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.event;
+package org.pdfsam.ui.module;
 
-import static org.pdfsam.support.RequireUtils.requireNotBlank;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
+import javafx.scene.control.Button;
+
+import org.pdfsam.ui.commons.ShowStageRequest;
+
+import de.jensd.fx.fontawesome.AwesomeDude;
+import de.jensd.fx.fontawesome.AwesomeIcon;
 
 /**
- * Request to open the given URL
+ * Button requesting to open the log stage to show the user possible errors
  * 
  * @author Andrea Vacondio
  *
  */
-public class OpenUrlRequest {
-    private String url;
+class TaskFailedButton extends Button {
 
-    public OpenUrlRequest(String url) {
-        requireNotBlank(url, "URL cannot be blank");
-        this.url = url;
+    public TaskFailedButton() {
+        getStyleClass().addAll("pdfsam-footer-button", "pdfsam-footer-failed-button");
+        setGraphic(AwesomeDude.createIconLabel(AwesomeIcon.TIMES_CIRCLE));
+        setOnAction(e -> eventStudio().broadcast(new ShowStageRequest(), "LogStage"));
     }
-
-    public String getUrl() {
-        return url;
-    }
-
 }
