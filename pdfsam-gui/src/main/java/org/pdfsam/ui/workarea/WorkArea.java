@@ -23,21 +23,20 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javafx.animation.FadeTransition;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.module.Module;
 import org.pdfsam.ui.event.SetActiveModuleRequest;
 import org.pdfsam.ui.event.SetTitleEvent;
+import org.pdfsam.ui.quickbar.QuickbarPane;
 import org.pdfsam.ui.support.Style;
 import org.sejda.eventstudio.annotation.EventListener;
 
@@ -50,30 +49,27 @@ import org.sejda.eventstudio.annotation.EventListener;
 @Named
 public class WorkArea extends BorderPane {
 
-    @Inject
-    private QuickbarWrokarea navigation;
     private Map<String, Module> modules = new HashMap<>();
+    private Optional<Module> current = Optional.empty();
     private StackPane center = new StackPane();
     private FadeTransition fade = new FadeTransition(new Duration(300), center);
-    private Label emptyArea = new Label(DefaultI18nContext.getInstance().i18n("Please select a module"));
 
     @Inject
     public WorkArea(List<Module> modulesList) {
         getStyleClass().addAll(Style.CONTAINER.css());
-        emptyArea.getStyleClass().add("empty-notice");
+        setId("work-area");
         for (Module module : modulesList) {
             modules.put(module.id(), module);
         }
         fade.setFromValue(0);
         fade.setToValue(1);
-    }
-
-    @PostConstruct
-    private void init() {
-        center.getChildren().setAll(emptyArea);
-        setLeft(navigation);
         setCenter(center);
         eventStudio().addAnnotatedListeners(this);
+    }
+
+    @Inject
+    void setModulesPane(QuickbarModuleButtonsPane modulesButtons) {
+        setLeft(new QuickbarPane(modulesButtons));
     }
 
     @EventListener
@@ -81,10 +77,11 @@ public class WorkArea extends BorderPane {
         request.getActiveModuleId().ifPresent(id -> {
             Module requested = modules.get(id);
             if (requested != null) {
+                current = Optional.of(requested);
                 center.getChildren().setAll(requested.modulePanel());
                 fade.play();
-                eventStudio().broadcast(new SetTitleEvent(requested.descriptor().getName()));
             }
         });
+        eventStudio().broadcast(new SetTitleEvent(current.map(m -> m.descriptor().getName()).orElse("")));
     }
 }

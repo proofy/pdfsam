@@ -57,11 +57,6 @@ public interface UserContext {
     String getLocale();
 
     /**
-     * @return true if a confirmation should be asked when an output file is going to be overwritten.
-     */
-    boolean isAskOverwriteConfirmation();
-
-    /**
      * @return true if the thumbnails should be rendered with high quality
      */
     boolean isHighQualityThumbnails();
@@ -77,9 +72,24 @@ public interface UserContext {
     int getThumbnailsSize();
 
     /**
-     * @return the name of the configured theme in the form of a css present in the theme directory. Ex. "green.css"
+     * @return the name of the configured theme
      */
     String getTheme();
+
+    /**
+     * @return the module to load at application startup
+     */
+    String getStartupModule();
+
+    /**
+     * @return the policy to use regarding displaying news
+     */
+    String getNewsPolicy();
+
+    /**
+     * Clear user preferences
+     */
+    void clear();
 
     /**
      * Sets a {@link Boolean} preference.
@@ -104,10 +114,4 @@ public interface UserContext {
      * @param value
      */
     void setStringPreference(StringUserPreference pref, String value);
-
-    /**
-     * @return the workspaces context for the user
-     */
-    UserWorkspacesContext getUserWorkspacesContext();
-
 }

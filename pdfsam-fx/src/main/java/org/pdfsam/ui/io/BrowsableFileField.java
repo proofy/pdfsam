@@ -34,10 +34,11 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.support.validation.Validator;
 import org.pdfsam.support.validation.Validators;
+import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
 
 /**
  * Component letting the user select a File of an expected type. By default no validation is enforced and the filetype is used only in the file chooser but the component provides a
@@ -49,13 +50,15 @@ import org.pdfsam.support.validation.Validators;
 public class BrowsableFileField extends BrowsableField {
 
     private final FileType fileType;
+    private final OpenType openType;
     private BrowseEventHandler handler = new BrowseEventHandler();
 
-    public BrowsableFileField(FileType fileType) {
+    public BrowsableFileField(FileType fileType, OpenType openType) {
         setBrowseWindowTitle(DefaultI18nContext.getInstance().i18n("Select a file"));
         getBrowseButton().setOnAction(handler);
         getTextField().setOnAction(handler);
         this.fileType = ObjectUtils.defaultIfNull(fileType, FileType.ALL);
+        this.openType = ObjectUtils.defaultIfNull(openType, OpenType.OPEN);
         if (FileType.ALL != fileType) {
             getTextField().setPromptText(
                     String.format("%s: %s", DefaultI18nContext.getInstance().i18n("Select a file"), fileType
@@ -71,12 +74,12 @@ public class BrowsableFileField extends BrowsableField {
      * Configure validation for the field
      * 
      * @param selectedFileMustExists
-     * @param allowBlankString
+     * @param allowEmptyString
      */
-    public void enforceValidation(boolean selectedFileMustExists, boolean allowBlankString) {
+    public void enforceValidation(boolean selectedFileMustExists, boolean allowEmptyString) {
         Validator<String> validator = Validators.newFileTypeString(fileType, selectedFileMustExists);
-        if (allowBlankString) {
-            validator = Validators.decorateAsValidBlankString(validator);
+        if (allowEmptyString) {
+            validator = Validators.decorateAsValidEmptyString(validator);
         }
         getTextField().setValidator(validator);
         getTextField().setErrorMessage(buildErrorMessage(selectedFileMustExists));
@@ -111,7 +114,7 @@ public class BrowsableFileField extends BrowsableField {
                     fileChooser.setInitialFileName(path.getFileName().toString());
                 }
             }
-            setTextFromFile(fileChooser.showOpenDialog(getTextField().getScene().getWindow()));
+            setTextFromFile(fileChooser.showDialog(getTextField().getScene().getWindow(), openType));
         }
     }
 
@@ -132,15 +135,13 @@ public class BrowsableFileField extends BrowsableField {
     }
 
     private Consumer<DragEvent> onDragOverConsumer() {
-        return (DragEvent e) -> {
-            e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        };
+        return (DragEvent e) -> e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
     }
 
     private Consumer<DragEvent> onDragDropped() {
         return (DragEvent e) -> {
             e.getDragboard().getFiles().stream().filter(f -> fileType.matches(f.getName())).findFirst()
-                    .ifPresent((file) -> setTextFromFile(file));
+                    .ifPresent(file -> setTextFromFile(file));
             e.setDropCompleted(true);
         };
     }

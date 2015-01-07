@@ -18,17 +18,23 @@
  */
 package org.pdfsam.split;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.conversion.PageNumbersListAdapter;
 import org.sejda.model.parameter.SplitByPagesParameters;
 
@@ -38,32 +44,40 @@ import org.sejda.model.parameter.SplitByPagesParameters;
  * @author Andrea Vacondio
  *
  */
-class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilderCreator {
+class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilderCreator, RestorableView {
 
-    private final ValidableTextField field = new ValidableTextField();
+    private final ValidableTextField field;
 
-    public SplitAfterRadioButton() {
+    public SplitAfterRadioButton(ValidableTextField field) {
         super(DefaultI18nContext.getInstance().i18n("Split after the following page numbers"));
-        field.setOnEnterValidation(true);
-        field.setEnableInvalidStyle(true);
-        field.setPromptText(DefaultI18nContext.getInstance().i18n("Page numbers to split at (n1,n2,n3..)"));
+        this.field = field;
+        this.field.setOnEnterValidation(true);
+        this.field.setEnableInvalidStyle(true);
+        this.field.setPromptText(DefaultI18nContext.getInstance().i18n("Page numbers to split at (n1,n2,n3..)"));
         setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Split the document after the given page numbers")));
-        field.setValidator(Validators.newRegexMatchingString("^([0-9]+,?)+$"));
-        field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid page numbers"));
-    }
-
-    ValidableTextField getField() {
-        return field;
+        this.field.setValidator(Validators.newRegexMatchingString("^([0-9]+,?)+$"));
+        this.field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid page numbers"));
     }
 
     public SplitByPageParametersBuilder getBuilder(Consumer<String> onError) {
         this.field.validate();
         if (this.field.getValidationState() == ValidationState.VALID) {
             return new SplitByPageParametersBuilder(new PageNumbersListAdapter(this.field.getText()).getPageNumbers());
-
         }
         onError.accept(DefaultI18nContext.getInstance().i18n("Invalid page numbers"));
         return null;
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        if (isSelected()) {
+            data.put("splitAfter", Boolean.TRUE.toString());
+        }
+        data.put("splitAfter.field", defaultString(field.getText()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        Optional.ofNullable(data.get("splitAfter")).map(Boolean::valueOf).ifPresent(this::setSelected);
+        field.setText(Optional.ofNullable(data.get("splitAfter.field")).orElse(EMPTY));
     }
 
     /**
@@ -72,7 +86,7 @@ class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilde
      * @author Andrea Vacondio
      *
      */
-    private static class SplitByPageParametersBuilder extends
+    static class SplitByPageParametersBuilder extends
             SinglePdfSourceMultipleOutputParametersBuilder<SplitByPagesParameters> {
 
         private List<Integer> pages;

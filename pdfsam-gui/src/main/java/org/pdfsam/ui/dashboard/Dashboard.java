@@ -18,8 +18,6 @@
  */
 package org.pdfsam.ui.dashboard;
 
-import static org.pdfsam.support.RequireUtils.requireNotNull;
-import static org.pdfsam.ui.event.SetActiveModuleRequest.activeteCurrentModule;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.HashMap;
@@ -27,21 +25,16 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.animation.FadeTransition;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.ui.event.SetActiveDashboardItemRequest;
 import org.pdfsam.ui.event.SetTitleEvent;
+import org.pdfsam.ui.quickbar.QuickbarPane;
 import org.pdfsam.ui.support.Style;
 import org.sejda.eventstudio.annotation.EventListener;
 
@@ -52,71 +45,35 @@ import org.sejda.eventstudio.annotation.EventListener;
  */
 @Named
 public class Dashboard extends BorderPane {
-    @Inject
-    private QuickbarDashboardPane navigation;
-    private Map<String, DashboardContentPane> items = new HashMap<>();
+
+    private Map<String, DashboardItemPane> items = new HashMap<>();
     private StackPane center = new StackPane();
     private FadeTransition fade = new FadeTransition(new Duration(300), center);
 
-    public Dashboard() {
-        getStyleClass().addAll(Style.CONTAINER.css());
-    }
-
     @Inject
     public Dashboard(List<DashboardItem> itemsList) {
-        itemsList.stream().forEach(i -> items.put(i.id(), new DashboardContentPane(i)));
+        getStyleClass().addAll(Style.CONTAINER.css());
+        setId("pdfsam-dashboard");
+        itemsList.stream().forEach(i -> items.put(i.id(), new DashboardItemPane(i)));
         fade.setFromValue(0);
         fade.setToValue(1);
         setCenter(center);
+        eventStudio().addAnnotatedListeners(this);
     }
 
-    @PostConstruct
-    private void init() {
-        setLeft(navigation);
-        eventStudio().addAnnotatedListeners(this);
+    @Inject
+    void setDashboardButtonsPane(QuickbarDashboardButtonsPane dashboardButtons) {
+        setLeft(new QuickbarPane(dashboardButtons));
     }
 
     @EventListener
     public void onSetActiveDashboardItem(SetActiveDashboardItemRequest request) {
-        DashboardContentPane requested = items.get(request.getActiveItemId());
+        DashboardItemPane requested = items.get(request.getActiveItemId());
         if (requested != null) {
             center.getChildren().setAll(requested);
             fade.play();
-            eventStudio().broadcast(new SetTitleEvent(requested.item.name()));
+            eventStudio().broadcast(new SetTitleEvent(requested.getItem().name()));
         }
     }
 
-    /**
-     * Base class for a DashboardItem providing a footer to the item. A Close button is available in the footer and allow the user to hide the dashboard.
-     * 
-     * @author Andrea Vacondio
-     *
-     */
-    private class DashboardContentPane extends BorderPane {
-
-        private DashboardItem item;
-
-        private DashboardContentPane(DashboardItem item) {
-            requireNotNull(item, "Dashboard item cannot be null");
-            this.item = item;
-            this.item.pane().getStyleClass().addAll(Style.DEAULT_CONTAINER.css());
-            this.item.pane().getStyleClass().addAll(Style.CONTAINER.css());
-            setBottom(buildFooter());
-            ScrollPane scroll = new ScrollPane(this.item.pane());
-            scroll.setFitToHeight(true);
-            scroll.setFitToWidth(true);
-            setCenter(scroll);
-        }
-
-        private HBox buildFooter() {
-            Button closeButton = new Button(DefaultI18nContext.getInstance().i18n("Close"));
-            closeButton.getStyleClass().addAll(Style.BUTTON.css());
-            closeButton.setTextAlignment(TextAlignment.CENTER);
-            closeButton.setOnAction((e) -> eventStudio().broadcast(activeteCurrentModule()));
-            HBox footer = new HBox(closeButton);
-            footer.getStyleClass().addAll(Style.CLOSE_FOOTER.css());
-            return footer;
-        }
-
-    }
 }

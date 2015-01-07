@@ -20,9 +20,14 @@ package org.pdfsam.context;
 
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pdfsam.ui.NewsPolicy;
+import org.pdfsam.ui.Theme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Preferences} implementation for the {@link UserContext}.
@@ -31,14 +36,15 @@ import org.apache.commons.lang3.StringUtils;
  * 
  */
 public final class DefaultUserContext implements UserContext {
-
-    public static final String DEFAULT_THEME = "green.css";
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultUserContext.class);
     private Preferences prefs;
-    private UserWorkspacesContext workspaces;
 
     public DefaultUserContext() {
-        this.prefs = Preferences.userRoot().node("/pdfsam/user/conf");
-        this.workspaces = new PreferencesUserWorkspacesContext();
+        initNode();
+    }
+
+    private void initNode() {
+        this.prefs = Preferences.userRoot().node("/org/pdfsam/user/conf");
     }
 
     @Override
@@ -68,7 +74,19 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public String getTheme() {
-        return defaultIfBlank(prefs.get(StringUserPreference.THEME.toString(), ""), DEFAULT_THEME);
+        return defaultIfBlank(prefs.get(StringUserPreference.THEME.toString(), StringUtils.EMPTY),
+                Theme.ROUNDISH.toString());
+    }
+
+    @Override
+    public String getStartupModule() {
+        return prefs.get(StringUserPreference.STARTUP_MODULE.toString(), StringUtils.EMPTY);
+    }
+
+    @Override
+    public String getNewsPolicy() {
+        return defaultIfBlank(prefs.get(StringUserPreference.NEWS_POLICY.toString(), StringUtils.EMPTY),
+                NewsPolicy.ONCE_A_WEEK.toString());
     }
 
     @Override
@@ -93,8 +111,14 @@ public final class DefaultUserContext implements UserContext {
     }
 
     @Override
-    public boolean isAskOverwriteConfirmation() {
-        return prefs.getBoolean(BooleanUserPreference.ASK_OVERWRITE_CONFIRMATION.toString(), Boolean.TRUE);
+    public void clear() {
+        try {
+            prefs.removeNode();
+            prefs.flush();
+            initNode();
+        } catch (BackingStoreException e) {
+            LOG.error("Unable to clear user preferences", e);
+        }
     }
 
     @Override
@@ -111,10 +135,4 @@ public final class DefaultUserContext implements UserContext {
     public void setStringPreference(StringUserPreference pref, String value) {
         prefs.put(pref.toString(), value);
     }
-
-    @Override
-    public UserWorkspacesContext getUserWorkspacesContext() {
-        return workspaces;
-    }
-
 }

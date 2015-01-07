@@ -18,33 +18,37 @@
  */
 package org.pdfsam.support.validation;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.pdfsam.support.validation.Validators.decorateAsValidEmptyString;
+import static org.pdfsam.support.validation.Validators.newPositiveIntegerString;
 
-import static org.pdfsam.support.validation.Validators.decorateAsValidBlankString;
-import static org.pdfsam.support.validation.Validators.newIntegerString;
+import org.junit.Test;
 
 /**
  * @author Andrea Vacondio
  * 
  */
 public class BlankStringDecoratorTest {
-    private Validator<String> victim = decorateAsValidBlankString(newIntegerString());
+    private Validator<String> victim = decorateAsValidEmptyString(newPositiveIntegerString());
 
     @Test
-    public void testNegative() {
-        Assert.assertFalse(victim.isValid("dsdsa"));
+    public void negative() {
+        assertFalse(victim.isValid("dsdsa"));
     }
 
     @Test
-    public void testPositive() {
-        Assert.assertTrue(victim.isValid("123"));
-        Assert.assertTrue(victim.isValid("-123"));
+    public void positive() {
+        assertTrue(victim.isValid("123"));
     }
 
     @Test
-    public void testBlank() {
-        Assert.assertTrue(victim.isValid(""));
-        Assert.assertTrue(victim.isValid("  "));
+    public void blank() {
+        assertFalse(victim.isValid("  "));
+    }
+
+    @Test
+    public void empty() {
+        assertTrue(victim.isValid(""));
     }
 }

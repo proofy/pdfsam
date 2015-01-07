@@ -24,14 +24,10 @@ import static org.pdfsam.support.RequireUtils.requireNotNull;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pdfsam.support.ObservableAtomicReference;
 import org.sejda.model.input.PdfFileSource;
 import org.sejda.model.pdf.PdfVersion;
 
@@ -43,10 +39,10 @@ import org.sejda.model.pdf.PdfVersion;
  */
 public class PdfDocumentDescriptor {
 
-    private ReadOnlyObjectWrapper<PdfDescriptorLoadingStatus> loadingStatus = new ReadOnlyObjectWrapper<>(
+    private ObservableAtomicReference<PdfDescriptorLoadingStatus> loadingStatus = new ObservableAtomicReference<>(
             PdfDescriptorLoadingStatus.INITIAL);
-    private AtomicBoolean invalid = new AtomicBoolean(false);
-    private ReadOnlyIntegerWrapper pages = new ReadOnlyIntegerWrapper(0);
+    private AtomicInteger references = new AtomicInteger(1);
+    private ObservableAtomicReference<Integer> pages = new ObservableAtomicReference<>(0);
     private String password;
     private File file;
     private PdfVersion version;
@@ -75,21 +71,25 @@ public class PdfDocumentDescriptor {
         return StringUtils.defaultString(metadata.get(key));
     }
 
-    public void setInformationDictionary(HashMap<String, String> info) {
+    public void setInformationDictionary(Map<String, String> info) {
         metadata.clear();
         metadata.putAll(info);
     }
 
-    public ReadOnlyIntegerProperty pagesPropery() {
-        return pages.getReadOnlyProperty();
+    public void putInformation(String key, String value) {
+        metadata.put(key, value);
     }
 
-    public void setPages(int pages) {
-        this.pages.set(pages);
+    public void pages(int newValue) {
+        this.pages.set(newValue);
     }
 
-    public ReadOnlyObjectProperty<PdfDescriptorLoadingStatus> loadedProperty() {
-        return loadingStatus.getReadOnlyProperty();
+    public ObservableAtomicReference<PdfDescriptorLoadingStatus> loadingStatus() {
+        return loadingStatus;
+    }
+
+    public ObservableAtomicReference<Integer> pages() {
+        return pages;
     }
 
     /**
@@ -98,7 +98,7 @@ public class PdfDocumentDescriptor {
      * @param destination
      */
     public void moveStatusTo(PdfDescriptorLoadingStatus destination) {
-        loadingStatus.set(loadingStatus.get().moveTo(destination));
+        loadingStatus.set(loadingStatus.getValue().moveTo(destination));
     }
 
     public String getPassword() {
@@ -114,7 +114,10 @@ public class PdfDocumentDescriptor {
     }
 
     public String getVersionString() {
-        return Double.toString(version.getVersionAsDouble());
+        if (version != null) {
+            return Double.toString(version.getVersionAsDouble());
+        }
+        return "";
     }
 
     public PdfVersion getVersion() {
@@ -142,11 +145,26 @@ public class PdfDocumentDescriptor {
      *         action on the descriptor that it should be ignored since not relevant anymore.
      */
     public boolean isInvalid() {
-        return invalid.get();
+        return references.get() <= 0;
+    }
+
+    /**
+     * @return true if the descriptor has become invalid because of the release
+     */
+    public boolean release() {
+        return this.references.decrementAndGet() <= 0;
     }
 
     public void invalidate() {
-        this.invalid.set(true);
+        this.references.set(0);
+    }
+
+    /**
+     * Increment the number of reference
+     */
+    public PdfDocumentDescriptor retain() {
+        this.references.incrementAndGet();
+        return this;
     }
 
     public static PdfDocumentDescriptor newDescriptor(File file, String password) {

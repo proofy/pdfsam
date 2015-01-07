@@ -25,8 +25,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 
-import org.pdfsam.context.DefaultI18nContext;
-import org.pdfsam.context.I18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.i18n.I18nContext;
 import org.sejda.model.prefix.Prefix;
 
 /**
@@ -43,6 +43,7 @@ public class PrefixField extends TextField {
         super("PDFsam_");
         this.setPromptText(DefaultI18nContext.getInstance().i18n("Prefix for the generated files names"));
         this.menu = new Menu(DefaultI18nContext.getInstance().i18n("Add prefix"));
+        this.menu.setId("addPrefixMenu");
         this.menu.getItems().addAll(new PrefixMenuItem(Prefix.TIMESTAMP), new PrefixMenuItem(Prefix.BASENAME));
         this.setContextMenu(new ContextMenu(this.menu));
         setPrefWidth(300);

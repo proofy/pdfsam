@@ -21,20 +21,23 @@ package org.pdfsam.ui.info;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
+import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.model.pdf.PdfMetadataKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tab displaying the keywords of the PDF document.
@@ -43,9 +46,10 @@ import org.sejda.model.pdf.PdfMetadataKey;
  *
  */
 @Named
-class KeywordsTab extends Tab {
-    private ChangeListener<PdfDescriptorLoadingStatus> loadedListener;
+class KeywordsTab extends Tab implements ChangeListener<PdfDescriptorLoadingStatus> {
+    private static final Logger LOG = LoggerFactory.getLogger(KeywordsTab.class);
     private Label keywords = new Label();
+    private PdfDocumentDescriptor current;
 
     KeywordsTab() {
         VBox content = new VBox();
@@ -59,23 +63,24 @@ class KeywordsTab extends Tab {
         scroll.setFitToHeight(true);
         scroll.setFitToWidth(true);
         setContent(scroll);
-    }
-
-    @PostConstruct
-    void init() {
         eventStudio().addAnnotatedListeners(this);
     }
 
     @EventListener
     void requestShow(ShowPdfDescriptorRequest event) {
-        loadedListener = (o, oldVal, newVal) -> {
-            if (newVal == PdfDescriptorLoadingStatus.LOADED) {
-                Platform.runLater(() -> {
-                    keywords.setText(event.getDescriptor().getInformation(PdfMetadataKey.KEYWORDS.getKey()));
-                });
-            }
-        };
-        event.getDescriptor().loadedProperty().addListener(new WeakChangeListener<>(loadedListener));
+        if (current != event.getDescriptor()) {
+            current = event.getDescriptor();
+            current.loadingStatus().addListener(new WeakChangeListener<>(this));
+        }
         keywords.setText(event.getDescriptor().getInformation(PdfMetadataKey.KEYWORDS.getKey()));
+    }
+
+    public void changed(ObservableValue<? extends PdfDescriptorLoadingStatus> observable,
+            PdfDescriptorLoadingStatus oldValue, PdfDescriptorLoadingStatus newValue) {
+        if (newValue == PdfDescriptorLoadingStatus.LOADED) {
+            LOG.trace("Descriptor loaded, updating keywords tab");
+            Platform.runLater(() -> keywords.setText(current.getInformation(PdfMetadataKey.KEYWORDS.getKey())));
+        }
+
     }
 }

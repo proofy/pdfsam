@@ -22,13 +22,15 @@ import java.io.IOException;
 
 import javafx.scene.Group;
 
+import org.pdfsam.Pdfsam;
+
 /**
  * User interface configuration.
  * 
  * @author Andrea Vacondio
  * 
  */
-interface UIConfig {
+public interface UIConfig {
 
     /**
      * @return the PDFsam logo
@@ -37,9 +39,7 @@ interface UIConfig {
     Group logo() throws IOException;
 
     /**
-     * The app name/title
-     * 
-     * @return
+     * @return info about the running version of PDFsam
      */
-    String appName();
+    Pdfsam pdfsam();
 }

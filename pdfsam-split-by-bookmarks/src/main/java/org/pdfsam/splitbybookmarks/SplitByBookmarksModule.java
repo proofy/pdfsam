@@ -20,6 +20,7 @@ package org.pdfsam.splitbybookmarks;
 
 import static org.pdfsam.module.ModuleDescriptorBuilder.builder;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import javafx.geometry.Pos;
@@ -33,8 +34,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.builder.Builder;
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
 import org.pdfsam.module.ModulePriority;
@@ -46,6 +47,7 @@ import org.pdfsam.ui.module.BaseTaskExecutionModule;
 import org.pdfsam.ui.prefix.PrefixPane;
 import org.pdfsam.ui.selection.single.TaskParametersBuilderSingleSelectionPane;
 import org.pdfsam.ui.support.Views;
+import org.sejda.eventstudio.annotation.EventStation;
 import org.sejda.model.parameter.SplitByGoToActionLevelParameters;
 import org.sejda.model.prefix.Prefix;
 import org.springframework.context.annotation.Bean;
@@ -63,11 +65,7 @@ public class SplitByBookmarksModule extends BaseTaskExecutionModule {
     private static final String MODULE_ID = "split.bybookmarks";
 
     private TaskParametersBuilderSingleSelectionPane selectionPane;
-    @Inject
-    @Named(MODULE_ID + "field")
     private BrowsableOutputDirectoryField destinationDirectoryField;
-    @Inject
-    @Named(MODULE_ID + "pane")
     private PdfDestinationPane destinationPane;
     private SplitOptionsPane splitOptions = new SplitOptionsPane();
     private PrefixPane prefix = new PrefixPane();
@@ -80,12 +78,32 @@ public class SplitByBookmarksModule extends BaseTaskExecutionModule {
             .priority(ModulePriority.DEFAULT.getPriority()).supportURL("http://www.pdfsam.org/pdf-split-by-bookmark")
             .build();
 
-    public SplitByBookmarksModule() {
+    @Inject
+    public SplitByBookmarksModule(@Named(MODULE_ID + "field") BrowsableOutputDirectoryField destinationDirectoryField,
+            @Named(MODULE_ID + "pane") PdfDestinationPane destinationPane) {
+        this.destinationDirectoryField = destinationDirectoryField;
+        this.destinationPane = destinationPane;
         this.selectionPane = new TaskParametersBuilderSingleSelectionPane(id());
         this.selectionPane.setPromptText(DefaultI18nContext.getInstance().i18n(
                 "Select or drag and drop the PDF you want to split"));
         this.selectionPane.addOnLoaded(d -> splitOptions.setMaxBookmarkLevel(d.getMaxGoToActionDepth()));
 
+    }
+
+    public void onSaveWorkspace(Map<String, String> data) {
+        selectionPane.saveStateTo(data);
+        splitOptions.saveStateTo(data);
+        destinationDirectoryField.saveStateTo(data);
+        destinationPane.saveStateTo(data);
+        prefix.saveStateTo(data);
+    }
+
+    public void onLoadWorkspace(Map<String, String> data) {
+        selectionPane.restoreStateFrom(data);
+        splitOptions.restoreStateFrom(data);
+        destinationDirectoryField.restoreStateFrom(data);
+        destinationPane.restoreStateFrom(data);
+        prefix.restoreStateFrom(data);
     }
 
     @Override
@@ -106,7 +124,7 @@ public class SplitByBookmarksModule extends BaseTaskExecutionModule {
 
     @Override
     protected Pane getInnerPanel() {
-        VBox pane = new VBox(5);
+        VBox pane = new VBox();
         pane.setAlignment(Pos.TOP_CENTER);
 
         TitledPane prefixTitled = Views
@@ -124,6 +142,7 @@ public class SplitByBookmarksModule extends BaseTaskExecutionModule {
     }
 
     @Override
+    @EventStation
     public String id() {
         return MODULE_ID;
     }
@@ -146,9 +165,9 @@ public class SplitByBookmarksModule extends BaseTaskExecutionModule {
         @Bean(name = MODULE_ID + "pane")
         public PdfDestinationPane destinationPane(
                 @Named(MODULE_ID + "field") BrowsableOutputDirectoryField outputField, UserContext userContext) {
-            PdfDestinationPane destinationPane = new PdfDestinationPane(outputField, MODULE_ID, userContext);
-            destinationPane.enableSameAsSourceItem();
-            return destinationPane;
+            PdfDestinationPane panel = new PdfDestinationPane(outputField, MODULE_ID, userContext);
+            panel.enableSameAsSourceItem();
+            return panel;
         }
     }
 }

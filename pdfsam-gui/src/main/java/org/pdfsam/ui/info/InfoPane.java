@@ -21,7 +21,6 @@ package org.pdfsam.ui.info;
 import javafx.geometry.Side;
 import javafx.scene.control.TabPane;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,12 +34,7 @@ import javax.inject.Named;
 class InfoPane extends TabPane {
 
     @Inject
-    private SummaryTab summary;
-    @Inject
-    private KeywordsTab keywords;
-
-    @PostConstruct
-    void init() {
+    InfoPane(SummaryTab summary, KeywordsTab keywords) {
         setSide(Side.LEFT);
         getTabs().addAll(summary, keywords);
     }

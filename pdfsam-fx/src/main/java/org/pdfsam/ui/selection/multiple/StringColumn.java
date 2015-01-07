@@ -29,7 +29,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
  * Definition of the {@link String} columns of the selection table
@@ -54,20 +54,15 @@ public enum StringColumn implements SelectionTableColumn<String> {
         }
 
         public Comparator<String> comparator() {
-            return new Comparator<String>() {
-                public int compare(String o1, String o2) {
-                    return o1.compareTo(o2);
-                }
-            };
+            return Comparator.naturalOrder();
         }
 
         @Override
         public TableColumn<SelectionTableRowData, String> getTableColumn() {
             TableColumn<SelectionTableRowData, String> tableColumn = super.getTableColumn();
             tableColumn.setEditable(true);
-            tableColumn.setOnEditCommit(t -> {
-                t.getTableView().getItems().get(t.getTablePosition().getRow()).setPageSelection(t.getNewValue());
-            });
+            tableColumn.setOnEditCommit(t -> t.getTableView().getItems().get(t.getTablePosition().getRow())
+                    .setPageSelection(t.getNewValue()));
             return tableColumn;
         }
 

@@ -28,7 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
  * Definition of the {@link File} columns of the selection table
@@ -75,11 +75,7 @@ public enum FileColumn implements SelectionTableColumn<File> {
         }
 
         public Comparator<File> comparator() {
-            return new Comparator<File>() {
-                public int compare(File o1, File o2) {
-                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-                }
-            };
+            return Comparator.comparing(f -> f.getName().toLowerCase());
         }
     }
 }

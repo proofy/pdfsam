@@ -23,6 +23,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.pdfsam.support.RequireUtils.requireNotNull;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.Label;
@@ -31,13 +33,15 @@ import javafx.scene.layout.HBox;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.support.params.AbstractPdfOutputParametersBuilder;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.commons.SetDestinationRequest;
+import org.pdfsam.ui.io.PdfVersionCombo.DefaultPdfVersionComboItem;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
 import org.sejda.model.parameter.base.AbstractPdfOutputParameters;
@@ -53,7 +57,7 @@ import org.springframework.context.annotation.Scope;
  */
 @Named("pdfDestinationPane")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PdfDestinationPane extends DestinationPane implements ModuleOwned,
+public class PdfDestinationPane extends DestinationPane implements ModuleOwned, RestorableView,
         TaskParametersBuildStep<AbstractPdfOutputParametersBuilder<? extends AbstractPdfOutputParameters>> {
 
     private PdfVersionCombo version;
@@ -63,6 +67,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned,
 
     public PdfDestinationPane(BrowsableField destination, String ownerModule, UserContext userContext) {
         super(destination);
+        destination.setId(ownerModule + ".destination");
         requireNotNull(userContext, "UserContext cannot be null");
         this.userContext = userContext;
         this.ownerModule = defaultString(ownerModule);
@@ -97,5 +102,19 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned,
         builder.compress(compress.isSelected());
         builder.overwrite(overwrite().isSelected());
         builder.version(version.getSelectionModel().getSelectedItem().getVersion());
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("compress", Boolean.toString(compress.isSelected()));
+        data.put("overwrite", Boolean.toString(overwrite().isSelected()));
+        data.put("version", version.getSelectionModel().getSelectedItem().getVersion().toString());
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        version.initializeState();
+        compress.setSelected(Boolean.valueOf(data.get("compress")));
+        overwrite().setSelected(Boolean.valueOf(data.get("overwrite")));
+        Optional.ofNullable(data.get("version")).map(PdfVersion::valueOf).map(DefaultPdfVersionComboItem::new)
+                .ifPresent(v -> this.version.getSelectionModel().select(v));
     }
 }

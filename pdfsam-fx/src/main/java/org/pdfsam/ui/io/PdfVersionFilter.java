@@ -40,16 +40,19 @@ class PdfVersionFilter {
 
     public void addFilter(Integer version) {
         // the filter is not already there
-        if (filters.add(version)) {
-            required.set(filters.last());
-        }
+        filters.add(version);
+        required.set(filters.last());
     }
 
     public void removeFilter(Integer version) {
         // the filter was there
-        if (filters.remove(version)) {
-            required.set(filters.last());
-        }
+        filters.remove(version);
+        required.set(filters.last());
+    }
+
+    void reset() {
+        filters.clear();
+        addFilter(Integer.MIN_VALUE);
     }
 
     ReadOnlyIntegerProperty requiredProperty() {

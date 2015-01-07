@@ -21,7 +21,7 @@ package org.pdfsam.ui.event;
 import static org.apache.commons.lang3.StringUtils.trim;
 
 /**
- * Change the app title
+ * Event to change the title on the application window.
  * 
  * @author Andrea Vacondio
  *

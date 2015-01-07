@@ -18,6 +18,11 @@
  */
 package org.pdfsam.ui.prefix;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.Label;
@@ -25,10 +30,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.MultipleOutputTaskParametersBuilder;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.prefix.Prefix;
 
 /**
@@ -37,7 +43,8 @@ import org.sejda.model.prefix.Prefix;
  * @author Andrea Vacondio
  *
  */
-public class PrefixPane extends HBox implements TaskParametersBuildStep<MultipleOutputTaskParametersBuilder<?>> {
+public class PrefixPane extends HBox implements TaskParametersBuildStep<MultipleOutputTaskParametersBuilder<?>>,
+        RestorableView {
 
     private PrefixField field = new PrefixField();
 
@@ -59,5 +66,13 @@ public class PrefixPane extends HBox implements TaskParametersBuildStep<Multiple
 
     public void apply(MultipleOutputTaskParametersBuilder<?> builder, Consumer<String> onError) {
         builder.prefix(getText());
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put(defaultString(getId()) + "prefix", defaultString(field.getText()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        field.setText(Optional.ofNullable(data.get(defaultString(getId()) + "prefix")).orElse(EMPTY));
     }
 }

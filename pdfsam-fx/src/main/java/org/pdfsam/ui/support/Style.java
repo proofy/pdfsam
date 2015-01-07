@@ -18,6 +18,7 @@
  */
 package org.pdfsam.ui.support;
 
+
 /**
  * Defines css style classes
  * 
@@ -30,11 +31,13 @@ public enum Style {
     TITLED_PANE("titled-pane"),
     DEAULT_CONTAINER("default-container"),
     CONTAINER("pdfsam-container"),
-    CLOSE_FOOTER("default-container", "pdfsam-footer-close-pane"),
+    MODULE_CONTAINER("pdfsam-module-container"),
+    CLOSE_FOOTER("pdfsam-container", "pdfsam-footer-close-pane"),
     INVALID("invalid"),
     VITEM("spaced-vitem"),
     HCONTAINER("spaced-hcontainer"),
-    MAIN_PANEL("main-scroll-panel");
+    MAIN_PANEL("main-scroll-panel"),
+    GRID("pdfsam-grid");
 
     public static final int DEFAULT_SPACING = 5;
     private String[] classes;

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.pdfsam.support.params.MultipleOutputTaskParametersBuilder;
-import org.pdfsam.test.InitializeJavaFxThreadRule;
+import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
 import org.sejda.model.parameter.base.MultipleOutputTaskParameters;
 
 /**
@@ -49,7 +49,7 @@ public class BrowsableOutputDirectoryFieldTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     @Rule
-    public InitializeJavaFxThreadRule fxThread = new InitializeJavaFxThreadRule();
+    public InitializeAndApplyJavaFxThreadRule fxThread = new InitializeAndApplyJavaFxThreadRule();
     @Mock
     private MultipleOutputTaskParametersBuilder<? extends MultipleOutputTaskParameters> builder;
     @Mock
@@ -59,6 +59,16 @@ public class BrowsableOutputDirectoryFieldTest {
     public void valid() throws IOException {
         BrowsableOutputDirectoryField victim = new BrowsableOutputDirectoryField();
         File value = folder.newFolder();
+        victim.getTextField().setText(value.getAbsolutePath());
+        victim.apply(builder, onError);
+        verify(builder).output(argThat(hasProperty("destination", equalTo(value))));
+        verify(onError, never()).accept(anyString());
+    }
+
+    @Test
+    public void validUTFSpecialChars() throws IOException {
+        BrowsableOutputDirectoryField victim = new BrowsableOutputDirectoryField();
+        File value = folder.newFolder("संसकरण_test");
         victim.getTextField().setText(value.getAbsolutePath());
         victim.apply(builder, onError);
         verify(builder).output(argThat(hasProperty("destination", equalTo(value))));

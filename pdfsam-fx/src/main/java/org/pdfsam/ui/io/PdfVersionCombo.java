@@ -18,6 +18,7 @@
  */
 package org.pdfsam.ui.io;
 
+import static org.pdfsam.support.RequireUtils.requireNotNull;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.Arrays;
@@ -29,9 +30,8 @@ import javafx.scene.control.ComboBox;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
-import org.pdfsam.support.RequireUtils;
 import org.pdfsam.ui.io.PdfVersionCombo.PdfVersionComboItem;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
@@ -66,8 +66,7 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
                 getSelectionModel().selectLast();
             }
         });
-        versionsFilter.addFilter(-1);
-        getSelectionModel().selectLast();
+        initializeState();
         eventStudio().addAnnotatedListeners(this);
     }
 
@@ -89,6 +88,11 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
     @EventStation
     public String getOwnerModule() {
         return this.ownerModule;
+    }
+
+    void initializeState() {
+        versionsFilter.reset();
+        versionsFilter.addFilter(-1);
     }
 
     public void enableSameAsSourceItem() {
@@ -114,12 +118,12 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
      * @author Andrea Vacondio
      * 
      */
-    private static class DefaultPdfVersionComboItem implements PdfVersionComboItem {
+    static class DefaultPdfVersionComboItem implements PdfVersionComboItem {
 
         private PdfVersion version;
 
         public DefaultPdfVersionComboItem(PdfVersion version) {
-            RequireUtils.requireNotNull(version, "PDF version cannot be null");
+            requireNotNull(version, "PDF version cannot be null");
             this.version = version;
         }
 

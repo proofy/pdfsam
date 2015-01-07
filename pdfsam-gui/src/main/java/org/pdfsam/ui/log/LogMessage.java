@@ -28,7 +28,7 @@ import org.apache.commons.lang3.ObjectUtils;
  * @author Andrea Vacondio
  *
  */
-public class LogMessage {
+class LogMessage {
 
     private String message;
     private LogLevel level;

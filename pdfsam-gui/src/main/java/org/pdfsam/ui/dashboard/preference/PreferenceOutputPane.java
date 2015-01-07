@@ -23,12 +23,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
-import org.pdfsam.context.I18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.i18n.I18nContext;
 import org.pdfsam.ui.support.Style;
 
 /**
@@ -41,11 +40,7 @@ import org.pdfsam.ui.support.Style;
 class PreferenceOutputPane extends VBox {
 
     @Inject
-    @Named("smartRadio")
-    private PreferenceRadioButton smartRadio;
-
-    @PostConstruct
-    public void post() {
+    public PreferenceOutputPane(@Named("smartRadio") PreferenceRadioButton smartRadio) {
         I18nContext i18n = DefaultI18nContext.getInstance();
         ToggleGroup group = new ToggleGroup();
 

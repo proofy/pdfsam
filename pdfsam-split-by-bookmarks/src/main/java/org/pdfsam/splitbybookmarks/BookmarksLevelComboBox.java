@@ -18,18 +18,23 @@
  */
 package org.pdfsam.splitbybookmarks;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.support.FXValidationSupport;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 
 /**
  * Combo box letting the user specify the filesize in the split by size task
@@ -38,18 +43,16 @@ import org.pdfsam.ui.support.Style;
  *
  */
 class BookmarksLevelComboBox extends ComboBox<String> implements
-        TaskParametersBuildStep<SplitByGoToActionLevelParametersBuilder> {
+        TaskParametersBuildStep<SplitByGoToActionLevelParametersBuilder>, RestorableView {
     private final FXValidationSupport<String> validationSupport = new FXValidationSupport<>();
 
     BookmarksLevelComboBox() {
-        validationSupport.setValidator(Validators.newNonBlankString());
+        validationSupport.setValidator(Validators.newPositiveIntegerString());
         setEditable(true);
         getSelectionModel().selectFirst();
-        valueProperty().addListener((o, oldVal, newVal) -> {
-            validate();
-        });
+        valueProperty().addListener((o, oldVal, newVal) -> validate());
         setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Set the bookmarks level to split at")));
-        validationSupport.validationStateProperty().addListener((o) -> {
+        validationSupport.validationStateProperty().addListener(o -> {
             if (validationSupport.validationStateProperty().get() == ValidationState.INVALID) {
                 getEditor().getStyleClass().addAll(Style.INVALID.css());
             } else {
@@ -61,12 +64,12 @@ class BookmarksLevelComboBox extends ComboBox<String> implements
     public void setMaxBookmarkLevel(int max) {
         getItems().clear();
         if (max > 0) {
-            validationSupport.setValidator(Validators.newIntRangeString(1, max));
-            for (int i = 1; i < max; i++) {
+            validationSupport.setValidator(Validators.newPositiveIntRangeString(1, max));
+            for (int i = 1; i <= max; i++) {
                 getItems().add(Integer.toString(i));
             }
         } else {
-            Validators.newNonBlankString();
+            Validators.newPositiveIntegerString();
         }
     }
 
@@ -92,5 +95,16 @@ class BookmarksLevelComboBox extends ComboBox<String> implements
         } else {
             onError.accept(DefaultI18nContext.getInstance().i18n("Invalid bookmarks level"));
         }
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("levelCombo.max", Integer.toString(getItems().size()));
+        data.put("levelCombo.selected", defaultString(getSelectionModel().getSelectedItem()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        getSelectionModel().selectFirst();
+        Optional.ofNullable(data.get("levelCombo.max")).map(Integer::valueOf).ifPresent(this::setMaxBookmarkLevel);
+        Optional.ofNullable(data.get("levelCombo.selected")).ifPresent(getSelectionModel()::select);
     }
 }

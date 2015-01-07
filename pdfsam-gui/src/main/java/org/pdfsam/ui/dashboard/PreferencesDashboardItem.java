@@ -24,7 +24,7 @@ import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.dashboard.preference.PreferencePane;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
@@ -37,8 +37,12 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 @Named
 class PreferencesDashboardItem implements DashboardItem {
 
-    @Inject
     private PreferencePane pane;
+
+    @Inject
+    PreferencesDashboardItem(PreferencePane pane) {
+        this.pane = pane;
+    }
 
     public String id() {
         return "SETTINGS";

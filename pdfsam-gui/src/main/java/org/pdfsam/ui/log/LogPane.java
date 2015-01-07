@@ -35,15 +35,15 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
-import org.pdfsam.context.I18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.i18n.I18nContext;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.ui.io.FileChoosers;
 import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper;
+import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
 import org.pdfsam.ui.support.Style;
 
 /**
@@ -55,22 +55,19 @@ import org.pdfsam.ui.support.Style;
 @Named
 public class LogPane extends BorderPane {
 
+    private LogListView logView;
+
     @Inject
-    public LogListView logView;
-
-    public LogPane() {
+    public LogPane(LogListView view) {
+        this.logView = view;
         getStyleClass().addAll(Style.CONTAINER.css());
-    }
-
-    @PostConstruct
-    private void postContrsutct() {
-        setCenter(logView);
+        setCenter(this.logView);
 
         I18nContext i18n = DefaultI18nContext.getInstance();
         MenuItem copyItem = new MenuItem(i18n.i18n("Copy"));
+        copyItem.setId("copyLogMenuItem");
         copyItem.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
         copyItem.setOnAction(e -> copyLog(logView.getSelectionModel().getSelectedItems()));
-        copyItem.getStyleClass().add("ctx-menu-item");
 
         // disable if no selection
         copyItem.disableProperty().bind(new BooleanBinding() {
@@ -80,11 +77,12 @@ public class LogPane extends BorderPane {
 
             @Override
             protected boolean computeValue() {
-                return logView.getSelectionModel().getSelectedItems().size() <= 0;
+                return logView.getSelectionModel().getSelectedItems().isEmpty();
             }
         });
 
         MenuItem clearItem = new MenuItem(i18n.i18n("Clear"));
+        clearItem.setId("clearLogMenuItem");
         clearItem.setOnAction(e -> logView.getItems().clear());
         // disable if there's no text
         clearItem.disableProperty().bind(new BooleanBinding() {
@@ -99,11 +97,13 @@ public class LogPane extends BorderPane {
         });
 
         MenuItem selectAllItem = new MenuItem(i18n.i18n("Select all"));
+        selectAllItem.setId("selectAllLogMenuItem");
         selectAllItem.setOnAction(e -> logView.getSelectionModel().selectAll());
         // disable if there's no text
         selectAllItem.disableProperty().bind(clearItem.disableProperty());
 
         MenuItem saveItem = new MenuItem(i18n.i18n("Save log"));
+        saveItem.setId("saveLogMenuItem");
         saveItem.setOnAction(e -> saveLog());
         // disable if there's no text
         saveItem.disableProperty().bind(clearItem.disableProperty());
@@ -116,7 +116,7 @@ public class LogPane extends BorderPane {
         RememberingLatestFileChooserWrapper fileChooser = FileChoosers.getFileChooser(FileType.LOG, DefaultI18nContext
                 .getInstance().i18n("Select where to save the log file"));
         fileChooser.setInitialFileName("PDFsam.log");
-        File chosenFile = fileChooser.showSaveDialog(this.getScene().getWindow());
+        File chosenFile = fileChooser.showDialog(this.getScene().getWindow(), OpenType.SAVE);
         if (chosenFile != null) {
             if (chosenFile.exists()) {
                 // TODO show dialog? investigate. On Ubuntu it already asks confirmation.

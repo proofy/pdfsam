@@ -19,16 +19,26 @@
 package org.pdfsam.ui.banner;
 
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
+
+import java.io.File;
+
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 
-import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.support.io.FileType;
+import org.pdfsam.ui.RecentWorkspacesService;
+import org.pdfsam.ui.io.FileChoosers;
+import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper;
+import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
 import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
 import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
+import org.pdfsam.ui.workspace.WorkspaceLoadedEvent;
+import org.sejda.eventstudio.annotation.EventListener;
 
 /**
  * Menu displaying workspace related items
@@ -39,17 +49,49 @@ import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
 @Named
 class WorkspaceMenu extends Menu {
 
-    public WorkspaceMenu() {
+    private RecentWorkspacesService service;
+    private Menu recent;
+
+    @Inject
+    public WorkspaceMenu(RecentWorkspacesService service) {
         super(DefaultI18nContext.getInstance().i18n("_Workspace"));
+        this.service = service;
+        setId("workspaceMenu");
+        MenuItem load = new MenuItem(DefaultI18nContext.getInstance().i18n("_Load"));
+        load.setId("loadWorkspace");
+        load.setOnAction(e -> loadWorkspace());
+        MenuItem save = new MenuItem(DefaultI18nContext.getInstance().i18n("_Save"));
+        save.setOnAction(e -> saveWorkspace());
+        save.setId("saveWorkspace");
+        recent = new Menu(DefaultI18nContext.getInstance().i18n("Recen_t"));
+        recent.setId("recentWorkspace");
+        service.getRecentlyUsedWorkspaces().stream().map(WorkspaceMenuItem::new).forEach(recent.getItems()::add);
+        getItems().addAll(load, save, new SeparatorMenuItem(), recent);
+        eventStudio().addAnnotatedListeners(this);
     }
 
-    @PostConstruct
-    void init() {
-        MenuItem load = new MenuItem(DefaultI18nContext.getInstance().i18n("_Load"));
-        load.setOnAction(e -> eventStudio().broadcast(new LoadWorkspaceEvent()));
-        MenuItem save = new MenuItem(DefaultI18nContext.getInstance().i18n("_Save"));
-        save.setOnAction(e -> eventStudio().broadcast(new SaveWorkspaceEvent()));
-        Menu recent = new Menu(DefaultI18nContext.getInstance().i18n("Recen_t"));
-        getItems().addAll(load, save, new SeparatorMenuItem(), recent);
+    public void saveWorkspace() {
+        RememberingLatestFileChooserWrapper fileChooser = FileChoosers.getFileChooser(FileType.JSON, DefaultI18nContext
+                .getInstance().i18n("Select the workspace file to save"));
+        fileChooser.setInitialFileName("PDFsam_workspace.json");
+        File chosenFile = fileChooser.showDialog(OpenType.SAVE);
+        if (chosenFile != null) {
+            eventStudio().broadcast(new SaveWorkspaceEvent(chosenFile));
+        }
+    }
+
+    public void loadWorkspace() {
+        RememberingLatestFileChooserWrapper fileChooser = FileChoosers.getFileChooser(FileType.JSON, DefaultI18nContext
+                .getInstance().i18n("Select the workspace to load"));
+        File chosenFile = fileChooser.showDialog(OpenType.OPEN);
+        if (chosenFile != null) {
+            eventStudio().broadcast(new LoadWorkspaceEvent(chosenFile));
+        }
+    }
+
+    @EventListener
+    public void onWorkspaceLoaded(WorkspaceLoadedEvent e) {
+        recent.getItems().clear();
+        service.getRecentlyUsedWorkspaces().stream().map(WorkspaceMenuItem::new).forEach(recent.getItems()::add);
     }
 }

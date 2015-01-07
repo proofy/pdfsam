@@ -18,18 +18,14 @@
  */
 package org.pdfsam.update;
 
-import static org.sejda.eventstudio.StaticStudio.eventStudio;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-
-import javafx.application.Platform;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,24 +40,22 @@ import com.fasterxml.jackson.jr.ob.JSON;
 @Named
 class DefaultUpdateService implements UpdateService {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUpdateService.class);
-    private static final String UPDATES_URL = "http://www.pdfsam.org/current-version";
     private static final String CURRENT_VERSION_KEY = "currentVersion";
 
-    @Inject
-    @Named("appVersion")
-    private String appVersion;
+    private Object jsonSource;
 
-    public void checkForUpdates() {
+    @Inject
+    DefaultUpdateService(@Named("updatesUrl") Object jsonSource) {
+        this.jsonSource = jsonSource;
+    }
+
+    public String getLatestVersion() {
         try {
-            Map<String, Object> map = JSON.std.mapFrom(new URL(String.format("%s?c=%s", UPDATES_URL, appVersion)));
-            String current = map.getOrDefault(CURRENT_VERSION_KEY, "").toString();
-            if (!current.equals(appVersion)) {
-                LOG.info(DefaultI18nContext.getInstance().i18n("PDFsam {0} is available for download", current));
-                Platform.runLater(() -> eventStudio().broadcast(new UpdateAvailableEvent(current)));
-            }
+            return JSON.std.mapFrom(jsonSource).getOrDefault(CURRENT_VERSION_KEY, "").toString();
         } catch (IOException e) {
             LOG.warn(DefaultI18nContext.getInstance().i18n("Unable to find the latest available version."), e);
         }
+        return EMPTY;
     }
 
 }

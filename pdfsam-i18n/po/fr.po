@@ -1,0 +1,962 @@
+# French translation for pdfsam
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the pdfsam package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pdfsam\n"
+"Report-Msgid-Bugs-To: info@pdfsam.org\n"
+"POT-Creation-Date: 2014-12-12 17:22+0100\n"
+"PO-Revision-Date: 2014-12-07 16:18+0000\n"
+"Last-Translator: Bigpapa <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-12-12 16:32+0000\n"
+"X-Generator: Launchpad (build 17286)\n"
+
+#, java-format
+msgid "Installing theme {0}."
+msgstr "Installation du thème {0}."
+
+#, java-format
+msgid "Modules directory {0} does not exist"
+msgstr "Le répertoire des modules {0} n’existe pas"
+
+#, java-format
+msgid "Loading modules from {0}"
+msgstr "Chargement des modules depuis {0}"
+
+#, java-format
+msgid "Found modules jars {0}"
+msgstr "Fichiers JAR de modules {0} trouvés"
+
+msgid "Error finding modules paths"
+msgstr "Erreur de détection des chemins des modules"
+
+msgid "No module has been found"
+msgstr "Aucun module trouvé"
+
+msgid "Unable to find modules location."
+msgstr "Localisation de modules impossible"
+
+#, java-format
+msgid "Started in {0}"
+msgstr "PDFsam a démarré en {0}"
+
+msgid "Closing PDFsam..."
+msgstr "Fermeture de PDFsam…"
+
+#, fuzzy
+msgid "Application menu"
+msgstr "Afficher les messages de l’application"
+
+msgid "_Modules"
+msgstr "_Modules"
+
+msgid "E_xit"
+msgstr "_Quitter"
+
+#, fuzzy
+msgid "Application messages"
+msgstr "Afficher les messages de l’application"
+
+msgid "_Workspace"
+msgstr "Espace de _travail"
+
+msgid "_Load"
+msgstr "_Charger"
+
+msgid "_Save"
+msgstr "_Enregistrer"
+
+msgid "Recen_t"
+msgstr "_Récent"
+
+#, fuzzy
+msgid "Select the workspace file to save"
+msgstr "Sélectionner un espace de travail"
+
+#, fuzzy
+msgid "Select the workspace to load"
+msgstr "Sélectionner un espace de travail"
+
+msgid "Dashboard"
+msgstr "Panneau général"
+
+msgid "Document details"
+msgstr "Détails du document"
+
+msgid "Keywords"
+msgstr "Mots-clés"
+
+msgid "Summary"
+msgstr "Résumé"
+
+msgid "About"
+msgstr "À propos"
+
+msgid "Subscribe to the official news feed"
+msgstr "Souscrire au fil d’actualités officiel"
+
+msgid "Environment"
+msgstr "Environnement"
+
+#, java-format
+msgid "Max memory {0}"
+msgstr "Mémoire maxi. {0}"
+
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse‑papiers"
+
+msgid "Thanks to"
+msgstr "Remerciements"
+
+msgid "The open source projects making PDFsam possible"
+msgstr "aux projets open‑source rendant possible PDFsam"
+
+msgid "Support"
+msgstr "Assistance"
+
+msgid "Bug and feature requests"
+msgstr "Soumissions de problème et suggestions"
+
+msgid "Play the \"get started\" video"
+msgstr "Lancer la vidéo « pour démarrer »"
+
+msgid "Contribute"
+msgstr "Contribution"
+
+msgid "Fork PDFsam on GitHub"
+msgstr "Modifier PDFsam sur GitHub"
+
+msgid "Translate"
+msgstr "Traduire"
+
+msgid "Donate"
+msgstr "Faire un don"
+
+msgid "Social"
+msgstr "Réseaux sociaux"
+
+msgid "Follow us on Twitter"
+msgstr "Nous suivre sur Twitter"
+
+msgid "Follow us on Google Plus"
+msgstr "Nous suivre sur Google+"
+
+msgid "Like us on Facebook"
+msgstr "Nous rejoindre sur Facebook"
+
+msgid "Manually selected"
+msgstr "Sélectionner manuellement"
+
+msgid ""
+"Automatically set the destination directory to the selected PDF document "
+"directory"
+msgstr ""
+"Sélectionner automatiquement le dossier du document PDF chargé comme dossier "
+"de création"
+
+msgid "Appearance"
+msgstr "Apparence"
+
+msgid "Behavior"
+msgstr "Comportement"
+
+msgid "Workspace"
+msgstr "Espace de travail"
+
+msgid "Output"
+msgstr "Dossier de création"
+
+msgid "Check for updates at startup"
+msgstr "Rechercher des mises à jour au démarrage"
+
+msgid ""
+"Set whether new version availability should be checked on startup (restart "
+"needed)"
+msgstr ""
+"Indiquer si la recherche de nouvelle version doit être faite au démarrage "
+"(redémarrage requis)"
+
+msgid "Play alert sounds"
+msgstr "Jouer les notifications sonores"
+
+msgid "Turn on or off alert sounds"
+msgstr "Activer ou désactiver les notifications sonores"
+
+msgid "High quality thumbnails"
+msgstr "Miniatures haute qualité"
+
+msgid "Use the selected PDF document directory as output directory"
+msgstr "Utiliser le dossier du document PDF chargé"
+
+#, java-format
+msgid "Size must be between {0}px and {1}px"
+msgstr "La taille doit être entre {0}px et {1}px"
+
+#, java-format
+msgid "Pixel size of the thumbnails (between {0}px and {1}px)"
+msgstr "Taille des miniatures en pixels (entre {0}px et {1}px)"
+
+msgid "Generate high quality thumbnails (slower)"
+msgstr "Générer des miniatures de haute qualité (lent)"
+
+msgid "Size in px:"
+msgstr "Taille en px :"
+
+msgid "Library used to generate thumbnails"
+msgstr "Bibliothèque de génération de miniatures"
+
+msgid "Thumbnails creator:"
+msgstr "Générateur de miniatures :"
+
+msgid "Clear usage statistics"
+msgstr "Supprimer les données d’utilisation"
+
+msgid ""
+"Select a previously saved workspace that will be automatically loaded at "
+"startup"
+msgstr ""
+"Sélectionner un espace de travail déjà enregistré à charger au démarrage"
+
+msgid "Select a workspace"
+msgstr "Sélectionner un espace de travail"
+
+msgid "Select a directory where documents will be saved and loaded by default"
+msgstr ""
+"Sélectionner un dossier par défaut de chargement et d’enregistrement des "
+"documents"
+
+msgid "Select a directory"
+msgstr "Sélectionner un dossier"
+
+msgid ""
+"Usage statistics are used to populate the modules quick bar on the left with "
+"the most used and most recently used modules."
+msgstr ""
+
+msgid "Load default workspace at startup:"
+msgstr "Charger au démarrage l’espace de travail par défaut :"
+
+msgid "Default working directory:"
+msgstr "Répertoire de travail par défaut :"
+
+msgid "Set how often the PDFsam news panel should be opened"
+msgstr "Choisir quand afficher le panneau des actualités de PDFsam"
+
+msgid "News panel:"
+msgstr "Afficher les actualités :"
+
+msgid "Language:"
+msgstr "Langue :"
+
+msgid "Set your preferred language (restart needed)"
+msgstr "Choisir la langue préférée (redémarrage nécessaire)"
+
+msgid "Theme:"
+msgstr "Thème :"
+
+msgid "Set your preferred theme (restart needed)"
+msgstr "Choisir le thème préféré (redémarrage nécessaire)"
+
+msgid "Startup module:"
+msgstr "Au démarrage :"
+
+msgid "Set the module to open at application startup (restart needed)"
+msgstr "Choisir le module à afficher au démarrage (redémarrage nécessaire)"
+
+#, fuzzy
+msgid "Check for updates now"
+msgstr "Recherche de mises à jour…"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Settings"
+msgstr "Réglages"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "Log register"
+msgstr "Enregistrements du journal"
+
+# F:\workspace_pdfsame_enanched\pdfsam-maine\it\pdfsam\panels\LogPanel.java:99
+# F:\workspace_pdfsam_enhanced\pdfsam-maine\it\pdfsam\panels\LogPanel.java:99
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Clear"
+msgstr "Vider"
+
+# F:\workspace_pdfsame_enanched\pdfsam-maine\it\pdfsam\panels\LogPanel.java:112
+# F:\workspace_pdfsam_enhanced\pdfsam-maine\it\pdfsam\panels\LogPanel.java:112
+msgid "Select all"
+msgstr "Tout sélectionner"
+
+# F:\workspace_pdfsame_enanched\pdfsam-maine\it\pdfsam\panels\ButtonsBar.java:117
+# F:\workspace_pdfsame_enanched\pdfsam-maine\it\pdfsam\panels\LogPanel.java:121
+# F:\workspace_pdfsam_enhanced\pdfsam-maine\it\pdfsam\panels\ButtonsBar.java:117
+# F:\workspace_pdfsam_enhanced\pdfsam-maine\it\pdfsam\panels\LogPanel.java:121
+msgid "Save log"
+msgstr "Sauvegarder le journal"
+
+msgid "Select where to save the log file"
+msgstr "Sélectionner l’emplacement de sauvegarde du journal"
+
+msgid "Invalid parameters"
+msgstr "Paramètres erronés"
+
+msgid ""
+"Input parameters are invalid, open the application messages for details."
+msgstr ""
+"Les paramètres sont erronés, ouvrir les messages de l’application pour plus "
+"de détails."
+
+#, java-format
+msgid "You performed {0} tasks with PDFsam, did it help?"
+msgstr "Vous avez effectué {0} travaux avec PDFsam. En êtes-vous satisfait ?"
+
+msgid "Give something back"
+msgstr "Donner quelque chose en retour"
+
+msgid "PDFsam worked hard!"
+msgstr "PDFsam a bien travaillé !"
+
+#, java-format
+msgid "PDFsam {0} is available for download"
+msgstr "PDFsam {0} est diponible au téléchargement"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "New version available"
+msgstr "Nouvelle version disponible"
+
+msgid "Show this:"
+msgstr "Afficher ceci :"
+
+msgid "What's new"
+msgstr "Quoi de neuf"
+
+msgid "Directory not empty"
+msgstr "Dossier non vide"
+
+msgid "The selected directory is not empty"
+msgstr "Le dossier sélectionné n’est pas vide"
+
+msgid "Overwrite files with the same name as the generated ones?"
+msgstr "Remplacer les fichiers ayant le même nom que ceux générés ?"
+
+msgid "Don't overwrite existing file"
+msgstr "Ne pas remplacer les fichiers existants"
+
+msgid "Overwrite confirmation"
+msgstr "Confirmation de remplacement"
+
+msgid "A file with the given name already exists"
+msgstr "Un fichier avec le même nom existe déjà"
+
+msgid "Do you want to overwrite it?"
+msgstr "Voulez-vous le remplacer ?"
+
+msgid "Overwrite"
+msgstr "Remplacer"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Unable to find the latest available version."
+msgstr "Recherche de la dernière version impossible"
+
+msgid "Checking for updates"
+msgstr "Recherche de mises à jour…"
+
+#, fuzzy
+msgid "Loading pdf documents"
+msgstr "Descendre dans le tableau les documents sélectionnés"
+
+msgid "Documents loaded"
+msgstr "Documents chargés"
+
+msgid "Requesting modules state"
+msgstr ""
+
+#, fuzzy
+msgid "Unable to save modules workspace"
+msgstr "Localisation de modules impossible"
+
+#, fuzzy, java-format
+msgid "Loading workspace from {0}"
+msgstr "Chargement des modules depuis {0}"
+
+#, fuzzy
+msgid "Workspace loaded"
+msgstr "Espace de travail"
+
+#, java-format
+msgid "Unable to load workspace from {0}"
+msgstr ""
+
+#, java-format
+msgid "Saving workspace data to {0}"
+msgstr ""
+
+#, fuzzy
+msgid "Workspace saved"
+msgstr "Espace de travail"
+
+msgid "Split after the following page numbers"
+msgstr "Après les pages suivantes"
+
+msgid "Page numbers to split at (n1,n2,n3..)"
+msgstr "Numéros des pages (séparés par une virgule)"
+
+msgid "Split the document after the given page numbers"
+msgstr "Découper le document après les numéros de pages indiqués"
+
+msgid "Invalid page numbers"
+msgstr "Numéros de pages erronés"
+
+msgid "Split"
+msgstr "Découpage"
+
+msgid "Split a pdf document at the given page numbers."
+msgstr "Découper un document PDF suivant un nombre de pages choisi."
+
+msgid "Select or drag and drop the PDF you want to split"
+msgstr "Sélectionner ou glisser-déposer les PDF à découper"
+
+msgid "File names settings"
+msgstr "Nom des fichiers"
+
+msgid "Split settings"
+msgstr "Paramètres de découpage"
+
+msgid "Destination directory"
+msgstr "Dossier de création"
+
+msgid "Burst (Split into single pages)"
+msgstr "Fragmenter (couper par page)"
+
+msgid "Split even pages"
+msgstr "Après les pages paires"
+
+msgid "Split odd pages"
+msgstr "Après les pages impaires"
+
+msgid "Explode the document into single pages"
+msgstr "Découper le document après chaque page"
+
+msgid "Split the document after every even page"
+msgstr "Découper le document après chaque page paire"
+
+msgid "Split the document after every odd page"
+msgstr "Découper le document après chaque page impaire"
+
+msgid "Split by every \"n\" pages"
+msgstr "En groupes de pages au nombre de"
+
+msgid "Number of pages"
+msgstr "Nombre de pages"
+
+msgid "Splits the pdf every \"n\" pages creating documents of \"n\" pages each"
+msgstr ""
+"Découper le PDF en documents contenant chacun le nombre de pages indiqué"
+
+msgid "Invalid number of pages"
+msgstr "Nombre de pages erroné"
+
+msgid "Split by size"
+msgstr "Découpage par taille"
+
+msgid "Split a pdf document in files of the give size (roughly)."
+msgstr ""
+"Découper un document PDF suivant une taille de fichiers définie (approchant)."
+
+#, fuzzy
+msgid "Set the size to split at"
+msgstr "Indiquer le niveau de signet où couper"
+
+msgid "Size must be a number"
+msgstr ""
+
+msgid "Split at this size:"
+msgstr "Découper suivant la taille de :"
+
+msgid "Invalid split size"
+msgstr "Taille indiquée incorrecte"
+
+msgid "Kilobytes"
+msgstr ""
+
+msgid "KB"
+msgstr ""
+
+msgid "Megabytes"
+msgstr ""
+
+msgid "MB"
+msgstr ""
+
+msgid "Alternate Mix"
+msgstr "Assemblage Alterné"
+
+msgid ""
+"Merge two PDF documents taking pages alternately in straight or reverse "
+"order."
+msgstr ""
+"Fusionner deux documents PDF en alternant leurs pages, dans l\\u2019ordre ou "
+"inversées."
+
+msgid "Select or drag and drop the first PDF you want to mix"
+msgstr "Sélectionner ou glisser-déposer le premier PDF à assembler"
+
+msgid "Select or drag and drop the second PDF you want to mix"
+msgstr "Sélectionner ou glisser-déposer le second PDF à assembler"
+
+msgid "Mix settings"
+msgstr "Paramètres d'assemblage"
+
+msgid "Destination file"
+msgstr "Fichier à créer"
+
+msgid "Reverse the first document"
+msgstr "Inverser le premier document"
+
+msgid "Reverse the second document"
+msgstr "Inverser le deuxième document"
+
+msgid ""
+"Switch from the first document to the second one after the following pages"
+msgstr ""
+"Passer du premier document au second après le nombre de pages suivant :"
+
+msgid ""
+"Switch from the second document to the first one after the following pages"
+msgstr ""
+"Passer du second document au premier après le nombre de pages suivant :"
+
+msgid "Invalid parameter 'first and second step' must be numbers"
+msgstr ""
+"Paramètre erroné : « les premier et second pas » doivent être des nombres"
+
+msgid "Select the number of pages"
+msgstr "ndiquer un nombre de pages"
+
+msgid "The selected PDF document is invalid"
+msgstr "Le document PDF sélectionné n’est pas valide"
+
+#, fuzzy
+msgid "Open the generated document"
+msgstr "Inverser le deuxième document"
+
+#, fuzzy
+msgid "Open the destination directory"
+msgstr "Dossier de création"
+
+msgid "Ready"
+msgstr "Prêt"
+
+msgid "Running"
+msgstr "Exécution"
+
+msgid "Requested"
+msgstr "Requête"
+
+msgid "Completed"
+msgstr "Terminé"
+
+msgid "Failed"
+msgstr "Échec"
+
+# G:\Documents\eclipse_workspace\PDFSAMsplit\it\pdfsam\plugin\split\GUI\SplitMainGUI.java:368
+# F:\workspace_pdfsam_enhanced\pdfsam-cover\it\pdfsam\plugin\coverfooter\GUI\CoverFooterMainGUI.java:542
+# F:\workspace_pdfsam_enhanced\pdfsam-encrypt\it\pdfsam\plugin\encrypt\GUI\EncryptMainGUI.java:462
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:526
+# F:\workspace_pdfsam_enhanced\pdfsam-mix\it\pdfsam\plugin\mix\GUI\MixMainGUI.java:320
+# F:\workspace_pdfsam_enhanced\pdfsam-split\it\pdfsam\plugin\split\GUI\SplitMainGUI.java:410
+msgid "Run"
+msgstr "Exécuter"
+
+msgid "Overwrite if already exists"
+msgstr "Remplacer les fichiers existants"
+
+msgid ""
+"Tick the box if you want to overwrite the outpuf files if they already exist."
+msgstr ""
+"Cocher la case si les fichiers créés doivent remplacer les mêmes déjà "
+"existant."
+
+msgid "Select a file"
+msgstr "Sélectionner un fichier"
+
+msgid "The selected file must exist. "
+msgstr "Le fichier à charger doit exister. "
+
+#, java-format
+msgid "Allowed extensions are {0}"
+msgstr "Extensions acceptées : {0}"
+
+msgid "Select"
+msgstr "Sélectionner"
+
+msgid "Browse"
+msgstr "Parcourir…"
+
+msgid "The selected PDF file is invalid"
+msgstr "Le fichier PDF sélectionné n'est pas valide"
+
+msgid "Compress output file/files"
+msgstr "Compresser les fichiers créés"
+
+msgid "Output pdf version:"
+msgstr "Version PDF du document créé :"
+
+#, java-format
+msgid "Version {0}"
+msgstr "version {0}"
+
+msgid "Same as the input document"
+msgstr "celle du fichier source"
+
+#, java-format
+msgid "Pdf version required: {0}"
+msgstr "Version PDF minimum requise : {0}"
+
+msgid "Select an existing directory"
+msgstr "Sélectionner un dossier existant"
+
+msgid "The selected output directory is invalid"
+msgstr "Le dossier de création sélectionné n’est pas valide"
+
+msgid "Generated pdf documents name prefix:"
+msgstr "Préfixe de nom de documents PDF générés :"
+
+msgid "Prefix for the generated files names"
+msgstr "Préfixe des noms de fichiers générés"
+
+msgid "Add prefix"
+msgstr "Ajouter un préfixe"
+
+msgid "Prefix for the output files name."
+msgstr "Préfixe des noms de fichiers créés."
+
+msgid "Some special keywords are replaced with runtime values."
+msgstr "Certains mots-clés sont remplacées par des valeurs d’exécution."
+
+msgid "Right click to add these keywords."
+msgstr "Cliquer‑droit pour ajouter ces mots‑clés."
+
+msgid "Enter the user password"
+msgstr "Entrer le mot de passe d’ouverture"
+
+msgid "Unlock"
+msgstr "Déverrouillage"
+
+msgid ""
+"Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+"Double-cliquez pour entrer les groupes de pages à fusionner (ex\\: 2 ou 5-23 "
+"ou 2,5-7,12-)"
+
+# G:\Documents\eclipse_workspace\PDFSAMmerge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:166
+# F:\workspace_pdfsam_enhanced\pdfsam-cover\it\pdfsam\plugin\coverfooter\GUI\CoverFooterMainGUI.java:182
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:180
+msgid "Pages"
+msgstr "Pages"
+
+# G:\Documents\eclipse_workspace\PDF
+# F:\workspace_pdfsam_enhanced\pdfsam-maine\it\pdfsam\panels\JInfoPanel.java:118
+msgid "Name"
+msgstr "Nom"
+
+msgid "Add documents to the table"
+msgstr "Ajouter des documents au tableau"
+
+msgid "_Add"
+msgstr "_Ajouter"
+
+msgid "Select pdf documents to load"
+msgstr "Sélectionner des documents PDF à charger"
+
+msgid "Removes selected documents"
+msgstr "Supprimer du tableau les documents sélectionnés"
+
+msgid "_Remove"
+msgstr "_Supprimer"
+
+msgid "Removes every document"
+msgstr "Supprimer du tableau tous les documents"
+
+msgid "_Clear"
+msgstr "_Vider"
+
+msgid "Moves up selected documents"
+msgstr "Monter dans le tableau les documents sélectionnés"
+
+msgid "Move _Up"
+msgstr "_Monter"
+
+msgid "Moves down selected documents"
+msgstr "Descendre dans le tableau les documents sélectionnés"
+
+msgid "Move _Down"
+msgstr "_Descendre"
+
+msgid "Page ranges"
+msgstr "Groupes de pages"
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Modified"
+msgstr "Modifié"
+
+#, java-format
+msgid "Invalid range: {0}."
+msgstr "Sélection non valide : {0}."
+
+#, java-format
+msgid ""
+"Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
+"or [-n] or [n-]"
+msgstr ""
+"Définition d’ensemble de pages ambiguë : {0}. Utiliser les formats "
+"suivants : [n] ou [n1-n2] ou [-n] ou [n-]"
+
+#, java-format
+msgid "Invalid number: {0}."
+msgstr "Nombre non valide : {0}."
+
+msgid "Drag and drop PDF files here"
+msgstr "Glisser et déposer ici les fichiers PDF"
+
+msgid "Document properties"
+msgstr "Propriétés du document"
+
+msgid "Set destination"
+msgstr "Utiliser le dossier"
+
+msgid "Remove"
+msgstr "Supprimer"
+
+msgid "Move to Top"
+msgstr "Mettre en premier"
+
+# G:\Documents\eclipse_workspace\PDFSAMmerge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:259
+# G:\Documents\eclipse_workspace\PDFSAMmerge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:306
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:273
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:320
+msgid "Move Up"
+msgstr "Monter"
+
+# G:\Documents\eclipse_workspace\PDFSAMmerge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:268
+# G:\Documents\eclipse_workspace\PDFSAMmerge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:315
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:282
+# F:\workspace_pdfsam_enhanced\pdfsam-merge\it\pdfsam\plugin\merge\GUI\MergeMainGUI.java:329
+msgid "Move Down"
+msgstr "Descendre"
+
+msgid "Move to Bottom"
+msgstr "Mettre en dernier"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Open Folder"
+msgstr "Ouvrir le dossier"
+
+msgid "Duplicate"
+msgstr ""
+
+#, java-format
+msgid "Pages: {0}, PDF Version: {1}"
+msgstr "Pages : {0}, Version PDF : {1}"
+
+msgid "Loading..."
+msgstr "Chargement…"
+
+msgid "Merge form fields"
+msgstr "Fusionner les champs de formulaire"
+
+msgid "Some of the selected PDF documents contain forms, merge them"
+msgstr ""
+"Si certains documents PDF chargés contiennent des formulaires, les fusionner"
+
+msgid "Add a blank page if page number is odd"
+msgstr "Ajouter une page vide si le nombre de pages est impair"
+
+msgid ""
+"Adds a blank page after each merged document if the document has an odd "
+"number of pages"
+msgstr ""
+"Ajouter une page vide après chaque document fusionné dont le nombre de pages "
+"est impair"
+
+msgid "Retain bookmarks"
+msgstr "conserver les signets"
+
+msgid "Discard bookmarks"
+msgstr "ignorer les signets"
+
+msgid "Create one entry for each merged document"
+msgstr "créer un signet par document fusionné"
+
+msgid "Bookmarks handling:"
+msgstr "Gestion des signets :"
+
+msgid "No pdf document has been selected"
+msgstr "Aucun document PDF sélectionné"
+
+msgid "Merge"
+msgstr "Fusion"
+
+msgid "Merge together multiple pdf documents or subsections of them."
+msgstr "Fusionner plusieurs documents PDF ou des parties de ceux‑ci ensemble."
+
+msgid "Merge settings"
+msgstr "Paramètres de fusion"
+
+msgid "Security"
+msgstr "Sécurité"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "Error saving log file."
+msgstr "Erreur d’enregistrement du fichier journal."
+
+#, java-format
+msgid "File {0} saved."
+msgstr "Fichier {0} enregistré."
+
+msgid "Directories"
+msgstr "Répertoires"
+
+msgid "Valid user password provided."
+msgstr "Mot de passe d’ouverture correct"
+
+msgid "This document is encrypted, click to provide a password."
+msgstr "Ce document est protégé, cliquer pour fournir le mot de passe."
+
+msgid "Squared green"
+msgstr "Vert angulaire"
+
+msgid "Squared cornflower"
+msgstr "Bleuet angulaire"
+
+msgid "Roundish"
+msgstr "Arrondi"
+
+msgid "Never"
+msgstr "jamais"
+
+msgid "Once a day"
+msgstr "une fois par jour"
+
+msgid "Once a week"
+msgstr "une fois par semaine"
+
+msgid "Always"
+msgstr "à chaque fois"
+
+msgid "Set the bookmarks level to split at"
+msgstr "Indiquer le niveau de signet où couper"
+
+msgid "Invalid bookmarks level"
+msgstr "Niveau de signet erroné"
+
+msgid "Split by bookmarks"
+msgstr "Découpage par signets"
+
+msgid ""
+"Split a pdf document at bookmarked pages by specifying a bookmark level."
+msgstr ""
+"Découper un document PDF aux pages contenant des signets d'un niveau défini."
+
+msgid "Regexp the bookmark has to match"
+msgstr "Expression régulière à laquelle doit correspondre le signet"
+
+msgid "Split at this bookmark level:"
+msgstr "Découper au niveau de signet :"
+
+msgid "Matching regular expression:"
+msgstr "Suivant l'expression régulière :"
+
+msgid "All pages"
+msgstr "toutes les pages"
+
+msgid "Even pages"
+msgstr "les pages paires"
+
+msgid "Odd pages"
+msgstr "les pages impaires"
+
+msgid "90 degrees clockwise"
+msgstr "de 90° (sens horaire)"
+
+msgid "180 degrees clockwise"
+msgstr "de 180°"
+
+msgid "270 degrees clockwise"
+msgstr "de 270° (sens horaire)"
+
+msgid "Rotate "
+msgstr "Tourner "
+
+msgid "Rotate"
+msgstr "Rotation"
+
+msgid "Rotate the pages of multiple PDF documents."
+msgstr "Faire pivoter les pages de plusieurs documents PDF."
+
+msgid "Rotate settings"
+msgstr "Paramètres de rotation"
+
+#~ msgid "Error playing sounds"
+#~ msgstr "Erreur de lecture du son"
+
+#~ msgid "Open menu"
+#~ msgstr "Ouvrir le menu"
+
+#~ msgid "Open main dashboard"
+#~ msgstr "Ouvrir le panneau général"
+
+#~ msgid "Thumbnails"
+#~ msgstr "Miniatures"
+
+#~ msgid "Loading"
+#~ msgstr "Chargement"
+
+#~ msgid "Set the size as number of bytes or specify KB or MB"
+#~ msgstr "Indiquer la taille (en octets) ou préciser KB (ko) ou MB (Mo)"
+
+#~ msgid "Output document pdf version:"
+#~ msgstr "Version pdf du document à créer :"
+
+#~ msgid "Unable to get latest available version"
+#~ msgstr "Acquisition de la dernière version impossible."
+
+#~ msgid "Destination folder"
+#~ msgstr "Dossier de création"
+
+#~ msgid "Would you like to overwrite it?"
+#~ msgstr "Voulez vous le remplacer ?"
+
+#~ msgid ""
+#~ "Show a dialog box asking the user for confirmation when the \"overwrite\" "
+#~ "is selected"
+#~ msgstr ""
+#~ "Affiche une boîte de dialogue demandant confirmation quand \"Remplacer "
+#~ "le(s) fichier(s) existant(s)\" est coché"
+
+#~ msgid "Ask for confirmation when overwrite checkbox is selected"
+#~ msgstr ""
+#~ "Demande confirmation quand la case \"Remplacer le(s) fichier(s) "
+#~ "existant(s)\" est cochée"

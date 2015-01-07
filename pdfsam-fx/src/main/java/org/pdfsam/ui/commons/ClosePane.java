@@ -23,7 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.support.Style;
 
 /**
@@ -40,7 +40,7 @@ public class ClosePane extends HBox {
         Button closeButton = new Button(DefaultI18nContext.getInstance().i18n("Close"));
         closeButton.getStyleClass().addAll(Style.BUTTON.css());
         closeButton.setTextAlignment(TextAlignment.CENTER);
-        closeButton.setOnAction((e) -> this.getScene().getWindow().hide());
+        closeButton.setOnAction(e -> this.getScene().getWindow().hide());
         getChildren().add(closeButton);
     }
 }

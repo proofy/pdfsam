@@ -49,4 +49,9 @@ public interface UsageService {
      * Clear usage statistics
      */
     void clear();
+
+    /**
+     * @return number of total executed tasks
+     */
+    long getTotalUsage();
 }

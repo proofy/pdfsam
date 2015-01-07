@@ -24,7 +24,6 @@ import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
 import org.pdfsam.ui.log.ChangedVisiblityLogAreaEvent;
@@ -47,12 +46,9 @@ public class ErrorsNotification extends Label {
         setVisible(false);
         setText("!");
         eventStudio().addAnnotatedListeners(this);
-    }
-
-    @PostConstruct
-    private void init() {
         fade = new FadeTransition(Duration.millis(200), this);
         fade.setAutoReverse(true);
+        setMouseTransparent(true);
     }
 
     @EventListener
@@ -80,7 +76,7 @@ public class ErrorsNotification extends Label {
         }
     }
 
-    public boolean hasUnreadMessages() {
+    private boolean hasUnreadMessages() {
         return unreadMessages > 0;
     }
 

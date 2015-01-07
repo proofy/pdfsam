@@ -20,15 +20,18 @@ package org.pdfsam.task;
 
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
+import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.pdfsam.module.TaskExecutionRequestEvent;
 import org.pdfsam.module.UsageService;
 import org.sejda.core.notification.context.GlobalNotificationContext;
+import org.sejda.core.service.TaskExecutionService;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.model.notification.event.PercentageOfWorkDoneChangedEvent;
 import org.sejda.model.notification.event.TaskExecutionCompletedEvent;
@@ -44,16 +47,17 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @Named
-class TaskExecutionController {
+class TaskExecutionController implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(TaskExecutionController.class);
 
-    @Inject
-    private ExecutionService executionService;
-    @Inject
+    private TaskExecutionService executionService;
     private UsageService usageService;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public TaskExecutionController() {
+    @Inject
+    public TaskExecutionController(TaskExecutionService executionService, UsageService usageService) {
+        this.executionService = executionService;
+        this.usageService = usageService;
         eventStudio().addAnnotatedListeners(this);
         GlobalNotificationContext.getContext().addListener(TaskExecutionFailedEvent.class,
                 new TaskEventBroadcaster<TaskExecutionFailedEvent>());
@@ -70,11 +74,16 @@ class TaskExecutionController {
      * 
      * @param event
      */
-    @EventListener
+    @EventListener(priority = Integer.MAX_VALUE)
     public void request(TaskExecutionRequestEvent event) {
         LOG.trace("Task execution request received");
         usageService.incrementUsageFor(event.getModuleId());
-        executor.submit(() -> executionService.submit(event.getModuleId(), event.getParameters()));
+        executor.execute(() -> executionService.execute(event.getParameters()));
         LOG.trace("Task execution submitted");
+    }
+
+    @PreDestroy
+    public void close() {
+        executor.shutdownNow();
     }
 }

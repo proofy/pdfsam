@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Component listening for a request to clean the modues usage statistics and performing the clean
+ * Component listening for a request to clean the modules usage statistics and performing the clean
  * 
  * @author Andrea Vacondio
  *
@@ -36,10 +36,12 @@ import org.slf4j.LoggerFactory;
 @Named
 public class ClearUsageController {
     private static final Logger LOG = LoggerFactory.getLogger(ClearUsageController.class);
-    @Inject
+
     private UsageService service;
 
-    public ClearUsageController() {
+    @Inject
+    public ClearUsageController(UsageService service) {
+        this.service = service;
         eventStudio().addAnnotatedListeners(this);
     }
 

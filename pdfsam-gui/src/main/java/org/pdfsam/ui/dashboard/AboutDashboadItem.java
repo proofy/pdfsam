@@ -24,7 +24,8 @@ import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.ui.dashboard.about.AboutDashboardPane;
 
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -38,8 +39,12 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 @Named
 class AboutDashboadItem implements DashboardItem {
 
-    @Inject
     private AboutDashboardPane pane;
+
+    @Inject
+    AboutDashboadItem(AboutDashboardPane pane) {
+        this.pane = pane;
+    }
 
     public String id() {
         return "ABOUT";

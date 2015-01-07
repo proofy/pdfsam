@@ -18,16 +18,22 @@
  */
 package org.pdfsam.split;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tooltip;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.parameter.SplitByEveryXPagesParameters;
 
 /**
@@ -36,19 +42,20 @@ import org.sejda.model.parameter.SplitByEveryXPagesParameters;
  * @author Andrea Vacondio
  *
  */
-public class SplitByEveryRadioButton extends RadioButton implements SplitParametersBuilderCreator {
+public class SplitByEveryRadioButton extends RadioButton implements SplitParametersBuilderCreator, RestorableView {
 
-    private final ValidableTextField field = new ValidableTextField();
+    private final ValidableTextField field;
 
-    public SplitByEveryRadioButton() {
+    public SplitByEveryRadioButton(ValidableTextField field) {
         super(DefaultI18nContext.getInstance().i18n("Split by every \"n\" pages"));
-        field.setOnEnterValidation(true);
-        field.setEnableInvalidStyle(true);
-        field.setPromptText(DefaultI18nContext.getInstance().i18n("Number of pages"));
+        this.field = field;
+        this.field.setOnEnterValidation(true);
+        this.field.setEnableInvalidStyle(true);
+        this.field.setPromptText(DefaultI18nContext.getInstance().i18n("Number of pages"));
         setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
                 "Splits the pdf every \"n\" pages creating documents of \"n\" pages each")));
-        field.setValidator(Validators.newRegexMatchingString("^(\\d)+$"));
-        field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid number of pages"));
+        this.field.setValidator(Validators.newRegexMatchingString("^(\\d)+$"));
+        this.field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid number of pages"));
     }
 
     public SplitByEveryXPagesParametersBuilder getBuilder(Consumer<String> onError) {
@@ -60,8 +67,16 @@ public class SplitByEveryRadioButton extends RadioButton implements SplitParamet
         return null;
     }
 
-    ValidableTextField getField() {
-        return field;
+    public void saveStateTo(Map<String, String> data) {
+        if (isSelected()) {
+            data.put("splitByEvery", Boolean.TRUE.toString());
+        }
+        data.put("splitByEvery.field", defaultString(field.getText()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        Optional.ofNullable(data.get("splitByEvery")).map(Boolean::valueOf).ifPresent(this::setSelected);
+        field.setText(Optional.ofNullable(data.get("splitByEvery.field")).orElse(EMPTY));
     }
 
     /**
@@ -70,7 +85,7 @@ public class SplitByEveryRadioButton extends RadioButton implements SplitParamet
      * @author Andrea Vacondio
      *
      */
-    private static class SplitByEveryXPagesParametersBuilder extends
+    static class SplitByEveryXPagesParametersBuilder extends
             SinglePdfSourceMultipleOutputParametersBuilder<SplitByEveryXPagesParameters> {
 
         private int step;

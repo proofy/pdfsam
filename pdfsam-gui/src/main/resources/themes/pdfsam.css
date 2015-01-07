@@ -1,0 +1,90 @@
+.header-title{
+	-fx-font-weight: bold; 
+	-fx-font-style: italic;
+	-fx-text-fill: awesome-color;
+	-fx-padding: 8.0 4.0 8.0 1.0;
+}
+/**
+ * Dashboard panels
+ */
+.section-title {
+	-fx-font-size: 1.2em;
+	-fx-padding: 1.2em 0.0 0.0 0.0;
+	-fx-font-weight: bold;
+}
+.dashboard-container{
+	-fx-border-width: 0.0;
+	-fx-padding: 1.2em;
+	-fx-spacing: 30.0px;
+}
+/**
+ * Log
+ */
+#log-view{
+ 	-fx-background-color: -fx-box-border,#FFFFFF;
+    -fx-background-insets: 0.0, 1.0;
+    -fx-padding: 1.0;
+}
+#log-view:focused {
+ -fx-background-color: -fx-focus-color,-fx-box-border,#FFFFFF;
+    -fx-background-insets: -1.4, 0.0, 1.0;
+    -fx-background-radius: 1.4, 0.0, 0.0;    
+}
+#log-view .list-cell,.list-cell:odd {
+}
+.warn-log{
+	-fx-text-fill: derive(-pdfsam-info-color, -30.0%);
+}
+.error-log{
+	-fx-text-fill: -pdfsam-error-color;
+}
+/**
+ * Info pane
+ */
+.info-props{
+	-fx-background-color:  -pdfsam-light-border-color, #FFFFFF;
+    -fx-background-insets:  0.0, 1.0;	
+	-fx-border-radius: 0.0;
+	-fx-padding: 15.0;
+	-fx-hgap: 10.0px;
+	-fx-vgap: 10.0px;
+}
+.info-property-value, .info-property {
+	-fx-background-color: #FFFFFF;
+    -fx-background-insets:  0.0;	
+	-fx-border-radius: 0.0;
+}
+.info-property {
+	-fx-font-weight: bold;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:left {
+    -fx-background-color: -pdfsam-defaultbg-color, -pdfsam-light-border-color, #FFFFFF;
+    -fx-background-insets: 0.0, 1.0, 2.0;
+    -fx-background-radius: 0.0;
+    -fx-opacity: 0.9;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: -pdfsam-defaultbg-color, -pdfsam-theme-color, -pdfsam-light-border-color, #FFFFFF;
+    -fx-background-insets: 0.0, 1.0, 2.5 1.0 1.0 1.0, 2.5 2.0 2.0 2.0;
+    -fx-opacity: 1.0;
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-width: 0.0;
+}
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: -pdfsam-defaultbg-color;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+    -fx-effect: null;
+}
+/**
+ * news pane
+ */
+.-pdfsam-news-pane{
+	-fx-background-color: -pdfsam-pwdpopupbg-color;
+	-fx-max-width: 450.0px;
+}
+.-pdfsam-news-pane-bottom{
+	-fx-alignment: bottom-left;
+	-fx-spacing: 5px;
+}

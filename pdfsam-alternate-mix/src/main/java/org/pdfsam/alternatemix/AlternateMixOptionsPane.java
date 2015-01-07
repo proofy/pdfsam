@@ -18,6 +18,11 @@
  */
 package org.pdfsam.alternatemix;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.CheckBox;
@@ -25,12 +30,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 
 /**
  * Panel for the Alternate Mix options
@@ -38,7 +44,8 @@ import org.pdfsam.ui.support.Style;
  * @author Andrea Vacondio
  *
  */
-class AlternateMixOptionsPane extends VBox implements TaskParametersBuildStep<AlternateMixParametersBuilder> {
+class AlternateMixOptionsPane extends VBox implements TaskParametersBuildStep<AlternateMixParametersBuilder>,
+        RestorableView {
 
     private CheckBox reverseFirst = new CheckBox(DefaultI18nContext.getInstance().i18n("Reverse the first document"));
     private CheckBox reverseSecond = new CheckBox(DefaultI18nContext.getInstance().i18n("Reverse the second document"));
@@ -47,7 +54,12 @@ class AlternateMixOptionsPane extends VBox implements TaskParametersBuildStep<Al
 
     AlternateMixOptionsPane() {
         super(Style.DEFAULT_SPACING);
+        this.reverseFirst.setId("reverseFirst");
+        this.reverseSecond.setId("reverseSecond");
         this.reverseSecond.setSelected(true);
+        this.firstStep.setId("alternateMixFirstStep");
+        this.secondStep.setId("alternateMixSecondStep");
+        initialState();
         getStyleClass().addAll(Style.CONTAINER.css());
         HBox firstStepContainer = new HBox(new Label(DefaultI18nContext.getInstance().i18n(
                 "Switch from the first document to the second one after the following pages")), firstStep);
@@ -77,10 +89,30 @@ class AlternateMixOptionsPane extends VBox implements TaskParametersBuildStep<Al
         ValidableTextField field = new ValidableTextField();
         field.setEnableInvalidStyle(true);
         field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Select the number of pages"));
-        field.setValidator(Validators.newIntegerString());
+        field.setValidator(Validators.newPositiveIntegerString());
         field.setOnEnterValidation(true);
-        field.setText("1");
         field.setPrefWidth(50);
         return field;
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("reverseFirst", Boolean.toString(reverseFirst.isSelected()));
+        data.put("reverseSecond", Boolean.toString(reverseSecond.isSelected()));
+        data.put("firstStep", defaultString(firstStep.getText()));
+        data.put("secondStep", defaultString(secondStep.getText()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        reverseFirst.setSelected(Boolean.valueOf(data.get("reverseFirst")));
+        reverseSecond.setSelected(Boolean.valueOf(data.get("reverseSecond")));
+        firstStep.setText(Optional.ofNullable(data.get("firstStep")).orElse(EMPTY));
+        secondStep.setText(Optional.ofNullable(data.get("secondStep")).orElse(EMPTY));
+    }
+
+    private void initialState() {
+        this.reverseFirst.setSelected(false);
+        this.reverseSecond.setSelected(true);
+        this.firstStep.setText("1");
+        this.secondStep.setText("1");
     }
 }

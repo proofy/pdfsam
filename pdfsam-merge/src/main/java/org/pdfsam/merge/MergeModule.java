@@ -19,12 +19,13 @@
 package org.pdfsam.merge;
 
 import static org.pdfsam.module.ModuleDescriptorBuilder.builder;
+import static org.pdfsam.ui.support.Views.titledPane;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -33,8 +34,8 @@ import javafx.scene.layout.VBox;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
 import org.pdfsam.module.ModulePriority;
@@ -42,8 +43,7 @@ import org.pdfsam.module.PdfsamModule;
 import org.pdfsam.ui.io.BrowsablePdfOutputField;
 import org.pdfsam.ui.io.PdfDestinationPane;
 import org.pdfsam.ui.module.BaseTaskExecutionModule;
-import org.pdfsam.ui.support.Style;
-import org.pdfsam.ui.support.Views;
+import org.sejda.eventstudio.annotation.EventStation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -60,11 +60,7 @@ public class MergeModule extends BaseTaskExecutionModule {
 
     private MergeSelectionPane selectionPane = new MergeSelectionPane(MODULE_ID);
     private MergeOptionsPane mergeOptions = new MergeOptionsPane();
-    @Inject
-    @Named(MODULE_ID + "field")
     private BrowsablePdfOutputField destinationFileField;
-    @Inject
-    @Named(MODULE_ID + "pane")
     private PdfDestinationPane destinationPane;
     private ModuleDescriptor descriptor = builder()
             .category(ModuleCategory.MERGE)
@@ -74,9 +70,30 @@ public class MergeModule extends BaseTaskExecutionModule {
                             "Merge together multiple pdf documents or subsections of them."))
             .priority(ModulePriority.HIGH.getPriority()).supportURL("http://www.pdfsam.org/pdf-merge").build();
 
+    @Inject
+    public MergeModule(@Named(MODULE_ID + "field") BrowsablePdfOutputField destinationFileField, @Named(MODULE_ID
+            + "pane") PdfDestinationPane destinationPane) {
+        this.destinationFileField = destinationFileField;
+        this.destinationPane = destinationPane;
+    }
+
     @Override
     public ModuleDescriptor descriptor() {
         return descriptor;
+    }
+
+    public void onSaveWorkspace(Map<String, String> data) {
+        selectionPane.saveStateTo(data);
+        mergeOptions.saveStateTo(data);
+        destinationFileField.saveStateTo(data);
+        destinationPane.saveStateTo(data);
+    }
+
+    public void onLoadWorkspace(Map<String, String> data) {
+        selectionPane.restoreStateFrom(data);
+        mergeOptions.restoreStateFrom(data);
+        destinationFileField.restoreStateFrom(data);
+        destinationPane.restoreStateFrom(data);
     }
 
     @Override
@@ -91,19 +108,18 @@ public class MergeModule extends BaseTaskExecutionModule {
 
     @Override
     protected Pane getInnerPanel() {
-        VBox pane = new VBox(Style.DEFAULT_SPACING);
+        VBox pane = new VBox();
         pane.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(selectionPane, Priority.ALWAYS);
 
-        TitledPane options = Views.titledPane(DefaultI18nContext.getInstance().i18n("Merge settings"), mergeOptions);
-        options.setExpanded(false);
-
-        pane.getChildren().addAll(selectionPane, options,
-                Views.titledPane(DefaultI18nContext.getInstance().i18n("Destination file"), destinationPane));
+        pane.getChildren().addAll(selectionPane,
+                titledPane(DefaultI18nContext.getInstance().i18n("Merge settings"), mergeOptions),
+                titledPane(DefaultI18nContext.getInstance().i18n("Destination file"), destinationPane));
         return pane;
     }
 
     @Override
+    @EventStation
     public String id() {
         return MODULE_ID;
     }

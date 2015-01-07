@@ -18,6 +18,8 @@
  */
 package org.pdfsam.ui.notification;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -39,5 +41,13 @@ public class AddNotificationRequestEventTest {
     @Test(expected = IllegalArgumentException.class)
     public void blankMessage() {
         new AddNotificationRequestEvent(NotificationType.INFO, " ", "notNull");
+    }
+
+    @Test
+    public void positive() {
+        AddNotificationRequestEvent victim = new AddNotificationRequestEvent(NotificationType.INFO, "message", "title");
+        assertEquals("message", victim.getMessage());
+        assertEquals("title", victim.getTitle());
+        assertEquals(NotificationType.INFO, victim.getType());
     }
 }

@@ -23,12 +23,10 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.configuration.ApplicationContextHolder;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
  * Context menu showing app functionalities. This is supposed to be activated by the menu button
@@ -39,18 +37,9 @@ import org.pdfsam.context.DefaultI18nContext;
 @Named
 class AppContextMenu extends ContextMenu {
     @Inject
-    private WorkspaceMenu workspace;
-    @Inject
-    private ModulesMenu modulesMenu;
-
-    @PostConstruct
-    private void initMenues() {
+    AppContextMenu(WorkspaceMenu workspace, ModulesMenu modulesMenu) {
         MenuItem exit = new MenuItem(DefaultI18nContext.getInstance().i18n("E_xit"));
-        exit.setOnAction(e -> {
-            ApplicationContextHolder.getContext().close();
-            Platform.exit();
-        });
-
+        exit.setOnAction(e -> Platform.exit());
         getItems().addAll(workspace, modulesMenu, new SeparatorMenuItem(), exit);
     }
 }

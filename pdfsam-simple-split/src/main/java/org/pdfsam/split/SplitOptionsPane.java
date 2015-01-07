@@ -18,6 +18,7 @@
  */
 package org.pdfsam.split;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import javafx.scene.control.ToggleGroup;
@@ -25,10 +26,12 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
 import org.pdfsam.ui.commons.RadioButtonDrivenTextFieldsPane;
+import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.parameter.AbstractSplitByPageParameters;
 import org.sejda.model.pdf.page.PredefinedSetOfPages;
 
@@ -38,7 +41,7 @@ import org.sejda.model.pdf.page.PredefinedSetOfPages;
  * @author Andrea Vacondio
  *
  */
-class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator {
+class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator, RestorableView {
 
     private PredefinedSetOfPagesRadioButton burst = new PredefinedSetOfPagesRadioButton(PredefinedSetOfPages.ALL_PAGES,
             DefaultI18nContext.getInstance().i18n("Burst (Split into single pages)"));
@@ -48,11 +51,15 @@ class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator {
             DefaultI18nContext.getInstance().i18n("Split odd pages"));
 
     private ToggleGroup group = new ToggleGroup();
-    private SplitAfterRadioButton splitAfter = new SplitAfterRadioButton();
-    private SplitByEveryRadioButton splitByEvery = new SplitByEveryRadioButton();
+    private SplitAfterRadioButton splitAfter;
+    private SplitByEveryRadioButton splitByEvery;
 
     SplitOptionsPane() {
         super(Style.DEFAULT_SPACING);
+        ValidableTextField splitAfterField = new ValidableTextField();
+        splitAfter = new SplitAfterRadioButton(splitAfterField);
+        ValidableTextField splitByEveryField = new ValidableTextField();
+        splitByEvery = new SplitByEveryRadioButton(splitByEveryField);
         RadioButtonDrivenTextFieldsPane grid = new RadioButtonDrivenTextFieldsPane(group);
         burst.setToggleGroup(group);
         burst.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Explode the document into single pages")));
@@ -64,8 +71,8 @@ class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator {
         splitAfter.setToggleGroup(group);
         splitByEvery.setToggleGroup(group);
 
-        grid.addRow(splitAfter, splitAfter.getField());
-        grid.addRow(splitByEvery, splitByEvery.getField());
+        grid.addRow(splitAfter, splitAfterField);
+        grid.addRow(splitByEvery, splitByEveryField);
 
         HBox simpleSplit = new HBox(20, burst, even, odd);
         simpleSplit.getStyleClass().addAll(Style.VITEM.css());
@@ -78,4 +85,19 @@ class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator {
         return ((SplitParametersBuilderCreator) group.getSelectedToggle()).getBuilder(onError);
     }
 
+    public void saveStateTo(Map<String, String> data) {
+        burst.saveStateTo(data);
+        even.saveStateTo(data);
+        odd.saveStateTo(data);
+        splitAfter.saveStateTo(data);
+        splitByEvery.saveStateTo(data);
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        burst.restoreStateFrom(data);
+        even.restoreStateFrom(data);
+        odd.restoreStateFrom(data);
+        splitAfter.restoreStateFrom(data);
+        splitByEvery.restoreStateFrom(data);
+    }
 }

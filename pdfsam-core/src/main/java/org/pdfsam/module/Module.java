@@ -18,6 +18,8 @@
  */
 package org.pdfsam.module;
 
+import java.util.Map;
+
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
@@ -48,6 +50,20 @@ public interface Module {
      * @return the graphic node for this {@link Module}.
      */
     Node graphic();
+
+    /**
+     * Request to add the module state to the given data map in a ChainOfResponsability fashion.
+     * 
+     * @param data
+     */
+    void onSaveWorkspace(Map<String, String> data);
+
+    /**
+     * Request to restore the module state using the provided data.
+     * 
+     * @param data
+     */
+    void onLoadWorkspace(Map<String, String> data);
 
     /**
      * @return an array containing the required PDF data for this module. Each module can specify data it requires from the PDF document and the PDF load service can use this array

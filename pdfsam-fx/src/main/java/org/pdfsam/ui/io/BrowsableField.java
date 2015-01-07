@@ -18,19 +18,24 @@
  */
 package org.pdfsam.ui.io;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
 import java.io.File;
+import java.util.Map;
+import java.util.Optional;
 
 import javafx.css.PseudoClass;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 
 /**
  * {@link ValidableTextField} with attached a browse button to let the user select a file
@@ -38,7 +43,7 @@ import org.pdfsam.ui.support.Style;
  * @author Andrea Vacondio
  * 
  */
-abstract class BrowsableField extends HBox {
+abstract class BrowsableField extends HBox implements RestorableView {
     private static final PseudoClass SELECTED_PSEUDOCLASS_STATE = PseudoClass.getPseudoClass("selected");
 
     private Button browseButton;
@@ -48,7 +53,7 @@ abstract class BrowsableField extends HBox {
 
     public BrowsableField() {
         HBox.setHgrow(textField, Priority.ALWAYS);
-        setAlignment(Pos.CENTER_LEFT);
+        this.getStyleClass().add("browsable-field");
         validableContainer = new HBox(textField);
         validableContainer.getStyleClass().add("validable-container");
         textField.getStyleClass().add("validable-container-field");
@@ -57,18 +62,16 @@ abstract class BrowsableField extends HBox {
         browseButton.prefHeightProperty().bind(validableContainer.heightProperty());
         browseButton.setMaxHeight(USE_PREF_SIZE);
         browseButton.setMinHeight(USE_PREF_SIZE);
-        browseButton.setAlignment(Pos.CENTER);
         HBox.setHgrow(validableContainer, Priority.ALWAYS);
         textField.validProperty().addListener((o, oldValue, newValue) -> {
-            if ((newValue == ValidationState.INVALID)) {
+            if (newValue == ValidationState.INVALID) {
                 validableContainer.getStyleClass().addAll(Style.INVALID.css());
             } else {
                 validableContainer.getStyleClass().removeAll(Style.INVALID.css());
             }
         });
-        textField.focusedProperty().addListener((o, oldVal, newVal) -> {
-            validableContainer.pseudoClassStateChanged(SELECTED_PSEUDOCLASS_STATE, newVal);
-        });
+        textField.focusedProperty().addListener(
+                (o, oldVal, newVal) -> validableContainer.pseudoClassStateChanged(SELECTED_PSEUDOCLASS_STATE, newVal));
         getChildren().addAll(validableContainer, browseButton);
     }
 
@@ -77,6 +80,14 @@ abstract class BrowsableField extends HBox {
      */
     public ValidableTextField getTextField() {
         return textField;
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put(defaultString(getId()) + "browsableField", defaultString(textField.getText()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        textField.setText(Optional.ofNullable(data.get(defaultString(getId()) + "browsableField")).orElse(EMPTY));
     }
 
     public final void setGraphic(Node value) {

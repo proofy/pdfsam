@@ -24,7 +24,7 @@ import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.dashboard.modules.ModulesDashboardPane;
 import org.springframework.context.annotation.Bean;
 
@@ -36,9 +36,14 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
  *
  */
 @Named
-public class ModulesDashboardItem implements DashboardItem {
-    @Inject
+class ModulesDashboardItem implements DashboardItem {
+
     private ModulesDashboardPane pane;
+
+    @Inject
+    ModulesDashboardItem(ModulesDashboardPane pane) {
+        this.pane = pane;
+    }
 
     @Bean(name = "defaultDashboardItemId")
     public String id() {
@@ -61,9 +66,4 @@ public class ModulesDashboardItem implements DashboardItem {
         return -10;
     }
 
-    public DashboardButton getStyledButton() {
-        DashboardButton button = new DashboardButton(this);
-        button.getStyleClass().add("dashboard-modules");
-        return button;
-    }
 }

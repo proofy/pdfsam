@@ -18,6 +18,7 @@
  */
 package org.pdfsam.ui.selection.multiple;
 
+import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestDestination;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestFallbackDestination;
@@ -27,12 +28,21 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -40,21 +50,26 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.TransferMode;
+import javafx.stage.Window;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.ui.commons.OpenFileRequest;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
+import org.pdfsam.ui.selection.PasswordFieldPopup;
+import org.pdfsam.ui.selection.ShowPasswordFieldPopupRequest;
 import org.pdfsam.ui.selection.multiple.move.MoveSelectedEvent;
 import org.pdfsam.ui.selection.multiple.move.MoveType;
 import org.pdfsam.ui.selection.multiple.move.SelectionAndFocus;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
 import org.slf4j.Logger;
@@ -69,18 +84,22 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
  * @author Andrea Vacondio
  * 
  */
-public class SelectionTable extends TableView<SelectionTableRowData> implements ModuleOwned {
+public class SelectionTable extends TableView<SelectionTableRowData> implements ModuleOwned, RestorableView {
     private static final Logger LOG = LoggerFactory.getLogger(SelectionTable.class);
     private String ownerModule = StringUtils.EMPTY;
     private Label placeHolder = new Label(DefaultI18nContext.getInstance().i18n("Drag and drop PDF files here"));
+    private PasswordFieldPopup passwordPopup;
 
     public SelectionTable(String ownerModule, SelectionTableColumn<?>... columns) {
+        this(ownerModule, false, columns);
+    }
+
+    public SelectionTable(String ownerModule, boolean canDuplicateItems, SelectionTableColumn<?>... columns) {
         this.ownerModule = defaultString(ownerModule);
         setEditable(true);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         Arrays.stream(columns).forEach(c -> getColumns().add(c.getTableColumn()));
         setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
-        setTableMenuButtonVisible(true);
         getSelectionModel().getSelectedIndices().addListener((Change<? extends Integer> c) -> {
 
             ObservableList<? extends Integer> selected = c.getList();
@@ -101,28 +120,25 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         setOnDragEntered(e -> dragConsume(e, this.onDragEnteredConsumer()));
         setOnDragExited(this::onDragExited);
         setOnDragDropped(e -> dragConsume(e, this.onDragDropped()));
-        initContextMenu();
+        passwordPopup = new PasswordFieldPopup(this.ownerModule);
+        initContextMenu(canDuplicateItems);
         eventStudio().addAnnotatedListeners(this);
     }
 
-    private void initContextMenu() {
+    private void initContextMenu(boolean canDuplicateItems) {
         MenuItem infoItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Document properties"),
                 AwesomeIcon.INFO);
-        infoItem.setOnAction(e -> Platform.runLater(() -> {
-            eventStudio().broadcast(new ShowPdfDescriptorRequest(getSelectionModel().getSelectedItem()));
-        }));
+        infoItem.setOnAction(e -> Platform.runLater(() -> eventStudio().broadcast(
+                new ShowPdfDescriptorRequest(getSelectionModel().getSelectedItem()))));
+
         MenuItem setDestinationItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set destination"),
                 AwesomeIcon.FILE_PDF_ALT);
-
-        setDestinationItem.setOnAction(e -> {
-            eventStudio().broadcast(
-                    requestDestination(getSelectionModel().getSelectedItem().getFile(), getOwnerModule()),
-                    getOwnerModule());
-        });
+        setDestinationItem.setOnAction(e -> eventStudio()
+                .broadcast(requestDestination(getSelectionModel().getSelectedItem().getFile(), getOwnerModule()),
+                        getOwnerModule()));
 
         MenuItem removeSelected = createMenuItem(DefaultI18nContext.getInstance().i18n("Remove"),
                 AwesomeIcon.MINUS_SQUARE_ALT);
-
         removeSelected.setOnAction(e -> eventStudio().broadcast(new RemoveSelectedEvent(), getOwnerModule()));
 
         MenuItem moveTopSelected = createMenuItem(DefaultI18nContext.getInstance().i18n("Move to Top"),
@@ -144,25 +160,26 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
                 getOwnerModule()));
 
         MenuItem openFileItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Open"), AwesomeIcon.FILE_ALT);
-        openFileItem.setOnAction(e -> {
-            eventStudio().broadcast(new OpenFileRequest(getSelectionModel().getSelectedItem().getFile()));
-        });
+        openFileItem.setOnAction(e -> eventStudio().broadcast(
+                new OpenFileRequest(getSelectionModel().getSelectedItem().getFile())));
 
         MenuItem openFolderItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Open Folder"),
-                AwesomeIcon.FOLDER_OPEN);
-        openFolderItem.setOnAction(e -> {
-            eventStudio().broadcast(
-                    new OpenFileRequest(getSelectionModel().getSelectedItem().getFile().getParentFile()));
-        });
+                AwesomeIcon.FOLDER_ALTPEN);
+        openFolderItem.setOnAction(e -> eventStudio().broadcast(
+                new OpenFileRequest(getSelectionModel().getSelectedItem().getFile().getParentFile())));
 
         setDestinationItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.ALT_DOWN));
-        removeSelected.setAccelerator(new KeyCodeCombination(KeyCode.CANCEL));
+        removeSelected.setAccelerator(new KeyCodeCombination(KeyCode.DELETE));
         moveBottomSelected.setAccelerator(new KeyCodeCombination(KeyCode.END, KeyCombination.ALT_DOWN));
         moveDownSelected.setAccelerator(new KeyCodeCombination(KeyCode.DOWN, KeyCombination.ALT_DOWN));
         moveUpSelected.setAccelerator(new KeyCodeCombination(KeyCode.UP, KeyCombination.ALT_DOWN));
         moveTopSelected.setAccelerator(new KeyCodeCombination(KeyCode.HOME, KeyCombination.ALT_DOWN));
+        infoItem.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.ALT_DOWN));
+        openFileItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN));
+        openFolderItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN,
+                KeyCombination.ALT_DOWN));
 
-        eventStudio().add(SelectionChangedEvent.class, (SelectionChangedEvent e) -> {
+        eventStudio().add(SelectionChangedEvent.class, e -> {
             setDestinationItem.setDisable(!e.isSingleSelection());
             infoItem.setDisable(!e.isSingleSelection());
             openFileItem.setDisable(!e.isSingleSelection());
@@ -174,9 +191,23 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             moveBottomSelected.setDisable(!e.canMove(MoveType.BOTTOM));
 
         }, getOwnerModule());
-        setContextMenu(new ContextMenu(setDestinationItem, new SeparatorMenuItem(), removeSelected, moveTopSelected,
-                moveUpSelected, moveDownSelected, moveBottomSelected, new SeparatorMenuItem(), infoItem, openFileItem,
-                openFolderItem));
+
+        ContextMenu context = new ContextMenu(setDestinationItem, new SeparatorMenuItem(), removeSelected,
+                moveTopSelected, moveUpSelected, moveDownSelected, moveBottomSelected);
+
+        if (canDuplicateItems) {
+            MenuItem duplicateItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Duplicate"),
+                    AwesomeIcon.COPY);
+            duplicateItem.setOnAction(e -> eventStudio().broadcast(new DuplicateSelectedEvent(), getOwnerModule()));
+
+            duplicateItem.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.ALT_DOWN));
+            eventStudio().add(SelectionChangedEvent.class, e -> duplicateItem.setDisable(e.isClearSelection()),
+                    getOwnerModule());
+            context.getItems().add(duplicateItem);
+        }
+
+        context.getItems().addAll(new SeparatorMenuItem(), infoItem, openFileItem, openFolderItem);
+        setContextMenu(context);
     }
 
     private MenuItem createMenuItem(String text, AwesomeIcon icon) {
@@ -187,23 +218,19 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     }
 
     private void dragConsume(DragEvent e, Consumer<DragEvent> c) {
-        List<File> files = e.getDragboard().getFiles();
-        if (files != null && !files.isEmpty()) {
+        if (e.getDragboard().hasFiles()) {
             c.accept(e);
         }
         e.consume();
     }
 
     private Consumer<DragEvent> onDragOverConsumer() {
-        return (DragEvent e) -> {
-            e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        };
+        return (DragEvent e) -> e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
     }
 
     private Consumer<DragEvent> onDragEnteredConsumer() {
-        return (DragEvent e) -> {
-            placeHolder.setDisable(false);
-        };
+        return (DragEvent e) -> placeHolder.setDisable(false);
+
     }
 
     private void onDragExited(DragEvent e) {
@@ -214,11 +241,21 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     private Consumer<DragEvent> onDragDropped() {
         return (DragEvent e) -> {
             final PdfLoadRequestEvent<SelectionTableRowData> loadEvent = new PdfLoadRequestEvent<>(getOwnerModule());
-            e.getDragboard().getFiles().stream().filter(f -> FileType.PDF.matches(f.getName()))
+            getFilesFromDragboard(e.getDragboard()).filter(f -> FileType.PDF.matches(f.getName()))
                     .map(SelectionTableRowData::new).forEach(loadEvent::add);
-            eventStudio().broadcast(loadEvent, getOwnerModule());
+            if (!loadEvent.getDocuments().isEmpty()) {
+                eventStudio().broadcast(loadEvent, getOwnerModule());
+            }
             e.setDropCompleted(true);
         };
+    }
+
+    private Stream<File> getFilesFromDragboard(Dragboard board) {
+        List<File> files = board.getFiles();
+        if (files.size() == 1 && files.get(0).isDirectory()) {
+            return stream(files.get(0).listFiles()).sorted();
+        }
+        return files.stream();
     }
 
     @EventStation
@@ -240,6 +277,12 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     }
 
     @EventListener
+    public void onDuplicate(final DuplicateSelectedEvent event) {
+        LOG.trace("Duplicating selected items");
+        getSelectionModel().getSelectedItems().forEach(i -> getItems().add(i.retain()));
+    }
+
+    @EventListener
     public void onClear(final ClearSelectionTableEvent event) {
         getItems().forEach(d -> d.invalidate());
         getSelectionModel().clearSelection();
@@ -248,11 +291,11 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
     @EventListener
     public void onRemoveSelected(RemoveSelectedEvent event) {
-        getSelectionModel().getSelectedItems().forEach(d -> {
-            d.invalidate();
-            getItems().remove(d);
-        });
-        getSelectionModel().clearSelection();
+        SortedSet<Integer> indices = new TreeSet<>(Collections.reverseOrder());
+        indices.addAll(getSelectionModel().getSelectedIndices());
+        LOG.trace("Removing {} items", indices.size());
+        indices.forEach(i -> getItems().remove(i.intValue()).release());
+        requestFocus();
     }
 
     @EventListener
@@ -269,5 +312,51 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             getFocusModel().focus(newSelection.getFocus());
             scrollTo(newSelection.getFocus());
         }
+    }
+
+    @EventListener
+    public void showPasswordFieldPopup(ShowPasswordFieldPopupRequest request) {
+        Scene scene = this.getScene();
+        if (scene != null) {
+            Window owner = scene.getWindow();
+            if (owner != null && owner.isShowing()) {
+                Point2D nodeCoord = request.getRequestingNode().localToScene(
+                        request.getRequestingNode().getWidth() / 2, request.getRequestingNode().getHeight() / 1.5);
+                double anchorX = Math.round(owner.getX() + scene.getX() + nodeCoord.getX() + 2);
+                double anchorY = Math.round(owner.getY() + scene.getY() + nodeCoord.getY() + 2);
+                passwordPopup.showFor(this, request.getPdfDescriptor(), anchorX, anchorY);
+            }
+        }
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put(defaultString(getId()) + "input.size", Integer.toString(getItems().size()));
+        IntStream.range(0, getItems().size()).forEach(i -> {
+            SelectionTableRowData current = getItems().get(i);
+            data.put(defaultString(getId()) + "input." + i, current.getFile().getAbsolutePath());
+            data.put(defaultString(getId()) + "input.password." + i, current.getPassword());
+            data.put(defaultString(getId()) + "input.range." + i, current.getPageSelection());
+        });
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        onClear(null);
+        int size = Optional.ofNullable(data.get(defaultString(getId()) + "input.size")).map(Integer::valueOf).orElse(0);
+        if (size > 0) {
+            PdfLoadRequestEvent<SelectionTableRowData> loadEvent = new PdfLoadRequestEvent<>(getOwnerModule());
+            IntStream.range(0, size).forEach(
+                    i -> {
+                        Optional.ofNullable(data.get(defaultString(getId()) + "input." + i)).ifPresent(
+                                f -> {
+                                    SelectionTableRowData current = new SelectionTableRowData(new File(f), data
+                                            .get(defaultString(getId()) + "input.password." + i));
+                                    current.setPageSelection(data.get(defaultString(getId()) + "input.range." + i));
+                                    loadEvent.add(current);
+                                });
+                    });
+            getItems().addAll(loadEvent.getDocuments());
+            eventStudio().broadcast(loadEvent);
+        }
+
     }
 }

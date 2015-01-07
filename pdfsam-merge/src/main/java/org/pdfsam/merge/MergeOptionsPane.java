@@ -18,6 +18,12 @@
  */
 package org.pdfsam.merge;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.pdfsam.support.KeyStringValueItem.keyEmptyValue;
+import static org.pdfsam.support.KeyStringValueItem.keyValue;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.CheckBox;
@@ -27,10 +33,11 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.outline.OutlinePolicy;
 
 /**
@@ -39,7 +46,7 @@ import org.sejda.model.outline.OutlinePolicy;
  * @author Andrea Vacondio
  *
  */
-class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergeParametersBuilder> {
+class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergeParametersBuilder>, RestorableView {
 
     private CheckBox containsForms;
     private CheckBox blankIfOdd;
@@ -48,22 +55,24 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
     MergeOptionsPane() {
         super(5);
         this.containsForms = new CheckBox(DefaultI18nContext.getInstance().i18n("Merge form fields"));
+        this.containsForms.setId("containsFormCheck");
         this.containsForms.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
                 "Some of the selected PDF documents contain forms, merge them")));
         this.blankIfOdd = new CheckBox(DefaultI18nContext.getInstance().i18n("Add a blank page if page number is odd"));
+        this.blankIfOdd.setId("blankIfOddCheck");
         this.blankIfOdd.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
                 "Adds a blank page after each merged document if the document has an odd number of pages")));
 
         outline.getItems().add(
-                new KeyStringValueItem<>(OutlinePolicy.RETAIN, DefaultI18nContext.getInstance()
-                        .i18n("Retain bookmarks")));
+                keyValue(OutlinePolicy.RETAIN, DefaultI18nContext.getInstance().i18n("Retain bookmarks")));
         outline.getItems().add(
-                new KeyStringValueItem<>(OutlinePolicy.DISCARD, DefaultI18nContext.getInstance().i18n(
-                        "Discard bookmarks")));
+                keyValue(OutlinePolicy.DISCARD, DefaultI18nContext.getInstance().i18n("Discard bookmarks")));
         outline.getItems().add(
-                new KeyStringValueItem<>(OutlinePolicy.ONE_ENTRY_EACH_DOC, DefaultI18nContext.getInstance().i18n(
-                        "Create one entry for each merged document")));
+                keyValue(OutlinePolicy.ONE_ENTRY_EACH_DOC,
+                        DefaultI18nContext.getInstance().i18n("Create one entry for each merged document")));
         outline.getSelectionModel().selectFirst();
+        outline.setId("outlineCombo");
+
         HBox bookmarksPolicy = new HBox(new Label(DefaultI18nContext.getInstance().i18n("Bookmarks handling:")),
                 outline);
         bookmarksPolicy.getStyleClass().addAll(Style.VITEM.css());
@@ -77,5 +86,20 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
         builder.outlinePolicy(outline.getSelectionModel().getSelectedItem().getKey());
         builder.blankPageIfOdd(blankIfOdd.isSelected());
         builder.copyFormFields(containsForms.isSelected());
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("outline",
+                Optional.ofNullable(outline.getSelectionModel().getSelectedItem()).map(i -> i.getKey().toString())
+                        .orElse(EMPTY));
+        data.put("containsForms", Boolean.toString(containsForms.isSelected()));
+        data.put("blankIfOdd", Boolean.toString(blankIfOdd.isSelected()));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        Optional.ofNullable(data.get("outline")).map(OutlinePolicy::valueOf).map(r -> keyEmptyValue(r))
+                .ifPresent(r -> this.outline.getSelectionModel().select(r));
+        containsForms.setSelected(Boolean.valueOf(data.get("containsForms")));
+        blankIfOdd.setSelected(Boolean.valueOf(data.get("blankIfOdd")));
     }
 }

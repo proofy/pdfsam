@@ -28,7 +28,7 @@ import javafx.scene.control.Skin;
 import javafx.scene.layout.HBox;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
@@ -43,7 +43,7 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
  * @author Andrea Vacondio
  *
  */
-class PasswordFieldPopup extends PopupControl implements ModuleOwned {
+public class PasswordFieldPopup extends PopupControl implements ModuleOwned {
     private String ownerModule = StringUtils.EMPTY;
     private PasswordFieldPopupContent content = new PasswordFieldPopupContent();
     private PdfDocumentDescriptor pdfDescriptor;
@@ -54,7 +54,7 @@ class PasswordFieldPopup extends PopupControl implements ModuleOwned {
         setAutoHide(true);
         setHideOnEscape(true);
         setAutoFix(true);
-
+        eventStudio().addAnnotatedListeners(this);
     }
 
     public String getOwnerModule() {
@@ -65,14 +65,14 @@ class PasswordFieldPopup extends PopupControl implements ModuleOwned {
         return content;
     }
 
-    void showFor(PdfDocumentDescriptor pdfDescriptor, Node ownerNode, double anchorX, double anchorY) {
-        this.pdfDescriptor = pdfDescriptor;
-        this.show(ownerNode, anchorX, anchorY);
-    }
-
     @Override
     protected Skin<?> createDefaultSkin() {
         return new PasswordFieldPopupSkin(this);
+    }
+
+    public void showFor(Node owner, PdfDocumentDescriptor pdfDescriptor, double anchorX, double anchorY) {
+        this.pdfDescriptor = pdfDescriptor;
+        this.show(owner, anchorX, anchorY);
     }
 
     /**
@@ -93,8 +93,8 @@ class PasswordFieldPopup extends PopupControl implements ModuleOwned {
             doneButton.prefHeightProperty().bind(passwordField.heightProperty());
             doneButton.setMaxHeight(USE_PREF_SIZE);
             doneButton.setMinHeight(USE_PREF_SIZE);
-            doneButton.setOnAction((e) -> requestLoad());
-            passwordField.setOnAction((e) -> requestLoad());
+            doneButton.setOnAction(e -> requestLoad());
+            passwordField.setOnAction(e -> requestLoad());
             getChildren().addAll(passwordField, doneButton);
         }
 

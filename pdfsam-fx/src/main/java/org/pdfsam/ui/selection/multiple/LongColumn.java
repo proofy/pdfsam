@@ -25,10 +25,8 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ObservableValue;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
  * Definition of the {@link Long} columns of the selection table
@@ -54,11 +52,10 @@ public enum LongColumn implements SelectionTableColumn<Number> {
         }
 
         public Comparator<Number> comparator() {
-            return LONG_COMPARATOR;
+            return Comparator.comparingLong(Number::longValue);
         }
     },
     LAST_MODIFIED {
-        private FastDateFormat formatter = FastDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM);
 
         public String getColumnTitle() {
             return DefaultI18nContext.getInstance().i18n("Modified");
@@ -71,46 +68,15 @@ public enum LongColumn implements SelectionTableColumn<Number> {
 
         @Override
         public String getTextValue(Number item) {
-            return (item != null) ? formatter.format(item) : "";
+            return (item != null) ? FORMATTER.format(item) : "";
         }
 
         public Comparator<Number> comparator() {
-            return LONG_COMPARATOR;
-        }
-    },
-    PAGES {
-        public String getColumnTitle() {
-            return DefaultI18nContext.getInstance().i18n("Pages");
-        }
-
-        @Override
-        public ObservableValue<Number> getObservableValue(SelectionTableRowData data) {
-            return data.pagesPropery();
-        }
-
-        @Override
-        public String getTextValue(Number item) {
-            if (item != null && item.intValue() > 0) {
-                return ObjectUtils.toString(item);
-            }
-            return StringUtils.EMPTY;
-        }
-
-        public Comparator<Number> comparator() {
-            return INT_COMPARATOR;
+            return Comparator.comparingLong(Number::longValue);
         }
     };
 
-    private static final Comparator<Number> LONG_COMPARATOR = new Comparator<Number>() {
-        public int compare(Number o1, Number o2) {
-            return Long.valueOf(o1.longValue()).compareTo(Long.valueOf(o2.longValue()));
-        }
-    };
-
-    private static final Comparator<Number> INT_COMPARATOR = new Comparator<Number>() {
-        public int compare(Number o1, Number o2) {
-            return Integer.valueOf(o1.intValue()).compareTo(Integer.valueOf(o2.intValue()));
-        }
-    };
+    private static final FastDateFormat FORMATTER = FastDateFormat.getDateTimeInstance(DateFormat.LONG,
+            DateFormat.MEDIUM);
 
 }

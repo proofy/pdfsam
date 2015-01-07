@@ -18,17 +18,35 @@
  */
 package org.pdfsam.ui.dashboard.preference;
 
+import static org.pdfsam.support.KeyStringValueItem.keyEmptyValue;
+import static org.pdfsam.support.KeyStringValueItem.keyValue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javafx.scene.control.Tooltip;
+
 import javax.inject.Inject;
 
 import org.pdfsam.context.BooleanUserPreference;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.context.IntUserPreference;
 import org.pdfsam.context.StringUserPreference;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.module.Module;
+import org.pdfsam.module.ModuleKeyValueItem;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.LocaleKeyValueItem;
 import org.pdfsam.support.io.FileType;
+import org.pdfsam.support.validation.Validators;
+import org.pdfsam.ui.NewsPolicy;
+import org.pdfsam.ui.Theme;
+import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * Configuration for the PDFsam preferences components
@@ -38,6 +56,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class PreferenceConfig {
+
+    private static final Integer THUMB_SIZE_LOWER = 130;
+    private static final Integer THUMB_SIZE_UPPER = 390;
 
     @Inject
     private UserContext userContext;
@@ -51,14 +72,38 @@ public class PreferenceConfig {
     public PreferenceComboBox<KeyStringValueItem<String>> themeCombo() {
         PreferenceComboBox<KeyStringValueItem<String>> themeCombo = new PreferenceComboBox<>(
                 StringUserPreference.THEME, userContext);
-        themeCombo.getItems().add(new KeyStringValueItem<>("cornflower.css", "Cornflower"));
-        themeCombo.getItems().add(new KeyStringValueItem<>("gray.css", "Gray"));
-        themeCombo.getItems().add(new KeyStringValueItem<>("green.css", "Green"));
-        themeCombo.getItems().add(new KeyStringValueItem<>("orchid.css", "Orchid"));
-        themeCombo.getItems().add(new KeyStringValueItem<>("seagreen.css", "Sea Green"));
-        themeCombo.getItems().add(new KeyStringValueItem<>("sienna.css", "Sienna"));
-        themeCombo.setValue(new KeyStringValueItem<>(userContext.getTheme(), ""));
+        themeCombo.setId("themeCombo");
+        themeCombo.getItems().addAll(
+                Arrays.stream(Theme.values()).map(t -> keyValue(t.toString(), t.friendlyName()))
+                        .collect(Collectors.toList()));
+
+        themeCombo.setValue(keyEmptyValue(userContext.getTheme()));
         return themeCombo;
+    }
+
+    @Bean(name = "startupModuleCombo")
+    public PreferenceComboBox<KeyStringValueItem<String>> startupModuleCombo(List<Module> modules) {
+        PreferenceComboBox<KeyStringValueItem<String>> startupModuleCombo = new PreferenceComboBox<>(
+                StringUserPreference.STARTUP_MODULE, userContext);
+        startupModuleCombo.setId("startupModuleCombo");
+        startupModuleCombo.getItems().add(keyValue("", DefaultI18nContext.getInstance().i18n("Dashboard")));
+        modules.stream().map(ModuleKeyValueItem::new).forEach(startupModuleCombo.getItems()::add);
+        startupModuleCombo.setValue(keyEmptyValue(userContext.getStartupModule()));
+        return startupModuleCombo;
+    }
+
+    @Bean(name = "newsDisplayPolicy")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicy() {
+        PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicyCombo = new PreferenceComboBox<>(
+                StringUserPreference.NEWS_POLICY, userContext);
+        newsDisplayPolicyCombo.setId("newsPolicy");
+        newsDisplayPolicyCombo.getItems().addAll(
+                Arrays.stream(NewsPolicy.values()).map(t -> keyValue(t.toString(), t.friendlyName()))
+                        .collect(Collectors.toList()));
+
+        newsDisplayPolicyCombo.setValue(keyEmptyValue(userContext.getNewsPolicy()));
+        return newsDisplayPolicyCombo;
     }
 
     @Bean(name = "thumbnailsCombo")
@@ -68,34 +113,42 @@ public class PreferenceConfig {
 
     @Bean(name = "checkForUpdates")
     public PreferenceCheckBox checkForUpdates() {
-        return new PreferenceCheckBox(BooleanUserPreference.CHECK_UPDATES, DefaultI18nContext.getInstance().i18n(
-                "Check for updates at startup"), userContext.isCheckForUpdates(), userContext);
+        PreferenceCheckBox checkForUpdates = new PreferenceCheckBox(BooleanUserPreference.CHECK_UPDATES,
+                DefaultI18nContext.getInstance().i18n("Check for updates at startup"), userContext.isCheckForUpdates(),
+                userContext);
+        checkForUpdates.setId("checkForUpdates");
+        checkForUpdates.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
+                "Set whether new version availability should be checked on startup (restart needed)")));
+        checkForUpdates.getStyleClass().add("spaced-vitem");
+        return checkForUpdates;
     }
 
     @Bean(name = "playSounds")
     public PreferenceCheckBox playSounds() {
-        return new PreferenceCheckBox(BooleanUserPreference.PLAY_SOUNDS, DefaultI18nContext.getInstance().i18n(
-                "Play alert sounds"), userContext.isPlaySounds(), userContext);
-    }
-
-    @Bean(name = "askConfirmation")
-    public PreferenceCheckBox askConfirmation() {
-        return new PreferenceCheckBox(BooleanUserPreference.ASK_OVERWRITE_CONFIRMATION, DefaultI18nContext
-                .getInstance().i18n("Ask for confirmation when the \"Overwrite\" checkbox is selected"),
-                userContext.isAskOverwriteConfirmation(), userContext);
+        PreferenceCheckBox playSounds = new PreferenceCheckBox(BooleanUserPreference.PLAY_SOUNDS, DefaultI18nContext
+                .getInstance().i18n("Play alert sounds"), userContext.isPlaySounds(), userContext);
+        playSounds.setId("playSounds");
+        playSounds.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Turn on or off alert sounds")));
+        playSounds.getStyleClass().add("spaced-vitem");
+        return playSounds;
     }
 
     @Bean(name = "highQualityThumbnails")
     public PreferenceCheckBox highQualityThumbnails() {
-        return new PreferenceCheckBox(BooleanUserPreference.HIGH_QUALITY_THUMB, DefaultI18nContext.getInstance().i18n(
-                "High quality thumbnails"), userContext.isHighQualityThumbnails(), userContext);
+        PreferenceCheckBox highQualityThumbnails = new PreferenceCheckBox(BooleanUserPreference.HIGH_QUALITY_THUMB,
+                DefaultI18nContext.getInstance().i18n("High quality thumbnails"),
+                userContext.isHighQualityThumbnails(), userContext);
+        highQualityThumbnails.setId("highQualityThumbnails");
+        return highQualityThumbnails;
     }
 
     @Bean(name = "smartRadio")
     public PreferenceRadioButton smartRadio() {
-        return new PreferenceRadioButton(BooleanUserPreference.SMART_OUTPUT, DefaultI18nContext.getInstance().i18n(
-                "Use the selected PDF document directory as output directory"), userContext.isUseSmartOutput(),
-                userContext);
+        PreferenceRadioButton smartRadio = new PreferenceRadioButton(BooleanUserPreference.SMART_OUTPUT,
+                DefaultI18nContext.getInstance().i18n("Use the selected PDF document directory as output directory"),
+                userContext.isUseSmartOutput(), userContext);
+        smartRadio.setId("smartRadio");
+        return smartRadio;
     }
 
     @Bean(name = "workingDirectory")
@@ -103,15 +156,33 @@ public class PreferenceConfig {
         PreferenceBrowsableDirectoryField workingDirectory = new PreferenceBrowsableDirectoryField(
                 StringUserPreference.WORKING_PATH, userContext);
         workingDirectory.getTextField().setText(userContext.getDefaultWorkingPath());
+        workingDirectory.setId("workingDirectory");
         return workingDirectory;
     }
 
     @Bean(name = "workspace")
     public PreferenceBrowsableFileField workspace() {
         PreferenceBrowsableFileField workspace = new PreferenceBrowsableFileField(StringUserPreference.WORKSPACE_PATH,
-                FileType.XML, userContext);
+                FileType.XML, OpenType.OPEN, userContext);
         workspace.getTextField().setText(userContext.getDefaultWorkspacePath());
+        workspace.setId("workspace");
         return workspace;
+    }
+
+    @Bean(name = "thumbnailsSize")
+    public PreferenceIntTextField thumbnailsSize() {
+        PreferenceIntTextField thumbnails = new PreferenceIntTextField(IntUserPreference.THUMBNAILS_SIZE, userContext,
+                Validators.newPositiveIntRangeString(THUMB_SIZE_LOWER, THUMB_SIZE_UPPER));
+        thumbnails.setText(Integer.toString(userContext.getThumbnailsSize()));
+        thumbnails.setErrorMessage(DefaultI18nContext.getInstance().i18n("Size must be between {0}px and {1}px",
+                THUMB_SIZE_LOWER.toString(), THUMB_SIZE_UPPER.toString()));
+        String helpText = DefaultI18nContext.getInstance().i18n(
+                "Pixel size of the thumbnails (between {0}px and {1}px)", THUMB_SIZE_LOWER.toString(),
+                THUMB_SIZE_UPPER.toString());
+        thumbnails.setPromptText(helpText);
+        thumbnails.setTooltip(new Tooltip(helpText));
+        thumbnails.setId("thumbnailsSize");
+        return thumbnails;
     }
 
 }

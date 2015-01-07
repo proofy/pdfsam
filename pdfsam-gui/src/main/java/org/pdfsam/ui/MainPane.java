@@ -21,7 +21,6 @@ package org.pdfsam.ui;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,13 +36,9 @@ import org.pdfsam.ui.banner.BannerPane;
 public class MainPane extends VBox {
 
     @Inject
-    private ContentPane mainPane;
-    @Inject
-    private BannerPane banner;
-
-    @PostConstruct
-    public void init() {
+    public MainPane(ContentPane mainPane, BannerPane banner) {
         VBox.setVgrow(mainPane, Priority.ALWAYS);
+        this.setId("pdfsam-main-pane");
         getChildren().addAll(banner, mainPane);
     }
 }

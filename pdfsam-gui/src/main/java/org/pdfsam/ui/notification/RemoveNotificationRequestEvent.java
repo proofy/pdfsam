@@ -26,7 +26,7 @@ import static org.pdfsam.support.RequireUtils.requireNotBlank;
  * @author Andrea Vacondio
  *
  */
-public class RemoveNotificationRequestEvent {
+class RemoveNotificationRequestEvent {
 
     private String notificationId;
 

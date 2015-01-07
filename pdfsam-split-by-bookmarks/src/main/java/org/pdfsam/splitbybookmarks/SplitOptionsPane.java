@@ -18,8 +18,12 @@
  */
 package org.pdfsam.splitbybookmarks;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.Node;
@@ -28,9 +32,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 
 /**
  * Panel for the Split options
@@ -38,7 +43,8 @@ import org.pdfsam.ui.support.Style;
  * @author Andrea Vacondio
  *
  */
-class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGoToActionLevelParametersBuilder> {
+class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGoToActionLevelParametersBuilder>,
+        RestorableView {
 
     private BookmarksLevelComboBox levelCombo = new BookmarksLevelComboBox();
     private TextField regexpField = new TextField();
@@ -46,6 +52,8 @@ class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGo
     SplitOptionsPane() {
         super(Style.DEFAULT_SPACING);
         getStyleClass().addAll(Style.CONTAINER.css());
+        levelCombo.setId("bookmarksLevel");
+        regexpField.setId("bookmarksRegexp");
         regexpField.setPromptText(DefaultI18nContext.getInstance().i18n("Regexp the bookmark has to match"));
         regexpField.setPrefWidth(300);
         getChildren().addAll(
@@ -71,5 +79,15 @@ class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGo
         if (isNotBlank(regexpField.getText())) {
             builder.regexp(regexpField.getText());
         }
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("regexp", defaultString(regexpField.getText()));
+        levelCombo.saveStateTo(data);
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        regexpField.setText(Optional.ofNullable(data.get("regexp")).orElse(EMPTY));
+        levelCombo.restoreStateFrom(data);
     }
 }

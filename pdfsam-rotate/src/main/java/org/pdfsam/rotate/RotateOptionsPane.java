@@ -18,16 +18,24 @@
  */
 package org.pdfsam.rotate;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.pdfsam.support.KeyStringValueItem.keyEmptyValue;
+import static org.pdfsam.support.KeyStringValueItem.keyValue;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.rotation.Rotation;
 import org.sejda.model.rotation.RotationType;
 
@@ -37,7 +45,7 @@ import org.sejda.model.rotation.RotationType;
  * @author Andrea Vacondio
  *
  */
-class RotateOptionsPane extends HBox implements TaskParametersBuildStep<RotateParametersBuilder> {
+class RotateOptionsPane extends HBox implements TaskParametersBuildStep<RotateParametersBuilder>, RestorableView {
 
     private ComboBox<KeyStringValueItem<RotationType>> rotationType = new ComboBox<>();
     private ComboBox<KeyStringValueItem<Rotation>> rotation = new ComboBox<>();
@@ -45,32 +53,48 @@ class RotateOptionsPane extends HBox implements TaskParametersBuildStep<RotatePa
     RotateOptionsPane() {
         super(Style.DEFAULT_SPACING);
         this.rotationType.getItems().add(
-                new KeyStringValueItem<>(RotationType.ALL_PAGES, DefaultI18nContext.getInstance().i18n("All pages")));
+                keyValue(RotationType.ALL_PAGES, DefaultI18nContext.getInstance().i18n("All pages")));
         this.rotationType.getItems().add(
-                new KeyStringValueItem<>(RotationType.EVEN_PAGES, DefaultI18nContext.getInstance().i18n("Even pages")));
+                keyValue(RotationType.EVEN_PAGES, DefaultI18nContext.getInstance().i18n("Even pages")));
         this.rotationType.getItems().add(
-                new KeyStringValueItem<>(RotationType.ODD_PAGES, DefaultI18nContext.getInstance().i18n("Odd pages")));
+                keyValue(RotationType.ODD_PAGES, DefaultI18nContext.getInstance().i18n("Odd pages")));
         this.rotationType.getSelectionModel().selectFirst();
+        this.rotationType.setId("rotationType");
 
         this.rotation.getItems().add(
-                new KeyStringValueItem<>(Rotation.DEGREES_90, DefaultI18nContext.getInstance().i18n(
-                        "90 degrees clockwise")));
+                keyValue(Rotation.DEGREES_90, DefaultI18nContext.getInstance().i18n("90 degrees clockwise")));
         this.rotation.getItems().add(
-                new KeyStringValueItem<>(Rotation.DEGREES_180, DefaultI18nContext.getInstance().i18n(
-                        "180 degrees clockwise")));
+                keyValue(Rotation.DEGREES_180, DefaultI18nContext.getInstance().i18n("180 degrees clockwise")));
         this.rotation.getItems().add(
-                new KeyStringValueItem<>(Rotation.DEGREES_270, DefaultI18nContext.getInstance().i18n(
-                        "270 degrees clockwise")));
+                keyValue(Rotation.DEGREES_270, DefaultI18nContext.getInstance().i18n("270 degrees clockwise")));
         this.rotation.getSelectionModel().selectFirst();
+        this.rotation.setId("rotation");
 
         getStyleClass().addAll(Style.HCONTAINER.css());
         getStyleClass().addAll(Style.CONTAINER.css());
         getChildren().addAll(new Label(DefaultI18nContext.getInstance().i18n("Rotate ")), this.rotationType,
                 this.rotation);
+        eventStudio().addAnnotatedListeners(this);
     }
 
     public void apply(RotateParametersBuilder builder, Consumer<String> onError) {
         builder.rotation(rotation.getSelectionModel().getSelectedItem().getKey());
         builder.rotationType(rotationType.getSelectionModel().getSelectedItem().getKey());
+    }
+
+    public void saveStateTo(Map<String, String> data) {
+        data.put("rotation",
+                Optional.ofNullable(rotation.getSelectionModel().getSelectedItem()).map(i -> i.getKey().toString())
+                        .orElse(EMPTY));
+        data.put("rotationType",
+                Optional.ofNullable(rotationType.getSelectionModel().getSelectedItem()).map(i -> i.getKey().toString())
+                        .orElse(EMPTY));
+    }
+
+    public void restoreStateFrom(Map<String, String> data) {
+        Optional.ofNullable(data.get("rotation")).map(Rotation::valueOf).map(r -> keyEmptyValue(r))
+                .ifPresent(r -> this.rotation.getSelectionModel().select(r));
+        Optional.ofNullable(data.get("rotationType")).map(RotationType::valueOf).map(r -> keyEmptyValue(r))
+                .ifPresent(r -> this.rotationType.getSelectionModel().select(r));
     }
 }

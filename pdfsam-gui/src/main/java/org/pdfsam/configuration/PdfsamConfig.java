@@ -19,20 +19,17 @@
 package org.pdfsam.configuration;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 import javax.inject.Inject;
 
-import org.pdfsam.context.DefaultI18nContext;
 import org.pdfsam.context.DefaultUserContext;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.ui.Theme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -40,8 +37,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-
-import de.jensd.fx.fontawesome.AwesomeStyle;
 
 /**
  * IoC configuration
@@ -61,9 +56,9 @@ public class PdfsamConfig {
         return new ImageView(new ClassPathResource("/images/payoff.png").getURL().toExternalForm());
     }
 
-    @Bean(name = "appVersion")
-    public String version() {
-        return env.getProperty("pdfsam.version");
+    @Bean(name = "updatesUrl")
+    public URL updatesUrl() throws MalformedURLException {
+        return new URL(String.format("http://www.pdfsam.org/current-version?c=%s", env.getProperty("pdfsam.version")));
     }
 
     @Bean
@@ -71,40 +66,26 @@ public class PdfsamConfig {
         return new DefaultUserContext();
     }
 
-    @Bean(name = "styles")
-    public List<String> styles() {
-        List<String> styles = new ArrayList<>();
-        styles.add(this.getClass().getResource(AwesomeStyle.LIGHT.getStylePath()).toExternalForm());
-        styles.add(this.getClass().getResource("/css/defaults.css").toExternalForm());
-        styles.add(this.getClass().getResource("/css/pdfsam.css").toExternalForm());
-        styles.add(this.getClass().getResource("/css/menu.css").toExternalForm());
+    @Bean
+    public StylesConfig styles() {
+        String themeString = userContext().getTheme();
+        Theme selected = Theme.ROUNDISH;
         try {
-            URL themeUrl = new ClassPathResource("/css/themes/" + userContext().getTheme()).getURL();
-            styles.add(themeUrl.toExternalForm());
-        } catch (IOException ioe) {
-            LOG.warn("Unable to find selected theme.", ioe);
+            selected = Theme.valueOf(themeString);
+        } catch (IllegalArgumentException e) {
+            LOG.warn("Unable to find selected theme: {}.", themeString);
         }
-        return styles;
+        return new StylesConfig(selected);
     }
 
-    @Bean(name = "errorPlayer")
-    public MediaPlayer error() throws URISyntaxException {
-        return mediaPlayer("/sounds/error_sound.wav");
+    @Bean(name = "errorSound")
+    public String error() throws URISyntaxException {
+        return this.getClass().getResource("/sounds/error_sound.wav").toURI().toString();
     }
 
-    @Bean(name = "okPlayer")
-    public MediaPlayer ok() throws URISyntaxException {
-        return mediaPlayer("/sounds/ok_sound.wav");
-    }
-
-    private MediaPlayer mediaPlayer(String name) throws URISyntaxException {
-        MediaPlayer player = new MediaPlayer(new Media(this.getClass().getResource(name).toURI().toString()));
-        player.setAutoPlay(false);
-        player.setVolume(1);
-        player.setOnError(() -> {
-            LOG.error(DefaultI18nContext.getInstance().i18n("Error playing sounds"), player.getError());
-        });
-        return player;
+    @Bean(name = "okSound")
+    public String ok() throws URISyntaxException {
+        return this.getClass().getResource("/sounds/ok_sound.wav").toURI().toString();
     }
 
 }

@@ -24,26 +24,18 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
-
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-
 /**
  * Toggle button to expand/collapse a quickbar
  * 
  * @author Andrea Vacondio
  * 
  */
-@Named
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ExpandButton extends HBox {
+class ExpandButton extends HBox {
     private ToggleButton toggle = new ToggleButton();
     private SVGPath expand = new SVGPath();
     private SVGPath collapse = new SVGPath();
 
-    ExpandButton() {
+    public ExpandButton() {
         getStyleClass().add("quickbar-expand-button");
         toggle.getStyleClass().addAll("pdfsam-toolbar-button", "quickbar-expand-toggle");
         expand.setContent("M0,-5L5,0L0,5Z");
@@ -59,10 +51,6 @@ public class ExpandButton extends HBox {
             }
         });
         HBox.setMargin(toggle, new Insets(0, 7, 0, 7));
-    }
-
-    @PostConstruct
-    private void init() {
         getChildren().add(toggle);
     }
 

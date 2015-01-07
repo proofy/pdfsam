@@ -32,7 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.Module;
 import org.pdfsam.module.ModuleCategory;
 
@@ -53,6 +53,7 @@ class ModulesMenu extends Menu {
 
     @PostConstruct
     void initModulesMenu() {
+        setId("modulesMenu");
         Map<ModuleCategory, Menu> moduleSubmenus = new HashMap<>();
         for (final Module currentModule : modules) {
             ModuleCategory category = currentModule.descriptor().getCategory();

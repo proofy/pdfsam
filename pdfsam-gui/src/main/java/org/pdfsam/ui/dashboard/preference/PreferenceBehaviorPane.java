@@ -18,15 +18,16 @@
  */
 package org.pdfsam.ui.dashboard.preference;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
-import org.pdfsam.context.I18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.ui.support.Style;
 
 /**
@@ -36,34 +37,25 @@ import org.pdfsam.ui.support.Style;
  * 
  */
 @Named
-class PreferenceBehaviorPane extends VBox {
+class PreferenceBehaviorPane extends GridPane {
 
     @Inject
-    @Named("checkForUpdates")
-    private PreferenceCheckBox checkForUpdates;
-    @Inject
-    @Named("playSounds")
-    private PreferenceCheckBox playSounds;
-    @Inject
-    @Named("askConfirmation")
-    private PreferenceCheckBox askConfirmation;
+    public PreferenceBehaviorPane(@Named("checkForUpdates") PreferenceCheckBox checkForUpdates,
+            @Named("playSounds") PreferenceCheckBox playSounds,
+            @Named("newsDisplayPolicy") PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicy,
+            CheckForUpdatesButton checkForUpdatesNow) {
 
-    @PostConstruct
-    public void post() {
-        I18nContext i18n = DefaultI18nContext.getInstance();
+        newsDisplayPolicy.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
+                "Set how often the PDFsam news panel should be opened")));
+        add(new Label(DefaultI18nContext.getInstance().i18n("News panel:")), 0, 0);
+        setFillWidth(newsDisplayPolicy, true);
+        newsDisplayPolicy.setMaxWidth(Double.POSITIVE_INFINITY);
+        add(newsDisplayPolicy, 1, 0);
+        add(playSounds, 0, 1, 2, 1);
+        add(new VBox(checkForUpdates, checkForUpdatesNow), 0, 2, 2, 1);
 
-        checkForUpdates.setTooltip(new Tooltip(i18n
-                .i18n("Set whether new version availability should be checked on startup (restart needed)")));
-        checkForUpdates.getStyleClass().add("spaced-vitem");
-
-        playSounds.setTooltip(new Tooltip(i18n.i18n("Turn on or off alert sounds")));
-        playSounds.getStyleClass().add("spaced-vitem");
-
-        askConfirmation.setTooltip(new Tooltip(i18n
-                .i18n("Show a dialog box asking the user for confirmation when the \"overwrite\" is selected")));
-        askConfirmation.getStyleClass().add("spaced-vitem");
-        getChildren().addAll(checkForUpdates, playSounds, askConfirmation);
         getStyleClass().addAll(Style.CONTAINER.css());
+        getStyleClass().addAll(Style.GRID.css());
     }
 
 }

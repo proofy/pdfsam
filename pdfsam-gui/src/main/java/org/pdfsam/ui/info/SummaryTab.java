@@ -29,19 +29,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
 import javafx.scene.control.Label;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.pdfsam.context.DefaultI18nContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
 import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.model.pdf.PdfMetadataKey;
-
-import com.itextpdf.text.pdf.PdfDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tab displaying a summary of the PDF document information.
@@ -51,7 +50,9 @@ import com.itextpdf.text.pdf.PdfDate;
  */
 @Named
 class SummaryTab extends BaseInfoTab implements ChangeListener<PdfDescriptorLoadingStatus> {
+    private static final Logger LOG = LoggerFactory.getLogger(SummaryTab.class);
     private static FastDateFormat FORMATTER = FastDateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM);
+
     private Label fileLabel = createValueLabel();
     private Label size = createValueLabel();
     private Label version = createValueLabel();
@@ -67,10 +68,6 @@ class SummaryTab extends BaseInfoTab implements ChangeListener<PdfDescriptorLoad
 
     SummaryTab() {
         setText(DefaultI18nContext.getInstance().i18n("Summary"));
-    }
-
-    @PostConstruct
-    void init() {
         grid().add(createTitleLabel("File"), 0, 0);
         grid().add(fileLabel, 1, 0);
         grid().add(createTitleLabel("Size"), 0, 1);
@@ -100,10 +97,10 @@ class SummaryTab extends BaseInfoTab implements ChangeListener<PdfDescriptorLoad
     void requestShow(ShowPdfDescriptorRequest event) {
         if (current != event.getDescriptor()) {
             current = event.getDescriptor();
-            current.loadedProperty().addListener(new WeakChangeListener<>(this));
+            current.loadingStatus().addListener(new WeakChangeListener<>(this));
         }
         setFileProperties(current.getFile());
-        setPdfProperties(current);
+        setPdfProperties();
     }
 
     private void setFileProperties(File file) {
@@ -112,23 +109,22 @@ class SummaryTab extends BaseInfoTab implements ChangeListener<PdfDescriptorLoad
         modified.setText(FORMATTER.format(file.lastModified()));
     }
 
-    private void setPdfProperties(PdfDocumentDescriptor descriptor) {
-        version.setText(descriptor.getVersionString());
-        pages.setText(Integer.toString(descriptor.pagesPropery().get()));
-        created.setText(FORMATTER.format(PdfDate.decode(descriptor.getInformation("CreationDate"))));
-        title.setText(descriptor.getInformation(PdfMetadataKey.TITLE.getKey()));
-        author.setText(descriptor.getInformation(PdfMetadataKey.AUTHOR.getKey()));
-        creator.setText(descriptor.getInformation(PdfMetadataKey.CREATOR.getKey()));
-        subject.setText(descriptor.getInformation(PdfMetadataKey.SUBJECT.getKey()));
-        producer.setText(descriptor.getInformation("Producer"));
+    private void setPdfProperties() {
+        version.setText(current.getVersionString());
+        pages.setText(Integer.toString(current.pages().getValue()));
+        created.setText(current.getInformation("FormattedCreationDate"));
+        title.setText(current.getInformation(PdfMetadataKey.TITLE.getKey()));
+        author.setText(current.getInformation(PdfMetadataKey.AUTHOR.getKey()));
+        creator.setText(current.getInformation(PdfMetadataKey.CREATOR.getKey()));
+        subject.setText(current.getInformation(PdfMetadataKey.SUBJECT.getKey()));
+        producer.setText(current.getInformation("Producer"));
     }
 
-    public void changed(ObservableValue<? extends PdfDescriptorLoadingStatus> observable, PdfDescriptorLoadingStatus oldValue,
-            PdfDescriptorLoadingStatus newValue) {
+    public void changed(ObservableValue<? extends PdfDescriptorLoadingStatus> observable,
+            PdfDescriptorLoadingStatus oldValue, PdfDescriptorLoadingStatus newValue) {
         if (newValue == PdfDescriptorLoadingStatus.LOADED) {
-            Platform.runLater(() -> {
-                setPdfProperties(current);
-            });
+            LOG.trace("Descriptor loaded, updating summary tab");
+            Platform.runLater(() -> setPdfProperties());
         }
     }
 }

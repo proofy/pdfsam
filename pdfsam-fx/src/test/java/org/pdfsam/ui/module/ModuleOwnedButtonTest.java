@@ -24,7 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
-import org.pdfsam.test.InitializeJavaFxThreadRule;
+import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
 
 /**
  * @author Andrea Vacondio
@@ -32,7 +32,7 @@ import org.pdfsam.test.InitializeJavaFxThreadRule;
  */
 public class ModuleOwnedButtonTest {
     @Rule
-    public InitializeJavaFxThreadRule rule = new InitializeJavaFxThreadRule();
+    public InitializeAndApplyJavaFxThreadRule rule = new InitializeAndApplyJavaFxThreadRule();
 
     @Test
     public void nullArg() {

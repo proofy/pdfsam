@@ -18,6 +18,7 @@
  */
 package org.pdfsam.pdf;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.sejda.model.input.PdfFileSource;
+import org.sejda.model.pdf.PdfVersion;
 
 /**
  * @author Andrea Vacondio
@@ -59,7 +61,7 @@ public class PdfDocumentDescriptorTest {
     @Test
     public void initialState() {
         assertFalse(victim.isInvalid());
-        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadedProperty().get());
+        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadingStatus().getValue());
         assertEquals("pwd", victim.getPassword());
         assertEquals("myName", victim.getFileName());
         assertNull(victimNoPwd.getPassword());
@@ -67,21 +69,38 @@ public class PdfDocumentDescriptorTest {
 
     @Test
     public void invalidate() {
+        victim.retain().retain();
         assertFalse(victim.isInvalid());
         victim.invalidate();
         assertTrue(victim.isInvalid());
     }
 
     @Test
+    public void retainAndRelease() {
+        assertFalse(victim.retain().retain().release());
+    }
+
+    @Test
+    public void noVersionString() {
+        assertEquals("", victim.getVersionString());
+    }
+
+    @Test
+    public void getVersionString() {
+        victim.setVersion(PdfVersion.VERSION_1_5);
+        assertFalse(isBlank(victim.getVersionString()));
+    }
+
+    @Test
     public void moveValidStatus() {
-        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadedProperty().get());
+        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadingStatus().getValue());
         victim.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
-        assertEquals(PdfDescriptorLoadingStatus.REQUESTED, victim.loadedProperty().get());
+        assertEquals(PdfDescriptorLoadingStatus.REQUESTED, victim.loadingStatus().getValue());
     }
 
     @Test(expected = IllegalStateException.class)
     public void moveInvalidStatus() {
-        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadedProperty().get());
+        assertEquals(PdfDescriptorLoadingStatus.INITIAL, victim.loadingStatus().getValue());
         victim.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
     }
 
@@ -97,6 +116,12 @@ public class PdfDocumentDescriptorTest {
         HashMap<String, String> values = new HashMap<>();
         values.put("key", "value");
         victim.setInformationDictionary(values);
+        assertEquals("value", victim.getInformation("key"));
+    }
+
+    @Test
+    public void putInformation() {
+        victim.putInformation("key", "value");
         assertEquals("value", victim.getInformation("key"));
     }
 

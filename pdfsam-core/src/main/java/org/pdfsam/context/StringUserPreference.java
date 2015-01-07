@@ -29,5 +29,7 @@ public enum StringUserPreference {
     THEME,
     THUMBNAILS_IDENTIFIER,
     WORKING_PATH,
-    WORKSPACE_PATH;
+    WORKSPACE_PATH,
+    STARTUP_MODULE,
+    NEWS_POLICY;
 }

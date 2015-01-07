@@ -35,7 +35,6 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, Throwable e) {
         LOG.error("Unexpected error", e);
-        e.printStackTrace();
     }
 
 }

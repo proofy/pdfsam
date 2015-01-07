@@ -44,7 +44,7 @@ public class NotificationsContainer extends VBox {
 
     void addNotification(String title, Node message) {
         Notification toAdd = doAddNotification(title, message);
-        fadeIn(toAdd, (e) -> toAdd.fadeAway(Duration.millis(2000)));
+        fadeIn(toAdd, e -> toAdd.fadeAway(Duration.millis(2000)));
     }
 
     void addStickyNotification(String title, Node message) {
@@ -70,18 +70,10 @@ public class NotificationsContainer extends VBox {
     }
 
     void removeNotification(String id) {
-        Node toRemove = getChildById(id);
+        Node toRemove = lookup(String.format("#%s", id));
         if (toRemove != null && toRemove instanceof Notification) {
             ((Notification) toRemove).fadeAway();
         }
     }
 
-    private Node getChildById(String id) {
-        for (Node current : getChildren()) {
-            if (id.equals(current.getId())) {
-                return current;
-            }
-        }
-        return null;
-    }
 }

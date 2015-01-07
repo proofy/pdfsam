@@ -39,7 +39,7 @@ import org.sejda.model.prefix.Prefix;
 public class PrefixFieldTest extends GuiTest {
 
     @Rule
-    public ClearEventStudioRule clearEventStudio = new ClearEventStudioRule("LogStage");
+    public ClearEventStudioRule clearEventStudio = new ClearEventStudioRule();
 
     @Override
     protected Parent getRootNode() {
@@ -51,10 +51,7 @@ public class PrefixFieldTest extends GuiTest {
     @Test
     public void contextMenuAddsText() {
         PrefixField victim = find(".victim");
-        rightClick(victim);
-        moveBy(5, 5);
-        click();
-        click(Prefix.BASENAME.getFriendlyName());
+        rightClick(victim).click("#addPrefixMenu").click(Prefix.BASENAME.getFriendlyName());
         assertTrue(victim.getText().contains(Prefix.BASENAME.getFriendlyName()));
     }
 
@@ -67,5 +64,13 @@ public class PrefixFieldTest extends GuiTest {
         click();
         click(Prefix.BASENAME.getFriendlyName());
         assertEquals(Prefix.BASENAME.getFriendlyName(), victim.getText());
+    }
+
+    @Test
+    public void prefixMenuItemIsAdded() {
+        PrefixField victim = find(".victim");
+        victim.addMenuItemFor(Prefix.BOOKMARK);
+        rightClick(victim).click("#addPrefixMenu").click(Prefix.BOOKMARK.getFriendlyName());
+        assertTrue(victim.getText().contains(Prefix.BOOKMARK.getFriendlyName()));
     }
 }

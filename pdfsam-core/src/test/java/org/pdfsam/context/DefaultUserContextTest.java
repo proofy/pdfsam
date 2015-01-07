@@ -23,7 +23,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Test;
+import org.pdfsam.ui.NewsPolicy;
+import org.pdfsam.ui.Theme;
 
 /**
  * Test unit for the {@link DefaultUserContext}.
@@ -35,12 +38,9 @@ public class DefaultUserContextTest {
 
     private DefaultUserContext victim = new DefaultUserContext();
 
-    @Test
-    public void isAskConfirmation() {
-        victim.setBooleanPreference(BooleanUserPreference.ASK_OVERWRITE_CONFIRMATION, true);
-        assertTrue(victim.isAskOverwriteConfirmation());
-        victim.setBooleanPreference(BooleanUserPreference.ASK_OVERWRITE_CONFIRMATION, false);
-        assertFalse(victim.isAskOverwriteConfirmation());
+    @After
+    public void tearDown() {
+        victim.clear();
     }
 
     @Test
@@ -73,7 +73,15 @@ public class DefaultUserContextTest {
         assertFalse(victim.isHighQualityThumbnails());
         victim.setBooleanPreference(BooleanUserPreference.HIGH_QUALITY_THUMB, true);
         assertTrue(victim.isHighQualityThumbnails());
+    }
 
+    @Test
+    public void clear() {
+        assertTrue(victim.isUseSmartOutput());
+        victim.setBooleanPreference(BooleanUserPreference.SMART_OUTPUT, false);
+        assertFalse(victim.isUseSmartOutput());
+        victim.clear();
+        assertTrue(victim.isUseSmartOutput());
     }
 
     @Test
@@ -97,7 +105,23 @@ public class DefaultUserContextTest {
         victim.setStringPreference(StringUserPreference.THEME, "ChuckNorris");
         assertEquals("ChuckNorris", victim.getTheme());
         victim.setStringPreference(StringUserPreference.THEME, "");
-        assertEquals(DefaultUserContext.DEFAULT_THEME, victim.getTheme());
+        assertEquals(Theme.ROUNDISH.toString(), victim.getTheme());
+    }
+
+    @Test
+    public void getStartupModule() {
+        victim.setStringPreference(StringUserPreference.STARTUP_MODULE, "ChuckNorris");
+        assertEquals("ChuckNorris", victim.getStartupModule());
+        victim.setStringPreference(StringUserPreference.STARTUP_MODULE, "");
+        assertTrue(isBlank(victim.getStartupModule()));
+    }
+
+    @Test
+    public void getNewsPolicy() {
+        victim.setStringPreference(StringUserPreference.NEWS_POLICY, "ChuckNorris");
+        assertEquals("ChuckNorris", victim.getNewsPolicy());
+        victim.setStringPreference(StringUserPreference.NEWS_POLICY, "");
+        assertEquals(NewsPolicy.ONCE_A_WEEK.toString(), victim.getNewsPolicy());
     }
 
     @Test

@@ -24,15 +24,14 @@ import java.util.Locale;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.context.DefaultI18nContext;
-import org.pdfsam.context.I18nContext;
-import org.pdfsam.context.SetLocaleEvent;
+import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.i18n.I18nContext;
+import org.pdfsam.i18n.SetLocaleEvent;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.LocaleKeyValueItem;
 import org.pdfsam.ui.support.Style;
@@ -44,32 +43,40 @@ import org.pdfsam.ui.support.Style;
  * 
  */
 @Named
-class PreferenceAppearencePane extends VBox {
+class PreferenceAppearencePane extends GridPane {
 
     @Inject
-    @Named("localeCombo")
-    private PreferenceComboBox<LocaleKeyValueItem> localeCombo;
-    @Inject
-    @Named("themeCombo")
-    private PreferenceComboBox<KeyStringValueItem<String>> themeCombo;
-
-    @PostConstruct
-    public void post() {
+    public PreferenceAppearencePane(@Named("localeCombo") PreferenceComboBox<LocaleKeyValueItem> localeCombo,
+            @Named("themeCombo") PreferenceComboBox<KeyStringValueItem<String>> themeCombo,
+            @Named("startupModuleCombo") PreferenceComboBox<KeyStringValueItem<String>> startupModuleCombo) {
         I18nContext i18n = DefaultI18nContext.getInstance();
+        add(new Label(i18n.i18n("Language:")), 0, 0);
         for (Locale current : DefaultI18nContext.SUPPORTED_LOCALES) {
             localeCombo.getItems().add(new LocaleKeyValueItem(current));
         }
         localeCombo.setTooltip(new Tooltip(i18n.i18n("Set your preferred language (restart needed)")));
         localeCombo.setValue(new LocaleKeyValueItem(Locale.getDefault()));
-        localeCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            eventStudio().broadcast(new SetLocaleEvent(newValue.getKey()));
-        });
-        getChildren().addAll(new Label(i18n.i18n("Language:")), localeCombo);
+        localeCombo.valueProperty().addListener(
+                (observable, oldValue, newValue) -> eventStudio().broadcast(new SetLocaleEvent(newValue.getKey())));
+        localeCombo.setMaxWidth(Double.POSITIVE_INFINITY);
+        setFillWidth(localeCombo, true);
+        add(localeCombo, 1, 0);
 
+        add(new Label(i18n.i18n("Theme:")), 0, 1);
         themeCombo.setTooltip(new Tooltip(i18n.i18n("Set your preferred theme (restart needed)")));
+        themeCombo.setMaxWidth(Double.POSITIVE_INFINITY);
+        setFillWidth(themeCombo, true);
+        add(themeCombo, 1, 1);
 
-        getChildren().addAll(new Label(i18n.i18n("Theme:")), themeCombo);
+        add(new Label(i18n.i18n("Startup module:")), 0, 2);
+        startupModuleCombo.setTooltip(new Tooltip(i18n
+                .i18n("Set the module to open at application startup (restart needed)")));
+        startupModuleCombo.setMaxWidth(Double.POSITIVE_INFINITY);
+        setFillWidth(startupModuleCombo, true);
+        add(startupModuleCombo, 1, 2);
+
         getStyleClass().addAll(Style.CONTAINER.css());
+        getStyleClass().addAll(Style.GRID.css());
     }
 
 }
