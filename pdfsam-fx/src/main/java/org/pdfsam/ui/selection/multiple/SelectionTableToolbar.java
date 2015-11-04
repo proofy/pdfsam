@@ -24,22 +24,24 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.io.File;
 import java.util.List;
 
-import javafx.event.ActionEvent;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
-import javafx.stage.FileChooser;
-
 import org.apache.commons.lang3.StringUtils;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
+import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
 import org.pdfsam.support.io.FileType;
+import org.pdfsam.ui.commons.RemoveSelectedEvent;
 import org.pdfsam.ui.io.FileChoosers;
 import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper;
 import org.pdfsam.ui.module.ModuleOwnedButton;
 import org.pdfsam.ui.selection.multiple.move.MoveSelectedEvent;
 import org.pdfsam.ui.selection.multiple.move.MoveType;
 import org.sejda.eventstudio.annotation.EventListener;
+
+import javafx.event.ActionEvent;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
+import javafx.stage.FileChooser;
 
 /**
  * Toolbar for the selection table
@@ -82,8 +84,8 @@ class SelectionTableToolbar extends ToolBar implements ModuleOwned {
                     DefaultI18nContext.getInstance().i18n("Select pdf documents to load"));
             List<File> chosenFiles = fileChooser.showOpenMultipleDialog(this.getScene().getWindow());
             if (chosenFiles != null && !chosenFiles.isEmpty()) {
-                PdfLoadRequestEvent<SelectionTableRowData> loadEvent = new PdfLoadRequestEvent<>(getOwnerModule());
-                chosenFiles.stream().map(SelectionTableRowData::new).forEach(loadEvent::add);
+                PdfLoadRequestEvent loadEvent = new PdfLoadRequestEvent(getOwnerModule());
+                chosenFiles.stream().map(PdfDocumentDescriptor::newDescriptorNoPassword).forEach(loadEvent::add);
                 eventStudio().broadcast(loadEvent, getOwnerModule());
             }
         }

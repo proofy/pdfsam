@@ -21,14 +21,14 @@ package org.pdfsam.ui.selection.multiple;
 import java.io.File;
 import java.util.Comparator;
 
+import org.pdfsam.i18n.DefaultI18nContext;
+
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
-
-import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
  * Definition of the {@link File} columns of the selection table
@@ -46,7 +46,7 @@ public enum FileColumn implements SelectionTableColumn<File> {
 
         @Override
         public ObservableValue<File> getObservableValue(SelectionTableRowData data) {
-            return new ReadOnlyObjectWrapper<>(data.getFile());
+            return new ReadOnlyObjectWrapper<>(data.descriptor().getFile());
         }
 
         @Override

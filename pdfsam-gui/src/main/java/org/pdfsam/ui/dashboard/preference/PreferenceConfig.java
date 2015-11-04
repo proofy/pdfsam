@@ -20,12 +20,11 @@ package org.pdfsam.ui.dashboard.preference;
 
 import static org.pdfsam.support.KeyStringValueItem.keyEmptyValue;
 import static org.pdfsam.support.KeyStringValueItem.keyValue;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javafx.scene.control.Tooltip;
 
 import javax.inject.Inject;
 
@@ -40,13 +39,14 @@ import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.LocaleKeyValueItem;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.support.validation.Validators;
-import org.pdfsam.ui.NewsPolicy;
 import org.pdfsam.ui.Theme;
 import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.pdfsam.ui.log.MaxLogRowsChangedEvent;
+import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+
+import javafx.scene.control.Tooltip;
 
 /**
  * Configuration for the PDFsam preferences components
@@ -92,21 +92,7 @@ public class PreferenceConfig {
         return startupModuleCombo;
     }
 
-    @Bean(name = "newsDisplayPolicy")
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicy() {
-        PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicyCombo = new PreferenceComboBox<>(
-                StringUserPreference.NEWS_POLICY, userContext);
-        newsDisplayPolicyCombo.setId("newsPolicy");
-        newsDisplayPolicyCombo.getItems().addAll(
-                Arrays.stream(NewsPolicy.values()).map(t -> keyValue(t.toString(), t.friendlyName()))
-                        .collect(Collectors.toList()));
-
-        newsDisplayPolicyCombo.setValue(keyEmptyValue(userContext.getNewsPolicy()));
-        return newsDisplayPolicyCombo;
-    }
-
-    @Bean(name = "thumbnailsCombo")
+    // @Bean(name = "thumbnailsCombo")
     public PreferenceComboBox<KeyStringValueItem<String>> thumbnailsCombo() {
         return new PreferenceComboBox<>(StringUserPreference.THUMBNAILS_IDENTIFIER, userContext);
     }
@@ -133,7 +119,7 @@ public class PreferenceConfig {
         return playSounds;
     }
 
-    @Bean(name = "highQualityThumbnails")
+    // @Bean(name = "highQualityThumbnails")
     public PreferenceCheckBox highQualityThumbnails() {
         PreferenceCheckBox highQualityThumbnails = new PreferenceCheckBox(BooleanUserPreference.HIGH_QUALITY_THUMB,
                 DefaultI18nContext.getInstance().i18n("High quality thumbnails"),
@@ -169,7 +155,7 @@ public class PreferenceConfig {
         return workspace;
     }
 
-    @Bean(name = "thumbnailsSize")
+    // @Bean(name = "thumbnailsSize")
     public PreferenceIntTextField thumbnailsSize() {
         PreferenceIntTextField thumbnails = new PreferenceIntTextField(IntUserPreference.THUMBNAILS_SIZE, userContext,
                 Validators.newPositiveIntRangeString(THUMB_SIZE_LOWER, THUMB_SIZE_UPPER));
@@ -183,6 +169,25 @@ public class PreferenceConfig {
         thumbnails.setTooltip(new Tooltip(helpText));
         thumbnails.setId("thumbnailsSize");
         return thumbnails;
+    }
+
+    @Bean(name = "logViewRowsNumber")
+    public PreferenceIntTextField logViewRowsNumber() {
+        PreferenceIntTextField logRowsNumber = new PreferenceIntTextField(IntUserPreference.LOGVIEW_ROWS_NUMBER,
+                userContext, Validators.newPositiveIntegerString());
+        logRowsNumber.setText(Integer.toString(userContext.getNumberOfLogRows()));
+        logRowsNumber.setErrorMessage(DefaultI18nContext.getInstance().i18n(
+                "Maximum number of rows mast be a positive number"));
+        String helpText = DefaultI18nContext.getInstance().i18n("Maximum number of rows displayed by the Log register");
+        logRowsNumber.setPromptText(helpText);
+        logRowsNumber.setTooltip(new Tooltip(helpText));
+        logRowsNumber.setId("logViewRowsNumber");
+        logRowsNumber.validProperty().addListener((o, oldVal, newVal) -> {
+            if (newVal == ValidationState.VALID) {
+                eventStudio().broadcast(new MaxLogRowsChangedEvent());
+            }
+        });
+        return logRowsNumber;
     }
 
 }

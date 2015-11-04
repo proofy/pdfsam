@@ -24,7 +24,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pdfsam.ui.NewsPolicy;
 import org.pdfsam.ui.Theme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class DefaultUserContext implements UserContext {
+
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUserContext.class);
+
+    static final String CHECK_FOR_UPDATES_PROP = "org.pdfsam.default.checkforupdate";
+    static final String LOCALE_PROP = "org.pdfsam.default.locale";
+
     private Preferences prefs;
 
     public DefaultUserContext() {
@@ -73,6 +77,11 @@ public final class DefaultUserContext implements UserContext {
     }
 
     @Override
+    public int getNumberOfLogRows() {
+        return prefs.getInt(IntUserPreference.LOGVIEW_ROWS_NUMBER.toString(), 200);
+    }
+
+    @Override
     public String getTheme() {
         return defaultIfBlank(prefs.get(StringUserPreference.THEME.toString(), StringUtils.EMPTY),
                 Theme.ROUNDISH.toString());
@@ -84,12 +93,6 @@ public final class DefaultUserContext implements UserContext {
     }
 
     @Override
-    public String getNewsPolicy() {
-        return defaultIfBlank(prefs.get(StringUserPreference.NEWS_POLICY.toString(), StringUtils.EMPTY),
-                NewsPolicy.ONCE_A_WEEK.toString());
-    }
-
-    @Override
     public String getThumbnailsCreatorIdentifier() {
         // TODO identifier
         return prefs.get(StringUserPreference.THUMBNAILS_IDENTIFIER.toString(), StringUtils.EMPTY);
@@ -97,7 +100,8 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public boolean isCheckForUpdates() {
-        return prefs.getBoolean(BooleanUserPreference.CHECK_UPDATES.toString(), Boolean.TRUE);
+        return prefs.getBoolean(BooleanUserPreference.CHECK_UPDATES.toString(),
+                Boolean.valueOf(System.getProperty(CHECK_FOR_UPDATES_PROP, Boolean.TRUE.toString())));
     }
 
     @Override
@@ -107,7 +111,7 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public String getLocale() {
-        return prefs.get(StringUserPreference.LOCALE.toString(), StringUtils.EMPTY);
+        return prefs.get(StringUserPreference.LOCALE.toString(), System.getProperty(LOCALE_PROP));
     }
 
     @Override

@@ -22,15 +22,14 @@ import java.util.function.BiConsumer;
 
 import org.pdfsam.module.RequiredPdfData;
 
-import com.itextpdf.text.pdf.PdfReader;
-
 /**
- * A {@link PdfLoader} is responsible for populating a {@link PdfDocumentDescriptor} with some data read from a {@link PdfReader}.
+ * A {@link PdfLoader} is responsible for populating a {@link PdfDocumentDescriptor} with some data read from a source.
  * 
  * @author Andrea Vacondio
- *
+ * @param <T>
+ *            type of the source
  */
-interface PdfLoader extends BiConsumer<PdfReader, PdfDocumentDescriptor> {
+interface PdfLoader<T> extends BiConsumer<T, PdfDocumentDescriptor> {
 
     /**
      * @return the {@link RequiredPdfData} associated with this loader.

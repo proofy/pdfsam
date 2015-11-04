@@ -25,17 +25,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.params.MultipleOutputTaskParametersBuilder;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.prefix.Prefix;
+
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 /**
  * Panel with a text field to set the prefix for a task
@@ -52,7 +52,7 @@ public class PrefixPane extends HBox implements TaskParametersBuildStep<Multiple
         getStyleClass().addAll(Style.CONTAINER.css());
         getStyleClass().addAll(Style.HCONTAINER.css());
         VBox.setVgrow(field, Priority.ALWAYS);
-        getChildren().addAll(new Label(DefaultI18nContext.getInstance().i18n("Generated pdf documents name prefix:")),
+        getChildren().addAll(new Label(DefaultI18nContext.getInstance().i18n("Generated PDF documents name prefix:")),
                 field);
     }
 

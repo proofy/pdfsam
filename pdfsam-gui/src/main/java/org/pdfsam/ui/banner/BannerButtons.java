@@ -18,12 +18,16 @@
  */
 package org.pdfsam.ui.banner;
 
-import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.pdfsam.news.LatestNewsEvent;
+import org.sejda.eventstudio.ReferenceStrength;
+
+import javafx.application.Platform;
+import javafx.scene.layout.HBox;
 
 /**
  * Container for the banner buttons
@@ -35,12 +39,17 @@ import javax.inject.Named;
 class BannerButtons extends HBox {
 
     @Inject
-    BannerButtons(ErrorsNotification errorNotification, LogButton logButton, DashboardButton dashboardButton,
-            MenuButton menuButton) {
+    BannerButtons(LogButton logButton, DashboardButton dashboardButton, NewsButton newsButton, MenuButton menuButton) {
         getStyleClass().addAll("pdfsam-container", "pdfsam-banner-buttons");
-        StackPane logs = new StackPane(logButton, errorNotification);
-        StackPane.setAlignment(errorNotification, Pos.BOTTOM_LEFT);
-        getChildren().addAll(logs, dashboardButton, menuButton);
+        newsButton.setDisable(true);
+        getChildren().addAll(dashboardButton, logButton, newsButton, menuButton);
+        eventStudio().add(LatestNewsEvent.class, (e) -> {
+            if (!e.latestNews.isEmpty()) {
+                Platform.runLater(() -> {
+                    newsButton.setDisable(false);
+                    newsButton.setUpToDate(e.isUpToDate);
+                });
+            }
+        } , Integer.MAX_VALUE, ReferenceStrength.STRONG);
     }
-
 }

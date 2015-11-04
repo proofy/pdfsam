@@ -72,6 +72,11 @@ public interface UserContext {
     int getThumbnailsSize();
 
     /**
+     * @return the max number of rows that the log view should display
+     */
+    int getNumberOfLogRows();
+
+    /**
      * @return the name of the configured theme
      */
     String getTheme();
@@ -80,11 +85,6 @@ public interface UserContext {
      * @return the module to load at application startup
      */
     String getStartupModule();
-
-    /**
-     * @return the policy to use regarding displaying news
-     */
-    String getNewsPolicy();
 
     /**
      * Clear user preferences

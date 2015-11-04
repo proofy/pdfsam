@@ -25,19 +25,21 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.io.File;
 import java.util.function.Consumer;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
-import org.pdfsam.ui.selection.multiple.SelectionTableRowData;
 import org.sejda.conversion.exception.ConversionException;
 
 /**
@@ -71,8 +73,20 @@ public class MergeSelectionPaneTest {
     }
 
     @Test
+    @Ignore
+    public void emptyByZeroPagesSelected() throws Exception {
+        populate();
+        victim.table().getItems().get(0).setPageSelection("0");
+        victim.apply(builder, onError);
+        verify(onError).accept(anyString());
+        verify(builder, never()).addInput(any());
+
+    }
+
+    @Test
     public void notEmpty() throws Exception {
         populate();
+        when(builder.hasInput()).thenReturn(Boolean.TRUE);
         victim.apply(builder, onError);
         verify(onError, never()).accept(anyString());
         verify(builder).addInput(any());
@@ -89,8 +103,8 @@ public class MergeSelectionPaneTest {
 
     private void populate() throws Exception {
         File file = folder.newFile("temp.pdf");
-        PdfLoadRequestEvent<SelectionTableRowData> loadEvent = new PdfLoadRequestEvent<>(MODULE);
-        loadEvent.add(new SelectionTableRowData(file));
+        PdfLoadRequestEvent loadEvent = new PdfLoadRequestEvent(MODULE);
+        loadEvent.add(PdfDocumentDescriptor.newDescriptorNoPassword(file));
         eventStudio().broadcast(loadEvent, MODULE);
     }
 }

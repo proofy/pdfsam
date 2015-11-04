@@ -21,17 +21,20 @@ package org.pdfsam.ui.log;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import javafx.scene.Parent;
-import javafx.scene.input.Clipboard;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import javax.inject.Inject;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
 import org.loadui.testfx.utils.FXTestUtils;
+import org.pdfsam.context.UserContext;
+import org.pdfsam.test.ClearEventStudioRule;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +44,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javafx.scene.Parent;
+import javafx.scene.input.Clipboard;
 
 /**
  * @author Andrea Vacondio
@@ -53,10 +59,19 @@ public class LogPaneTest extends GuiTest {
 
     @Inject
     private ApplicationContext applicationContext;
+    @ClassRule
+    public static ClearEventStudioRule clearStudio = new ClearEventStudioRule();
 
     @Configuration
     @Lazy
     static class Config {
+        @Bean
+        public UserContext context() {
+            UserContext userContext = mock(UserContext.class);
+            when(userContext.getNumberOfLogRows()).thenReturn(200);
+            return userContext;
+        }
+
         @Bean
         @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
         public LogPane pane() {
@@ -65,9 +80,9 @@ public class LogPaneTest extends GuiTest {
 
         @Bean
         public LogListView view() {
-            LogListView view = new LogListView();
-            view.appendLog(LogLevel.INFO, "A message");
-            view.appendLog(LogLevel.ERROR, "An Error message");
+            LogListView view = new LogListView(context());
+            view.onEvent(new LogMessage("A message", LogLevel.INFO));
+            view.onEvent(new LogMessage("An Error message", LogLevel.ERROR));
             return view;
         }
     }

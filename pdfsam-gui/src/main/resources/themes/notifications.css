@@ -24,7 +24,7 @@
 .notification-title{
 	-fx-font-size: 1.2em;
     -fx-font-weight: bold;
-    -fx-padding: 6.0 0.0 4.0 0.0;
+    -fx-padding: 8.0 0.0 4.0 0.0;
 }
 
 .notification-text{
@@ -32,31 +32,19 @@
 	-fx-wrap-text: true;
 	-fx-graphic-text-gap: 8.0px;
 }
-.notification-error .awesome, .notification-error .awesome:hover{
+.notification-error > .glyph-icon {
     -fx-effect: null;
-    -fx-text-fill: -pdfsam-error-color;
+    -fx-fill: -pdfsam-error-color;
 }
-.notification-warn .awesome, .notification-warn .awesome:hover{
+.notification-warn > .glyph-icon  {
     -fx-effect: null;
-    -fx-text-fill: #EEAD69;
+    -fx-fill: #EEAD69;
 }
-.notification-info .awesome, .notification-info .awesome:hover{
+.notification-info > .glyph-icon  {
     -fx-effect: null;
-    -fx-text-fill: -pdfsam-info-color;
+    -fx-fill: -pdfsam-info-color;
 }
-.notification-pro .awesome, .notification-info .awesome:hover{
+.notification-pro  > .glyph-icon {
     -fx-effect: null;
-    -fx-text-fill: -pdfsam-theme-color;
-}
-.notification .close{
-	-fx-background-color:  transparent;
-    -fx-background-insets:  0.0;
-    -fx-background-radius: 0.0;
-    -fx-padding: 0.0px;
-}
-.notification .close:hover .awesome{
- 	-fx-text-fill: derive(-fx-text-base-color, 70.0%);
-}
-.notification .close:armed .awesome{
- 	-fx-text-fill: derive(-fx-text-base-color, 30.0%);
+    -fx-fill: -pdfsam-theme-color;
 }

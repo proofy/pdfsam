@@ -18,15 +18,11 @@
  */
 package org.pdfsam.ui.banner;
 
-import javafx.geometry.Side;
-import javafx.scene.control.Tooltip;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.pdfsam.i18n.DefaultI18nContext;
-
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import javafx.geometry.Side;
 
 /**
  * Button to open the menu
@@ -39,8 +35,7 @@ class MenuButton extends BannerButton {
 
     @Inject
     MenuButton(AppContextMenu menu) {
-        super(AwesomeIcon.BARS);
-        setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Application menu")));
+        super(MaterialDesignIcon.MENU);
         setOnAction(e -> menu.show(this, Side.BOTTOM, 0, 0));
     }
 }

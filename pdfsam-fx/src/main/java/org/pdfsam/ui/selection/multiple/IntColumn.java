@@ -20,11 +20,10 @@ package org.pdfsam.ui.selection.multiple;
 
 import java.util.Comparator;
 
-import javafx.beans.value.ObservableValue;
-
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pdfsam.i18n.DefaultI18nContext;
+
+import javafx.beans.value.ObservableValue;
 
 /**
  * Definition of the {@link Integer} columns of the selection table
@@ -40,13 +39,13 @@ public enum IntColumn implements SelectionTableColumn<Integer> {
 
         @Override
         public ObservableValue<Integer> getObservableValue(SelectionTableRowData data) {
-            return data.pages();
+            return data.descriptor().pages();
         }
 
         @Override
         public String getTextValue(Integer item) {
             if (item != null && item.intValue() > 0) {
-                return ObjectUtils.toString(item);
+                return item.toString();
             }
             return StringUtils.EMPTY;
         }

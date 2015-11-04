@@ -2,25 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<description>Core pdfsam library</description>
-	<url>http://www.pdfsam.org</url>
 	<parent>
 		<groupId>org.pdfsam</groupId>
 		<artifactId>pdfsam-parent</artifactId>
-		<version>3.0.0.BETA-SNAPSHOT</version>
-		<relativePath>../pdfsam-parent/pom.xml</relativePath>
+		<version>3.0.0.RELEASE-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>pdfsam-core</artifactId>
-  <version>3.0.0.M2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>PDFsam core</name>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
 				<executions>
 					<execution>
 						<goals>
@@ -44,7 +41,7 @@
 		<dependency>
 			<groupId>de.jensd</groupId>
 			<artifactId>fontawesomefx</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.sejda</groupId>
 			<artifactId>sejda-model</artifactId>

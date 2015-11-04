@@ -19,13 +19,14 @@
 package org.pdfsam.ui.commons;
 
 import static org.loadui.testfx.Assertions.verifyThat;
-import javafx.scene.Parent;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
+
+import javafx.scene.Parent;
 
 /**
  * @author Andrea Vacondio

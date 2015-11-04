@@ -33,13 +33,13 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pdfsam.context.UserContext;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.i18n.SetLocaleEvent;
 import org.pdfsam.module.Module;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.HighPriorityTestModule;
 import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
-import org.pdfsam.ui.NewsPolicy;
 import org.pdfsam.ui.Theme;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -86,7 +86,6 @@ public class PreferencePaneTest {
             when(userContext.getDefaultWorkspacePath()).thenReturn("/my/path.xml");
             when(userContext.getThumbnailsSize()).thenReturn(200);
             when(userContext.getStartupModule()).thenReturn("");
-            when(userContext.getNewsPolicy()).thenReturn(NewsPolicy.ONCE_A_DAY.toString());
             return userContext;
         }
 
@@ -105,8 +104,6 @@ public class PreferencePaneTest {
                 .lookup("#themeCombo");
         PreferenceComboBox<KeyStringValueItem<String>> startupModuleCombo = (PreferenceComboBox<KeyStringValueItem<String>>) victim
                 .lookup("#startupModuleCombo");
-        PreferenceComboBox<KeyStringValueItem<String>> newsDisplayPolicy = (PreferenceComboBox<KeyStringValueItem<String>>) victim
-                .lookup("#newsPolicy");
         assertEquals(Theme.ROUNDISH.friendlyName(), theme.getSelectionModel().getSelectedItem().getValue());
         assertTrue(((PreferenceCheckBox) victim.lookup("#checkForUpdates")).isSelected());
         assertTrue(((PreferenceCheckBox) victim.lookup("#playSounds")).isSelected());
@@ -117,9 +114,8 @@ public class PreferencePaneTest {
         assertEquals("/my/path", ((PreferenceBrowsableDirectoryField) victim.lookup("#workingDirectory"))
                 .getTextField().getText());
         // assertEquals("200", ((PreferenceIntTextField) victim.lookup("#thumbnailsSize")).getText());
-        assertEquals("Dashboard", startupModuleCombo.getSelectionModel().getSelectedItem().getValue());
-        assertEquals(NewsPolicy.ONCE_A_DAY.friendlyName(), newsDisplayPolicy.getSelectionModel().getSelectedItem()
-                .getValue());
+        assertEquals(DefaultI18nContext.getInstance().i18n("Dashboard"),
+                startupModuleCombo.getSelectionModel().getSelectedItem().getValue());
     }
 
 }

@@ -22,7 +22,6 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.sejda.conversion.AdapterUtils.splitAndTrim;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 
@@ -33,50 +32,65 @@ import org.sejda.common.collection.NullSafeSet;
 import org.sejda.conversion.exception.ConversionException;
 import org.sejda.model.pdf.page.PageRange;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * Model for a row of the selection table
  * 
  * @author Andrea Vacondio
  * 
  */
-public final class SelectionTableRowData extends PdfDocumentDescriptor {
+public final class SelectionTableRowData {
 
-    public SelectionTableRowData(File file, String password) {
-        super(file, password);
+    private PdfDocumentDescriptor descriptor;
+    private SimpleStringProperty pageSelection = new SimpleStringProperty(StringUtils.EMPTY);
+
+    public SelectionTableRowData(PdfDocumentDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 
-    public SelectionTableRowData(File file) {
-        super(file, null);
+    public SelectionTableRowData(PdfDocumentDescriptor descriptor, String pageSelection) {
+        this(descriptor);
+        this.pageSelection.set(defaultString(pageSelection));
     }
-
-    private String pageSelection = StringUtils.EMPTY;
 
     public String getPageSelection() {
-        return pageSelection;
+        return pageSelection.get();
     }
 
     public void setPageSelection(String pageSelection) {
-        this.pageSelection = defaultString(pageSelection);
+        this.pageSelection.set(defaultString(pageSelection));
     }
 
-    @Override
-    public SelectionTableRowData retain() {
-        super.retain();
-        return this;
+    public SimpleStringProperty pageSelectionProperty() {
+        return pageSelection;
+    }
+
+    public SelectionTableRowData duplicate() {
+        descriptor.retain();
+        return new SelectionTableRowData(descriptor, pageSelection.get());
+    }
+
+    public PdfDocumentDescriptor descriptor() {
+        return descriptor;
+    }
+
+    public void invalidate() {
+        descriptor.release();
     }
 
     /**
      * @return the {@link PageRange} selection set if any, an empty set otherwise.
      */
     public Set<PageRange> toPageRangeSet() throws ConversionException {
-        if (isNotBlank(pageSelection)) {
+        if (isNotBlank(pageSelection.get())) {
             Set<PageRange> pageRangeSet = new NullSafeSet<>();
-            String[] tokens = splitAndTrim(pageSelection, ",");
+            String[] tokens = splitAndTrim(pageSelection.get(), ",");
             for (String current : tokens) {
                 PageRange range = toPageRange(current);
                 if (range.getEnd() < range.getStart()) {
-                    throw new ConversionException(DefaultI18nContext.getInstance().i18n("Invalid range: {0}.",
-                            range.toString()));
+                    throw new ConversionException(
+                            DefaultI18nContext.getInstance().i18n("Invalid range: {0}.", range.toString()));
                 }
                 pageRangeSet.add(range);
             }

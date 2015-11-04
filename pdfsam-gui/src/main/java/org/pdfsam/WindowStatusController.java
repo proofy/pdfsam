@@ -18,20 +18,19 @@
  */
 package org.pdfsam;
 
-import static org.sejda.eventstudio.StaticStudio.eventStudio;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.pdfsam.ui.StageService;
+import org.pdfsam.ui.StageStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.pdfsam.ui.SetLatestStageStatusRequest;
-import org.pdfsam.ui.StageMode;
-import org.pdfsam.ui.StageStatus;
-import org.pdfsam.ui.StageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 /**
  * Controller for the Window status
@@ -42,7 +41,7 @@ import org.slf4j.LoggerFactory;
 @Named
 class WindowStatusController {
     private static final Logger LOG = LoggerFactory.getLogger(WindowStatusController.class);
-    public static final String PDFSAM_DISABLE_UI_RESTORE = "pdfsam.disable.ui.restore";
+    public static final String PDFSAM_DISABLE_UI_RESTORE = "org.pdfsam.disable.ui.restore";
 
     private Stage stage;
     private StageService service;
@@ -54,12 +53,6 @@ class WindowStatusController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
-        this.stage.setOnCloseRequest(e -> {
-            StageStatus status = new StageStatus(this.stage.getX(), this.stage.getY(), this.stage.getWidth(),
-                    this.stage.getHeight());
-            status.setMode(StageMode.valueFor(this.stage));
-            eventStudio().broadcast(new SetLatestStageStatusRequest(status));
-        });
         initUi();
     }
 
@@ -76,11 +69,9 @@ class WindowStatusController {
     }
 
     private void defaultStageStatus() {
-        Rectangle2D bounds = Screen.getPrimary().getBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 4);
         stage.setMaximized(true);
 
     }
@@ -90,7 +81,14 @@ class WindowStatusController {
         stage.setY(latestStatus.getY());
         stage.setWidth(latestStatus.getWidth());
         stage.setHeight(latestStatus.getHeight());
-        latestStatus.getMode().restore(stage);
+
+        if(isNotMac()) {
+            latestStatus.getMode().restore(stage);
+        }
+    }
+
+    private boolean isNotMac() {
+        return !Optional.of(System.getProperty("os.name")).orElse("").toLowerCase().contains("mac");
     }
 
     private boolean hasAvailableScreen(StageStatus status) {

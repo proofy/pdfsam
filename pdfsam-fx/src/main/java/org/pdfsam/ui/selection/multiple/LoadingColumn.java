@@ -25,12 +25,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.Comparator;
 
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
-
 import org.apache.commons.lang3.StringUtils;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
@@ -40,6 +34,12 @@ import org.pdfsam.ui.selection.LoadingStatusIndicatorUpdater;
 import org.pdfsam.ui.selection.ShowPasswordFieldPopupRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 /**
  * Definition of the {@link PdfDescriptorLoadingStatus} column of the selection table
@@ -65,7 +65,7 @@ public class LoadingColumn implements SelectionTableColumn<PdfDescriptorLoadingS
 
     @Override
     public ObservableValue<PdfDescriptorLoadingStatus> getObservableValue(SelectionTableRowData data) {
-        return data.loadingStatus();
+        return data.descriptor().loadingStatus();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class LoadingColumn implements SelectionTableColumn<PdfDescriptorLoadingS
         }
 
         public PdfDocumentDescriptor getPdfDocumentDescriptor() {
-            return (SelectionTableRowData) getTableRow().getItem();
+            return ((SelectionTableRowData) getTableRow().getItem()).descriptor();
         }
     }
 }

@@ -34,6 +34,7 @@ import org.sejda.model.outline.OutlinePolicy;
 import org.sejda.model.output.FileTaskOutput;
 import org.sejda.model.parameter.MergeParameters;
 import org.sejda.model.pdf.PdfVersion;
+import org.sejda.model.pdf.form.AcroFormPolicy;
 
 /**
  * @author Andrea Vacondio
@@ -51,7 +52,7 @@ public class MergeParametersBuilderTest {
         victim.output(output);
         victim.overwrite(true);
         victim.blankPageIfOdd(true);
-        victim.copyFormFields(true);
+        victim.acroFormsPolicy(AcroFormPolicy.DISCARD);
         victim.outlinePolicy(OutlinePolicy.ONE_ENTRY_EACH_DOC);
         File file = folder.newFile("my.pdf");
         PdfFileSource source = PdfFileSource.newInstanceNoPassword(file);
@@ -63,7 +64,7 @@ public class MergeParametersBuilderTest {
         assertTrue(params.isOverwrite());
         assertEquals(PdfVersion.VERSION_1_7, params.getVersion());
         assertTrue(params.isBlankPageIfOdd());
-        assertTrue(params.isCopyFormFields());
+        assertEquals(AcroFormPolicy.DISCARD, params.getAcroFormPolicy());
         assertEquals(OutlinePolicy.ONE_ENTRY_EACH_DOC, params.getOutlinePolicy());
         assertEquals(output, params.getOutput());
         assertEquals(input, params.getInputList().get(0));

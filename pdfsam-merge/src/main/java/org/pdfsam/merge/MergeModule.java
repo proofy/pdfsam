@@ -24,13 +24,6 @@ import static org.pdfsam.ui.support.Views.titledPane;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -47,6 +40,13 @@ import org.sejda.eventstudio.annotation.EventStation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
 /**
  * Merge module to let the user merge together multiple pdf documents
  * 
@@ -62,17 +62,15 @@ public class MergeModule extends BaseTaskExecutionModule {
     private MergeOptionsPane mergeOptions = new MergeOptionsPane();
     private BrowsablePdfOutputField destinationFileField;
     private PdfDestinationPane destinationPane;
-    private ModuleDescriptor descriptor = builder()
-            .category(ModuleCategory.MERGE)
+    private ModuleDescriptor descriptor = builder().category(ModuleCategory.MERGE)
             .name(DefaultI18nContext.getInstance().i18n("Merge"))
-            .description(
-                    DefaultI18nContext.getInstance().i18n(
-                            "Merge together multiple pdf documents or subsections of them."))
+            .description(DefaultI18nContext.getInstance()
+                    .i18n("Merge together multiple PDF documents or subsections of them."))
             .priority(ModulePriority.HIGH.getPriority()).supportURL("http://www.pdfsam.org/pdf-merge").build();
 
     @Inject
-    public MergeModule(@Named(MODULE_ID + "field") BrowsablePdfOutputField destinationFileField, @Named(MODULE_ID
-            + "pane") PdfDestinationPane destinationPane) {
+    public MergeModule(@Named(MODULE_ID + "field") BrowsablePdfOutputField destinationFileField,
+            @Named(MODULE_ID + "pane") PdfDestinationPane destinationPane) {
         this.destinationFileField = destinationFileField;
         this.destinationPane = destinationPane;
     }

@@ -18,11 +18,21 @@
  */
 package org.pdfsam.ui.log;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
+import java.util.concurrent.TimeoutException;
+
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
+import org.pdfsam.context.UserContext;
+import org.pdfsam.test.ClearEventStudioRule;
+import org.pdfsam.test.InitializeJavaFxThreadRule;
 
 /**
  * @author Andrea Vacondio
@@ -31,15 +41,54 @@ import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
 public class LogListViewTest {
 
     @Rule
-    public InitializeAndApplyJavaFxThreadRule javaFxThread = new InitializeAndApplyJavaFxThreadRule();
+    public InitializeJavaFxThreadRule javaFxThread = new InitializeJavaFxThreadRule();
+    @Rule
+    public ClearEventStudioRule clearStudio = new ClearEventStudioRule();
+    private UserContext userContext;
+
+    @Before
+    public void setUp() {
+        this.userContext = mock(UserContext.class);
+    }
 
     @Test
-    public void append() {
-        LogListView victim = new LogListView();
-        victim.appendLog(LogLevel.WARN, "testMessage");
-        victim.appendLog(LogLevel.INFO, "anotherTestMessage");
-        assertEquals(2, victim.getItems().size());
-        assertEquals("testMessage", victim.getItems().get(0).getMessage());
-        assertEquals("anotherTestMessage", victim.getItems().get(1).getMessage());
+    public void append() throws InterruptedException, TimeoutException {
+        when(userContext.getNumberOfLogRows()).thenReturn(200);
+        LogListView victim = new LogListView(userContext);
+        victim.onEvent(new LogMessage("testMessage", LogLevel.WARN));
+        victim.onEvent(new LogMessage("anotherTestMessage", LogLevel.INFO));
+        waitOrTimeout(() -> victim.getItems().size() == 2, timeout(seconds(2)));
+        waitOrTimeout(() -> "testMessage".equals(victim.getItems().get(0).getMessage()), timeout(seconds(2)));
+        waitOrTimeout(() -> "anotherTestMessage".equals(victim.getItems().get(1).getMessage()), timeout(seconds(2)));
+    }
+
+    @Test
+    public void appendSizeConstraint() throws InterruptedException, TimeoutException {
+        when(userContext.getNumberOfLogRows()).thenReturn(2);
+        LogListView victim = new LogListView(userContext);
+        victim.onEvent(new LogMessage("testMessage", LogLevel.WARN));
+        victim.onEvent(new LogMessage("anotherTestMessage", LogLevel.INFO));
+        victim.onEvent(new LogMessage("anotherTestMessage2", LogLevel.INFO));
+        victim.onEvent(new LogMessage("anotherTestMessage3", LogLevel.INFO));
+        waitOrTimeout(() -> victim.getItems().size() == 2, timeout(seconds(2)));
+        waitOrTimeout(() -> "anotherTestMessage2".equals(victim.getItems().get(0).getMessage()), timeout(seconds(2)));
+        waitOrTimeout(() -> "anotherTestMessage3".equals(victim.getItems().get(1).getMessage()), timeout(seconds(2)));
+    }
+
+    @Test
+    public void maxNumberOfLogRowsChanged() throws InterruptedException, TimeoutException {
+        when(userContext.getNumberOfLogRows()).thenReturn(5);
+        LogListView victim = new LogListView(userContext);
+        victim.onEvent(new LogMessage("testMessage", LogLevel.WARN));
+        victim.onEvent(new LogMessage("anotherTestMessage", LogLevel.INFO));
+        victim.onEvent(new LogMessage("anotherTestMessage2", LogLevel.INFO));
+        victim.onEvent(new LogMessage("anotherTestMessage3", LogLevel.INFO));
+        victim.onEvent(new LogMessage("anotherTestMessage4", LogLevel.INFO));
+        waitOrTimeout(() -> victim.getItems().size() == 5, timeout(seconds(2)));
+        when(userContext.getNumberOfLogRows()).thenReturn(2);
+        eventStudio().broadcast(new MaxLogRowsChangedEvent());
+        waitOrTimeout(() -> victim.getItems().size() == 2, timeout(seconds(2)));
+        waitOrTimeout(() -> "anotherTestMessage3".equals(victim.getItems().get(0).getMessage()), timeout(seconds(2)));
+        waitOrTimeout(() -> "anotherTestMessage4".equals(victim.getItems().get(1).getMessage()), timeout(seconds(2)));
     }
 }

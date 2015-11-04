@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 17/ott/2014
+ * Created on 22 ott 2015
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,39 +18,34 @@
  */
 package org.pdfsam;
 
-import static org.pdfsam.support.RequireUtils.requireNotBlank;
-import static org.pdfsam.support.RequireUtils.requireNotNull;
-
 /**
- * Information about the running version of PDFsam
+ * Information about the current running version of PDFsam
  * 
  * @author Andrea Vacondio
  *
  */
-public class Pdfsam {
+public interface Pdfsam {
+    /**
+     * @return application edition
+     */
+    PdfsamEdition edition();
 
-    private PdfsamEdition edition;
-    private String version;
-    private String name;
+    /**
+     * @return application name
+     */
+    String name();
 
-    public Pdfsam(PdfsamEdition edition, String name, String version) {
-        requireNotBlank(name, "Application name cannot be blank");
-        requireNotBlank(version, "Application name cannot be blank");
-        requireNotNull(edition, "Edition cannot be null");
-        this.edition = edition;
-        this.version = version;
-        this.name = name;
-    }
+    /**
+     * @param prop
+     * @param defaultValue
+     * @return a configurable property value
+     */
+    public String property(ConfigurableProperty prop, String defaultValue);
 
-    public PdfsamEdition edition() {
-        return edition;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String version() {
-        return version;
-    }
+    /**
+     * @param prop
+     * @param defaultValue
+     * @return a configurable property value or blank if no value is available
+     */
+    public String property(ConfigurableProperty prop);
 }

@@ -22,11 +22,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.Collection;
 
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -39,6 +34,11 @@ import org.pdfsam.ui.support.Style;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
 
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+
 /**
  * Stage for the log panel
  * 
@@ -46,13 +46,13 @@ import org.sejda.eventstudio.annotation.EventStation;
  * 
  */
 @Named
-class LogStage extends Stage {
+public class LogStage extends Stage {
 
     @EventStation
     public static final String LOGSTAGE_EVENTSTATION = "LogStage";
 
     @Inject
-    public LogStage(LogPane logPane, Collection<Image> logos, StylesConfig styles) {
+    public LogStage(LogPane logPane, LogListView logView, Collection<Image> logos, StylesConfig styles) {
         BorderPane containerPane = new BorderPane();
         containerPane.getStyleClass().addAll(Style.CONTAINER.css());
         containerPane.setCenter(logPane);
@@ -65,6 +65,13 @@ class LogStage extends Stage {
         getIcons().addAll(logos);
         setMaximized(true);
         eventStudio().addAnnotatedListeners(this);
+        showingProperty().addListener((v, oldVal, newVal) -> {
+            if (newVal) {
+                eventStudio().add(logView, LOGSTAGE_EVENTSTATION);
+            } else {
+                eventStudio().remove(logView, LOGSTAGE_EVENTSTATION);
+            }
+        });
     }
 
     @EventListener

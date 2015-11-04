@@ -23,10 +23,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.io.IOException;
 
-import javafx.scene.Parent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 import javax.inject.Inject;
 
 import org.junit.Rule;
@@ -48,6 +44,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * @author Andrea Vacondio
@@ -88,13 +88,9 @@ public class BannerPaneTest extends GuiTest {
 
         @Bean
         public BannerButtons buttons() {
-            return new BannerButtons(notification(), logButton(), dashboardButton(), menuButton());
+            return new BannerButtons(logButton(), dashboardButton(), newsButton(), menuButton());
         }
 
-        @Bean
-        public ErrorsNotification notification() {
-            return new ErrorsNotification();
-        }
 
         @Bean
         public LogButton logButton() {
@@ -104,6 +100,11 @@ public class BannerPaneTest extends GuiTest {
         @Bean
         public DashboardButton dashboardButton() {
             return new DashboardButton(id());
+        }
+
+        @Bean
+        public NewsButton newsButton() {
+            return new NewsButton();
         }
 
         @Bean

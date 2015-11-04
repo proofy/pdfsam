@@ -43,7 +43,7 @@ import org.pdfsam.ui.workspace.RestorableView;
  * @author Andrea Vacondio
  *
  */
-class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGoToActionLevelParametersBuilder>,
+class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByOutlineLevelParametersBuilder>,
         RestorableView {
 
     private BookmarksLevelComboBox levelCombo = new BookmarksLevelComboBox();
@@ -54,8 +54,8 @@ class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGo
         getStyleClass().addAll(Style.CONTAINER.css());
         levelCombo.setId("bookmarksLevel");
         regexpField.setId("bookmarksRegexp");
-        regexpField.setPromptText(DefaultI18nContext.getInstance().i18n("Regexp the bookmark has to match"));
-        regexpField.setPrefWidth(300);
+        regexpField.setPromptText(DefaultI18nContext.getInstance().i18n("Regular expression the bookmark has to match"));
+        regexpField.setPrefWidth(350);
         getChildren().addAll(
                 createLine(new Label(DefaultI18nContext.getInstance().i18n("Split at this bookmark level:")),
                         levelCombo),
@@ -74,7 +74,7 @@ class SplitOptionsPane extends VBox implements TaskParametersBuildStep<SplitByGo
         return item;
     }
 
-    public void apply(SplitByGoToActionLevelParametersBuilder builder, Consumer<String> onError) {
+    public void apply(SplitByOutlineLevelParametersBuilder builder, Consumer<String> onError) {
         levelCombo.apply(builder, onError);
         if (isNotBlank(regexpField.getText())) {
             builder.regexp(regexpField.getText());

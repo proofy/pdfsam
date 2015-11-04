@@ -24,8 +24,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.pdfsam.ui.NewsPolicy;
 import org.pdfsam.ui.Theme;
 
 /**
@@ -38,6 +38,11 @@ public class DefaultUserContextTest {
 
     private DefaultUserContext victim = new DefaultUserContext();
 
+    @Before
+    public void setUp() {
+        victim.clear();
+    }
+
     @After
     public void tearDown() {
         victim.clear();
@@ -49,6 +54,16 @@ public class DefaultUserContextTest {
         assertFalse(victim.isCheckForUpdates());
         victim.setBooleanPreference(BooleanUserPreference.CHECK_UPDATES, true);
         assertTrue(victim.isCheckForUpdates());
+    }
+
+    @Test
+    public void isCheckUpdatesSystemDefault() {
+        System.setProperty(DefaultUserContext.CHECK_FOR_UPDATES_PROP, "false");
+        assertFalse(victim.isCheckForUpdates());
+        victim.setBooleanPreference(BooleanUserPreference.CHECK_UPDATES, true);
+        assertTrue(victim.isCheckForUpdates());
+        System.clearProperty(DefaultUserContext.CHECK_FOR_UPDATES_PROP);
+
     }
 
     @Test
@@ -93,6 +108,15 @@ public class DefaultUserContextTest {
     }
 
     @Test
+    public void getLocalesystemProp() {
+        System.setProperty(DefaultUserContext.LOCALE_PROP, "es");
+        assertEquals("es", victim.getLocale());
+        victim.setStringPreference(StringUserPreference.LOCALE, "");
+        assertTrue(isBlank(victim.getLocale()));
+        System.clearProperty(DefaultUserContext.LOCALE_PROP);
+    }
+
+    @Test
     public void getThumbIdentifier() {
         victim.setStringPreference(StringUserPreference.THUMBNAILS_IDENTIFIER, "ChuckNorris");
         assertEquals("ChuckNorris", victim.getThumbnailsCreatorIdentifier());
@@ -117,14 +141,6 @@ public class DefaultUserContextTest {
     }
 
     @Test
-    public void getNewsPolicy() {
-        victim.setStringPreference(StringUserPreference.NEWS_POLICY, "ChuckNorris");
-        assertEquals("ChuckNorris", victim.getNewsPolicy());
-        victim.setStringPreference(StringUserPreference.NEWS_POLICY, "");
-        assertEquals(NewsPolicy.ONCE_A_WEEK.toString(), victim.getNewsPolicy());
-    }
-
-    @Test
     public void getDefaultWorkingPath() {
         victim.setStringPreference(StringUserPreference.WORKING_PATH, "/path");
         assertEquals("/path", victim.getDefaultWorkingPath());
@@ -144,5 +160,12 @@ public class DefaultUserContextTest {
     public void getThumbPoolSize() {
         victim.setIntegerPreference(IntUserPreference.THUMBNAILS_SIZE, 2);
         assertEquals(2, victim.getThumbnailsSize());
+    }
+
+    @Test
+    public void getNumberOfLogRows() {
+        assertEquals(200, victim.getNumberOfLogRows());
+        victim.setIntegerPreference(IntUserPreference.LOGVIEW_ROWS_NUMBER, 20);
+        assertEquals(20, victim.getNumberOfLogRows());
     }
 }

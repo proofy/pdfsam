@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +45,9 @@ import org.sejda.model.parameter.base.AbstractPdfOutputParameters;
 import org.sejda.model.pdf.PdfVersion;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
 /**
  * Panel letting the user select an output destination for generated Pdf document/s.
@@ -74,7 +74,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         version = new PdfVersionCombo(ownerModule);
         compress = new PdfVersionConstrainedCheckBox(PdfVersion.VERSION_1_5, ownerModule);
         compress.setText(DefaultI18nContext.getInstance().i18n("Compress output file/files"));
-        HBox versionPane = new HBox(new Label(DefaultI18nContext.getInstance().i18n("Output pdf version:")), version);
+        HBox versionPane = new HBox(new Label(DefaultI18nContext.getInstance().i18n("Output PDF version:")), version);
         versionPane.getStyleClass().addAll(Style.VITEM.css());
         versionPane.getStyleClass().addAll(Style.HCONTAINER.css());
         getChildren().addAll(compress, versionPane);

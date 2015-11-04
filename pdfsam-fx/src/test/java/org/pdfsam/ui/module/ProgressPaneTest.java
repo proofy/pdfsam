@@ -30,12 +30,10 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import javafx.scene.control.Labeled;
-import javafx.scene.control.ProgressBar;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.i18n.SetLocaleEvent;
 import org.pdfsam.module.TaskExecutionRequestEvent;
 import org.pdfsam.test.ClearEventStudioRule;
@@ -48,6 +46,9 @@ import org.sejda.model.output.FileTaskOutput;
 import org.sejda.model.output.TaskOutput;
 import org.sejda.model.parameter.base.AbstractParameters;
 import org.sejda.model.task.NotifiableTaskMetadata;
+
+import javafx.scene.control.Labeled;
+import javafx.scene.control.ProgressBar;
 
 /**
  * @author Andrea Vacondio
@@ -79,7 +80,8 @@ public class ProgressPaneTest {
         victim.onTaskCompleted(event);
         assertFalse(victim.lookup(".pdfsam-footer-failed-button").isVisible());
         assertTrue(victim.lookup(".pdfsam-footer-open-button").isVisible());
-        assertEquals("Completed", ((Labeled) victim.lookup(".progress-status")).getText());
+        assertEquals(DefaultI18nContext.getInstance().i18n("Completed"),
+                ((Labeled) victim.lookup(".progress-status")).getText());
         assertEquals(1, ((ProgressBar) victim.lookup(".pdfsam-footer-bar")).getProgress(), 0.01);
     }
 
@@ -89,7 +91,8 @@ public class ProgressPaneTest {
         victim.onTaskFailed(event);
         assertTrue(victim.lookup(".pdfsam-footer-failed-button").isVisible());
         assertFalse(victim.lookup(".pdfsam-footer-open-button").isVisible());
-        assertEquals("Failed", ((Labeled) victim.lookup(".progress-status")).getText());
+        assertEquals(DefaultI18nContext.getInstance().i18n("Failed"),
+                ((Labeled) victim.lookup(".progress-status")).getText());
         assertEquals(1, ((ProgressBar) victim.lookup(".pdfsam-footer-bar")).getProgress(), 0.01);
     }
 
@@ -112,7 +115,8 @@ public class ProgressPaneTest {
         victim.onProgress(event);
         assertFalse(victim.lookup(".pdfsam-footer-failed-button").isVisible());
         assertFalse(victim.lookup(".pdfsam-footer-open-button").isVisible());
-        assertEquals("Running", ((Labeled) victim.lookup(".progress-status")).getText());
+        assertEquals(DefaultI18nContext.getInstance().i18n("Running"),
+                ((Labeled) victim.lookup(".progress-status")).getText());
         assertTrue(((ProgressBar) victim.lookup(".pdfsam-footer-bar")).isIndeterminate());
     }
 
@@ -126,7 +130,8 @@ public class ProgressPaneTest {
         victim.onTaskExecutionRequest(event);
         assertFalse(victim.lookup(".pdfsam-footer-failed-button").isVisible());
         assertFalse(victim.lookup(".pdfsam-footer-open-button").isVisible());
-        assertEquals("Requested", ((Labeled) victim.lookup(".progress-status")).getText());
+        assertEquals(DefaultI18nContext.getInstance().i18n("Requested"),
+                ((Labeled) victim.lookup(".progress-status")).getText());
         assertEquals(0, ((ProgressBar) victim.lookup(".pdfsam-footer-bar")).getProgress(), 0.01);
         verify(output).accept(any());
     }

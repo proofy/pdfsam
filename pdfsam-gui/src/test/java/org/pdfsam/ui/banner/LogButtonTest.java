@@ -18,11 +18,12 @@
  */
 package org.pdfsam.ui.banner;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
-import javafx.scene.Parent;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,7 +32,7 @@ import org.loadui.testfx.categories.TestFX;
 import org.pdfsam.ui.commons.ShowStageRequest;
 import org.sejda.eventstudio.Listener;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import javafx.scene.Parent;
 
 /**
  * @author Andrea Vacondio
@@ -48,7 +49,17 @@ public class LogButtonTest extends GuiTest {
     public void onClick() {
         Listener<ShowStageRequest> listener = mock(Listener.class);
         eventStudio().add(ShowStageRequest.class, listener, "LogStage");
-        click(AwesomeIcon.LIST.toString());
+        click(".button");
         verify(listener).onEvent(any());
+    }
+
+    @Test
+    public void setUpToDate() {
+        LogButton victim = find(".button");
+        assertFalse(victim.getStyleClass().contains(LogButton.HAS_ERRORS_CSS_CLASS));
+        victim.hasUnseenErrors(true);
+        assertTrue(victim.getStyleClass().contains(LogButton.HAS_ERRORS_CSS_CLASS));
+        victim.hasUnseenErrors(false);
+        assertFalse(victim.getStyleClass().contains(LogButton.HAS_ERRORS_CSS_CLASS));
     }
 }

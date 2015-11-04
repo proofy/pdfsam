@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Include>
+	<!-- Values required to change for a new release: -->
+	<?define ProductMajorVersion="3" ?>
+	<?define ProductMinorVersion="0" ?>
+	<?define ProductPatchVersion="0" ?>
+	<?define ProductLabelVersion="5" ?>
+	<!-- Change this -->
+	<?define ProductCode="{b1989a70-3017-475c-a757-3db52df0b89e}" ?>
+	<?define ProductFullVersion="3.0.0.RELEASE" ?>
+
+	<!-- Static configuration options. -->
+	<?define ProductVersion="$(var.ProductMajorVersion).$(var.ProductMinorVersion).$(var.ProductPatchVersion).$(var.ProductLabelVersion)" ?>
+	<?define ProductLanguage="!(loc.ProductLanguage)" ?>
+	<?define ProductName="PDFsam Basic" ?>
+	<?define ProductNameWithVersion="$(var.ProductName) $(var.ProductVersion)" ?>
+	<?define ProductCodeName="PDFsam" ?>
+	<?define ProductManufacturer="Andrea Vacondio" ?>
+	<!-- Keep this -->
+	<?define ProductUpgradeCode="{DB40FA48-1629-11E2-9401-2F676188709B}" ?>
+	<?define ProductIcon="resources\pdfsam.ico" ?>
+
+	<?define RTMProductVersion="1.0.0" ?>
+</Include>

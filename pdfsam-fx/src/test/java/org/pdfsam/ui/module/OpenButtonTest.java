@@ -28,8 +28,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.io.File;
 import java.io.OutputStream;
 
-import javafx.scene.Parent;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +41,9 @@ import org.sejda.model.output.DirectoryTaskOutput;
 import org.sejda.model.output.FileTaskOutput;
 import org.sejda.model.output.StreamTaskOutput;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import javafx.scene.Parent;
+import javafx.scene.text.Text;
 
 /**
  * @author Andrea Vacondio
@@ -75,7 +75,8 @@ public class OpenButtonTest extends GuiTest {
         FileTaskOutput output = mock(FileTaskOutput.class);
         FXTestUtils.invokeAndWait(() -> victim.dispatch(output), 1);
         verify(output).getDestination();
-        exists(AwesomeIcon.FILE_ALT.toString());
+        Text icon = find(".glyph-icon");
+        assertEquals(MaterialDesignIcon.FILE_PDF_BOX.characterToString(), icon.getText());
     }
 
     @Test
@@ -84,7 +85,8 @@ public class OpenButtonTest extends GuiTest {
         DirectoryTaskOutput output = mock(DirectoryTaskOutput.class);
         FXTestUtils.invokeAndWait(() -> victim.dispatch(output), 1);
         verify(output).getDestination();
-        exists(AwesomeIcon.FOLDER_ALTPEN.toString());
+        Text icon = find(".glyph-icon");
+        assertEquals(MaterialDesignIcon.FOLDER_OUTLINE.characterToString(), icon.getText());
     }
 
     @Test(expected = IllegalArgumentException.class)

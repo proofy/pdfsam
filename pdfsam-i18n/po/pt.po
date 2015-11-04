@@ -7,16 +7,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: info@pdfsam.org\n"
-"POT-Creation-Date: 2014-12-12 17:22+0100\n"
-"PO-Revision-Date: 2014-12-04 09:17+0000\n"
+"POT-Creation-Date: 2015-10-28 15:21+0100\n"
+"PO-Revision-Date: 2015-02-23 17:44+0000\n"
 "Last-Translator: Sérgio Marques <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-12-12 16:32+0000\n"
-"X-Generator: Launchpad (build 17286)\n"
+"X-Launchpad-Export-Date: 2015-10-28 14:24+0000\n"
+"X-Generator: Launchpad (build 17837)\n"
+
+msgid "Subscribe to the official news feed"
+msgstr "Subscreva a fonte oficial de notícias"
+
+msgid "Bug and feature requests"
+msgstr "Relatórios de erros e funções"
+
+msgid "Play the \"get started\" video"
+msgstr "Reproduzir o vídeo de iniciação"
+
+msgid "Fork PDFsam on GitHub"
+msgstr "Clonar PDFsam no GitHub"
+
+msgid "Translate"
+msgstr "Traduzir"
+
+msgid "Donate"
+msgstr "Donativos"
+
+msgid "Follow us on Twitter"
+msgstr "Siga-nos no Twitter"
+
+msgid "Follow us on Google Plus"
+msgstr "Siga-nos no Google Plus"
+
+msgid "Like us on Facebook"
+msgstr "Gosto no Facebook"
+
+msgid "Dashboard"
+msgstr "Painel de controlo"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Overwrite"
+msgstr "Substituir"
 
 #, java-format
 msgid "Installing theme {0}."
@@ -50,19 +86,14 @@ msgstr "Iniciado em {0}"
 msgid "Closing PDFsam..."
 msgstr "A fechar o PDFsam..."
 
-#, fuzzy
-msgid "Application menu"
-msgstr "Abrir mensagens da aplicação"
-
 msgid "_Modules"
 msgstr "_Módulos"
 
 msgid "E_xit"
 msgstr "_Sair"
 
-#, fuzzy
 msgid "Application messages"
-msgstr "Abrir mensagens da aplicação"
+msgstr "Mensagens da aplicação"
 
 msgid "_Workspace"
 msgstr "Área _de trabalho"
@@ -76,16 +107,14 @@ msgstr "_Gravar"
 msgid "Recen_t"
 msgstr "Recen_tes"
 
-#, fuzzy
 msgid "Select the workspace file to save"
-msgstr "Selecione a área de trabalho"
+msgstr "Selecione o ficheiro de área de trabalho para gravar"
 
-#, fuzzy
 msgid "Select the workspace to load"
-msgstr "Selecione a área de trabalho"
+msgstr "Selecione o ficheiro de área de trabalho a carregar"
 
-msgid "Dashboard"
-msgstr "Painel de controlo"
+msgid "What's new"
+msgstr "Novidades"
 
 msgid "Document details"
 msgstr "Detalhes do documento"
@@ -98,9 +127,6 @@ msgstr "Resumo"
 
 msgid "About"
 msgstr "Sobre"
-
-msgid "Subscribe to the official news feed"
-msgstr "Subscreva a fonte oficial de notícias"
 
 msgid "Environment"
 msgstr "Ambiente"
@@ -121,35 +147,11 @@ msgstr "Os projetos open source que tornaram o PDFsam possível"
 msgid "Support"
 msgstr "Suporte"
 
-msgid "Bug and feature requests"
-msgstr "Relatórios de erros e funções"
-
-msgid "Play the \"get started\" video"
-msgstr "Reproduza o vídeo"
-
 msgid "Contribute"
 msgstr "Participar"
 
-msgid "Fork PDFsam on GitHub"
-msgstr "Clonar PDFsam no GitHub"
-
-msgid "Translate"
-msgstr "Traduzir"
-
-msgid "Donate"
-msgstr "Donativos"
-
 msgid "Social"
-msgstr "Social"
-
-msgid "Follow us on Twitter"
-msgstr "Siga-nos no Twitter"
-
-msgid "Follow us on Google Plus"
-msgstr "Siga-nos no Google Plus"
-
-msgid "Like us on Facebook"
-msgstr "Gosto no Facebook"
+msgstr "Redes sociais"
 
 msgid "Manually selected"
 msgstr "Seleção manual"
@@ -204,6 +206,12 @@ msgstr "Tamanho deve ser entre {0}px e {1}px"
 msgid "Pixel size of the thumbnails (between {0}px and {1}px)"
 msgstr "Tamanho de pixeis das miniaturas (entre {0}px e {1}px)"
 
+msgid "Maximum number of rows mast be a positive number"
+msgstr "O número máximo de linhas tem de ser positivo"
+
+msgid "Maximum number of rows displayed by the Log register"
+msgstr "Número máximo de linhas a mostrar no registo"
+
 msgid "Generate high quality thumbnails (slower)"
 msgstr "Gerar miniaturas de alta qualidade (lento)"
 
@@ -239,6 +247,8 @@ msgid ""
 "Usage statistics are used to populate the modules quick bar on the left with "
 "the most used and most recently used modules."
 msgstr ""
+"As estatísticas de utilização serão utilizadas para preencher a barra de "
+"módulos existente à esquerda com os módulos utilizados recentemente."
 
 msgid "Load default workspace at startup:"
 msgstr "Carregar área de trabalho padrão ao iniciar:"
@@ -246,11 +256,8 @@ msgstr "Carregar área de trabalho padrão ao iniciar:"
 msgid "Default working directory:"
 msgstr "Diretório de trabalho padrão:"
 
-msgid "Set how often the PDFsam news panel should be opened"
-msgstr "Define a frequência de abertura do painel de notícias do PDFsam"
-
-msgid "News panel:"
-msgstr "Painel de notícias:"
+msgid "Log register rows:"
+msgstr "Linhas para registo:"
 
 msgid "Language:"
 msgstr "Idioma:"
@@ -270,9 +277,8 @@ msgstr "Módulo de arranque:"
 msgid "Set the module to open at application startup (restart needed)"
 msgstr "Defina o módulo a carregar ao iniciar a aplicação (tem que reiniciar)"
 
-#, fuzzy
 msgid "Check for updates now"
-msgstr "Procurar atualizações"
+msgstr "Procurar atualizações agora"
 
 msgid "Close"
 msgstr "Fechar"
@@ -330,12 +336,6 @@ msgstr "Transferir"
 msgid "New version available"
 msgstr "Nova versão disponível"
 
-msgid "Show this:"
-msgstr "Mostrar:"
-
-msgid "What's new"
-msgstr "Novidades"
-
 msgid "Directory not empty"
 msgstr "Diretótio não vazio"
 
@@ -357,51 +357,61 @@ msgstr "Já existe um fichiro com este nome."
 msgid "Do you want to overwrite it?"
 msgstr "Gostaria de o substituir?"
 
-msgid "Overwrite"
-msgstr "Substituir"
-
-msgid "Cancel"
-msgstr "Cancelar"
-
 msgid "Unable to find the latest available version."
 msgstr "Não foi possível localizar a versão mais recente."
 
 msgid "Checking for updates"
 msgstr "Procurar atualizações"
 
+msgid "Fetching latest news"
+msgstr ""
+
 #, fuzzy
+msgid "Unable to retrieve the latest news"
+msgstr "Não foi possível localizar a versão mais recente."
+
+#, fuzzy
+msgid "Unable to retrieve latest news"
+msgstr "Não foi possível obter a última versão"
+
 msgid "Loading pdf documents"
-msgstr "Mover documentos selecionados para baixo"
+msgstr "A carregar documentos PDF"
 
 msgid "Documents loaded"
 msgstr "Documentos carregados"
 
 msgid "Requesting modules state"
-msgstr ""
+msgstr "Solicitando estado dos módulos"
 
-#, fuzzy
 msgid "Unable to save modules workspace"
-msgstr "Localização de módulos não encontrada."
+msgstr "Não foi possível gravar a área de trabalho dos módulos"
 
-#, fuzzy, java-format
+#, java-format
 msgid "Loading workspace from {0}"
-msgstr "A carregar módulos de {0}"
+msgstr "A carregar área de trabalho de {0}"
 
-#, fuzzy
 msgid "Workspace loaded"
-msgstr "Área de trabalho"
+msgstr "Área de trabalho carregada"
 
 #, java-format
 msgid "Unable to load workspace from {0}"
-msgstr ""
+msgstr "Não foi possível carregar a área de trabalho de {0}"
 
 #, java-format
 msgid "Saving workspace data to {0}"
-msgstr ""
+msgstr "A gravar dados da área de trabalho em {0}"
 
-#, fuzzy
 msgid "Workspace saved"
-msgstr "Área de trabalho"
+msgstr "Área de trabalho gravada"
+
+msgid "Split after"
+msgstr "Separar após"
+
+msgid "Split the document after the given page numbers"
+msgstr "Separar documento após o número de páginas indicado"
+
+msgid "No page selected"
+msgstr "Nenhuma página selecionada"
 
 msgid "Split after the following page numbers"
 msgstr "Separar após este número de páginas"
@@ -409,17 +419,14 @@ msgstr "Separar após este número de páginas"
 msgid "Page numbers to split at (n1,n2,n3..)"
 msgstr "Número de páginas para separar (n1,n2,n3..)"
 
-msgid "Split the document after the given page numbers"
-msgstr "Separar documento após o número de páginas indicado"
-
 msgid "Invalid page numbers"
 msgstr "Número de páginas inválido"
 
 msgid "Split"
 msgstr "Separar"
 
-msgid "Split a pdf document at the given page numbers."
-msgstr "Separar um documento no número de páginas indicado."
+msgid "Split a PDF document at the given page numbers."
+msgstr ""
 
 msgid "Select or drag and drop the PDF you want to split"
 msgstr "Selecione ou arraste e largue o documento a separar"
@@ -433,23 +440,14 @@ msgstr "Definições de separação"
 msgid "Destination directory"
 msgstr "Diretório de destino"
 
-msgid "Burst (Split into single pages)"
-msgstr "Separar (em páginas individuais)"
+msgid "Every page"
+msgstr "Cada página"
 
-msgid "Split even pages"
-msgstr "Separar páginas pares"
+msgid "Even pages"
+msgstr "Páginas par"
 
-msgid "Split odd pages"
-msgstr "Separar páginas impares"
-
-msgid "Explode the document into single pages"
-msgstr "Separar documento para páginas individuais"
-
-msgid "Split the document after every even page"
-msgstr "Separar documento a cada página par"
-
-msgid "Split the document after every odd page"
-msgstr "Separar documento a cada página ímpar"
+msgid "Odd pages"
+msgstr "Páginas ímpar"
 
 msgid "Split by every \"n\" pages"
 msgstr "Separar a cada \"n\" páginas"
@@ -457,8 +455,8 @@ msgstr "Separar a cada \"n\" páginas"
 msgid "Number of pages"
 msgstr "Número de páginas"
 
-msgid "Splits the pdf every \"n\" pages creating documents of \"n\" pages each"
-msgstr "Separar a cada \"n\" páginas criando documentos de \"n\" páginas"
+msgid "Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
+msgstr ""
 
 msgid "Invalid number of pages"
 msgstr "Número de páginas inválido"
@@ -466,15 +464,14 @@ msgstr "Número de páginas inválido"
 msgid "Split by size"
 msgstr "Separar por tamanho"
 
-msgid "Split a pdf document in files of the give size (roughly)."
-msgstr "Separa o documento em ficheiros deste tamanho (aproximado)."
+msgid "Split a PDF document in files of the given size (roughly)."
+msgstr ""
 
-#, fuzzy
 msgid "Set the size to split at"
-msgstr "Defina o nível de marcadores em que separar"
+msgstr "Defina o tamanho de separação"
 
 msgid "Size must be a number"
-msgstr ""
+msgstr "O tamanho tem de ser um número"
 
 msgid "Split at this size:"
 msgstr "Separar neste tamanho:"
@@ -482,17 +479,17 @@ msgstr "Separar neste tamanho:"
 msgid "Invalid split size"
 msgstr "Tamanho inválido"
 
-msgid "Kilobytes"
-msgstr ""
-
-msgid "KB"
-msgstr ""
-
 msgid "Megabytes"
-msgstr ""
+msgstr "Megabytes"
 
 msgid "MB"
-msgstr ""
+msgstr "MB"
+
+msgid "Kilobytes"
+msgstr "Kilobytes"
+
+msgid "KB"
+msgstr "KB"
 
 msgid "Alternate Mix"
 msgstr "Combinação alternada"
@@ -501,8 +498,8 @@ msgid ""
 "Merge two PDF documents taking pages alternately in straight or reverse "
 "order."
 msgstr ""
-"Unir dois documentos documentos tirando as páginas alternadamente por ordem "
-"direta ou inversa."
+"Unir dois documentos tirando as páginas alternadamente por ordem direta ou "
+"inversa."
 
 msgid "Select or drag and drop the first PDF you want to mix"
 msgstr "Selecione ou arraste e largue o primeiro documento a combinar"
@@ -539,16 +536,11 @@ msgstr "Selecione o número de páginas"
 msgid "The selected PDF document is invalid"
 msgstr "O documento selecionado é inválido."
 
-#, fuzzy
-msgid "Open the generated document"
-msgstr "Inverter o segundo documento"
+msgid "Completed"
+msgstr "Terminado"
 
-#, fuzzy
-msgid "Open the destination directory"
-msgstr "Diretório de destino"
-
-msgid "Ready"
-msgstr "Pronto"
+msgid "Failed"
+msgstr "Falha"
 
 msgid "Running"
 msgstr "Execução"
@@ -556,11 +548,57 @@ msgstr "Execução"
 msgid "Requested"
 msgstr "Pedido"
 
-msgid "Completed"
-msgstr "Terminado"
+msgid "Select a file"
+msgstr "Selecione um ficheiro"
 
-msgid "Failed"
-msgstr "Falha"
+msgid "Unlock"
+msgstr "Desbloquear"
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Move Down"
+msgstr "Mover abaixo"
+
+msgid "Move to Bottom"
+msgstr "Mover para o fundo"
+
+msgid "Move Up"
+msgstr "Mover acima"
+
+msgid "Move to Top"
+msgstr "Mover para o topo"
+
+msgid "Set destination"
+msgstr "Defina o destino"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Open Folder"
+msgstr "Abrir pasta"
+
+msgid "Document properties"
+msgstr "Propriedades do documento"
+
+msgid "Remove"
+msgstr "Remover"
+
+msgid "Loading..."
+msgstr "Carregamento..."
+
+#, java-format
+msgid "Pages: {0}, PDF Version: {1}"
+msgstr "Páginas: {0}, Versão PDF: {1}"
+
+msgid "Open the generated document"
+msgstr "Abrir documento gerado"
+
+msgid "Open the destination directory"
+msgstr "Abrir pasta de destino"
+
+msgid "Ready"
+msgstr "Pronto"
 
 msgid "Run"
 msgstr "Executar"
@@ -569,13 +607,8 @@ msgid "Overwrite if already exists"
 msgstr "Substituir ficheiro, se existente"
 
 msgid ""
-"Tick the box if you want to overwrite the outpuf files if they already exist."
+"Tick the box if you want to overwrite the output files if they already exist."
 msgstr ""
-"Assinale esta opção caso pretenda substituir os ficheiros existentes pelo "
-"atual."
-
-msgid "Select a file"
-msgstr "Selecione um ficheiro"
 
 msgid "The selected file must exist. "
 msgstr "O ficheiro selecionado tem que existir. "
@@ -596,8 +629,8 @@ msgstr "O ficheiro selecionado é inválido."
 msgid "Compress output file/files"
 msgstr "Comprimir ficheiro(s) de saída"
 
-msgid "Output pdf version:"
-msgstr "Versão de saída PDF:"
+msgid "Output PDF version:"
+msgstr ""
 
 #, java-format
 msgid "Version {0}"
@@ -607,8 +640,8 @@ msgid "Same as the input document"
 msgstr "Igual à do documento original"
 
 #, java-format
-msgid "Pdf version required: {0}"
-msgstr "Versão PDF necessária: {0}"
+msgid "PDF version required: {0}"
+msgstr ""
 
 msgid "Select an existing directory"
 msgstr "Selecione um diretório existente"
@@ -616,8 +649,8 @@ msgstr "Selecione um diretório existente"
 msgid "The selected output directory is invalid"
 msgstr "O diretório selecionado é inválido."
 
-msgid "Generated pdf documents name prefix:"
-msgstr "Prefixo para o nome dos documentos gerados:"
+msgid "Generated PDF documents name prefix:"
+msgstr ""
 
 msgid "Prefix for the generated files names"
 msgstr "Prefixo para o nome de ficheiros gerados"
@@ -636,9 +669,6 @@ msgstr "Clique direito para adicionar as palavras-chave."
 
 msgid "Enter the user password"
 msgstr "Indique a senha de utilizador"
-
-msgid "Unlock"
-msgstr "Desbloquear"
 
 msgid ""
 "Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
@@ -713,49 +743,6 @@ msgstr "Número inválido: {0}."
 msgid "Drag and drop PDF files here"
 msgstr "Arraste e largue aqui os ficheiros"
 
-msgid "Document properties"
-msgstr "Propriedades do documento"
-
-msgid "Set destination"
-msgstr "Defina o destino"
-
-msgid "Remove"
-msgstr "Remover"
-
-msgid "Move to Top"
-msgstr "Mover para o topo"
-
-msgid "Move Up"
-msgstr "Mover acima"
-
-msgid "Move Down"
-msgstr "Mover abaixo"
-
-msgid "Move to Bottom"
-msgstr "Mover para o fundo"
-
-msgid "Open"
-msgstr "Abrir"
-
-msgid "Open Folder"
-msgstr "Abrir pasta"
-
-msgid "Duplicate"
-msgstr ""
-
-#, java-format
-msgid "Pages: {0}, PDF Version: {1}"
-msgstr "Páginas: {0}, Versão PDF: {1}"
-
-msgid "Loading..."
-msgstr "Carregamento..."
-
-msgid "Merge form fields"
-msgstr "Unir campos de formulário"
-
-msgid "Some of the selected PDF documents contain forms, merge them"
-msgstr "Alguns dos documentos possuem formulários, unir"
-
 msgid "Add a blank page if page number is odd"
 msgstr "Adicionar uma página vazia se o número de páginas for ímpar"
 
@@ -765,6 +752,18 @@ msgid ""
 msgstr ""
 "Adiciona uma página vazia após cada documento unido se o documento possuir "
 "um número ímpar de páginas"
+
+msgid "Merge fields"
+msgstr ""
+
+msgid "Merge renaming existing fields"
+msgstr ""
+
+msgid "Discard forms"
+msgstr ""
+
+msgid "Interactive forms (AcroForms):"
+msgstr ""
 
 msgid "Retain bookmarks"
 msgstr "Manter marcadores"
@@ -778,14 +777,14 @@ msgstr "Criar uma entrada para cada documento unido"
 msgid "Bookmarks handling:"
 msgstr "Gestão de marcadores:"
 
-msgid "No pdf document has been selected"
-msgstr "Não selecionou um documento PDF."
+msgid "No PDF document has been selected"
+msgstr ""
 
 msgid "Merge"
 msgstr "Unir"
 
-msgid "Merge together multiple pdf documents or subsections of them."
-msgstr "Unir documentos ou secções de vários documentos."
+msgid "Merge together multiple PDF documents or subsections of them."
+msgstr ""
 
 msgid "Merge settings"
 msgstr "Definições de união"
@@ -812,26 +811,17 @@ msgstr "Senha de utilizador inválida"
 msgid "This document is encrypted, click to provide a password."
 msgstr "Este docmento está encriptado. Clique para escrever a senha."
 
-msgid "Squared green"
+msgid "An error has occurred, click for more details."
 msgstr ""
 
+msgid "Squared green"
+msgstr "Quadrado verde"
+
 msgid "Squared cornflower"
-msgstr ""
+msgstr "Centáureo quadrada"
 
 msgid "Roundish"
 msgstr "Redondo"
-
-msgid "Never"
-msgstr "Nunca"
-
-msgid "Once a day"
-msgstr "Diariamente"
-
-msgid "Once a week"
-msgstr "Semanalmente"
-
-msgid "Always"
-msgstr "Sempre"
 
 msgid "Set the bookmarks level to split at"
 msgstr "Defina o nível de marcadores em que separar"
@@ -843,11 +833,11 @@ msgid "Split by bookmarks"
 msgstr "Separar por marcadores"
 
 msgid ""
-"Split a pdf document at bookmarked pages by specifying a bookmark level."
-msgstr "Separar o documento por página de marcador, especificando o nível."
+"Split a PDF document at bookmarked pages by specifying a bookmark level."
+msgstr ""
 
-msgid "Regexp the bookmark has to match"
-msgstr "Expressão regular a que o marcador deve coincidir"
+msgid "Regular expression the bookmark has to match"
+msgstr ""
 
 msgid "Split at this bookmark level:"
 msgstr "Separar neste nível de marcadores:"
@@ -857,12 +847,6 @@ msgstr "Expressão regular coincidente:"
 
 msgid "All pages"
 msgstr "Todas as páginas"
-
-msgid "Even pages"
-msgstr "Páginas par"
-
-msgid "Odd pages"
-msgstr "Páginas ímpar"
 
 msgid "90 degrees clockwise"
 msgstr "90 graus à direita"
@@ -885,23 +869,35 @@ msgstr "Rodar as páginas de diversos documentos."
 msgid "Rotate settings"
 msgstr "Definições de rotação"
 
-#~ msgid "Error playing sounds"
-#~ msgstr "Erro ao reproduzir sons"
+#~ msgid "Application menu"
+#~ msgstr "Menu da aplicação"
 
-#~ msgid "Open menu"
-#~ msgstr "Abrir menu"
+#~ msgid "Set how often the PDFsam news panel should be opened"
+#~ msgstr "Define a frequência de abertura do painel de notícias do PDFsam"
 
-#~ msgid "Open main dashboard"
-#~ msgstr "Abrir painel de controlo"
+#~ msgid "News panel:"
+#~ msgstr "Painel de notícias:"
 
-#~ msgid "Thumbnails"
-#~ msgstr "Miniaturas"
+#~ msgid "Show this:"
+#~ msgstr "Mostrar:"
 
-#~ msgid "Loading"
-#~ msgstr "Carregamento"
+#~ msgid "Never"
+#~ msgstr "Nunca"
 
-#~ msgid "Set the size as number of bytes or specify KB or MB"
-#~ msgstr "Defina o tamanho como número de bytes, KB ou MB"
+#~ msgid "Once a day"
+#~ msgstr "Diariamente"
+
+#~ msgid "Once a week"
+#~ msgstr "Semanalmente"
+
+#~ msgid "Always"
+#~ msgstr "Sempre"
+
+#~ msgid "Split even pages"
+#~ msgstr "Separar páginas pares"
+
+#~ msgid "Split odd pages"
+#~ msgstr "Separar páginas impares"
 
 #~ msgid "Destination folder"
 #~ msgstr "Pasta de destino"
@@ -911,9 +907,6 @@ msgstr "Definições de rotação"
 
 #~ msgid "Would you like to overwrite it?"
 #~ msgstr "Deseja substituir o ficheiro existente?"
-
-#~ msgid "Unable to get latest available version"
-#~ msgstr "Não foi possível obter a última versão"
 
 #~ msgid "Ask for confirmation when overwrite checkbox is selected"
 #~ msgstr "Pedir confirmação se a caixa de substituição estiver selecionada"

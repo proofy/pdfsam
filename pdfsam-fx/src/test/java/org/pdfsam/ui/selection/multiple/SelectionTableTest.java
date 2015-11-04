@@ -36,9 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -49,11 +46,14 @@ import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
 import org.loadui.testfx.utils.FXTestUtils;
 import org.mockito.ArgumentCaptor;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
+import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.HitTestListener;
 import org.pdfsam.ui.commons.OpenFileRequest;
+import org.pdfsam.ui.commons.RemoveSelectedEvent;
 import org.pdfsam.ui.commons.SetDestinationRequest;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
 import org.pdfsam.ui.commons.ShowStageRequest;
@@ -61,7 +61,10 @@ import org.pdfsam.ui.selection.multiple.move.MoveSelectedEvent;
 import org.pdfsam.ui.selection.multiple.move.MoveType;
 import org.sejda.eventstudio.Listener;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
+import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 
 /**
  * @author Andrea Vacondio
@@ -77,9 +80,9 @@ public class SelectionTableTest extends GuiTest {
 
     @Override
     protected Parent getRootNode() {
-        SelectionTable victim = new SelectionTable(MODULE, true, new SelectionTableColumn<?>[] {
-                new LoadingColumn(MODULE), FileColumn.NAME, LongColumn.SIZE, IntColumn.PAGES, LongColumn.LAST_MODIFIED,
-                StringColumn.PAGE_SELECTION });
+        SelectionTable victim = new SelectionTable(MODULE, true,
+                new SelectionTableColumn<?>[] { new LoadingColumn(MODULE), FileColumn.NAME, LongColumn.SIZE,
+                        IntColumn.PAGES, LongColumn.LAST_MODIFIED, StringColumn.PAGE_SELECTION });
         victim.setId("victim");
         return victim;
     }
@@ -165,14 +168,14 @@ public class SelectionTableTest extends GuiTest {
     @Test
     public void onSaveWorkspaceEncrypted() throws Exception {
         SelectionTable victim = find("#victim");
-        SelectionTableRowData firstItem = populate();
+        PdfDocumentDescriptor firstItem = populate();
         FXTestUtils.invokeAndWait(() -> {
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.ENCRYPTED);
-        }, 2);
-        click(PdfDescriptorLoadingStatus.ENCRYPTED.getIcon().toString());
-        type("pwd").click("Unlock");
+        } , 2);
+        click(".glyph-icon");
+        type("pwd").click(DefaultI18nContext.getInstance().i18n("Unlock"));
         Map<String, String> data = new HashMap<>();
         victim.saveStateTo(data);
         assertEquals("pwd", data.get("victiminput.password.0"));
@@ -192,10 +195,11 @@ public class SelectionTableTest extends GuiTest {
         data.put("victiminput.1", "norris.pdf");
         FXTestUtils.invokeAndWait(() -> victim.restoreStateFrom(data), 2);
         assertEquals(2, victim.getItems().size());
-        assertEquals("chuck.pdf", victim.getItems().get(0).getFileName());
-        assertEquals("pwd", victim.getItems().get(0).getPassword());
-        assertEquals("1-10", victim.getItems().get(0).getPageSelection());
-        assertEquals("norris.pdf", victim.getItems().get(1).getFileName());
+        SelectionTableRowData first = victim.getItems().get(0);
+        assertEquals("chuck.pdf", first.descriptor().getFileName());
+        assertEquals("pwd", first.descriptor().getPassword());
+        assertEquals("1-10", first.getPageSelection());
+        assertEquals("norris.pdf", victim.getItems().get(1).descriptor().getFileName());
         verify(listener).onEvent(any());
     }
 
@@ -226,7 +230,7 @@ public class SelectionTableTest extends GuiTest {
         assertEquals(1, victim.getSelectionModel().getSelectedIndices().size());
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(new ClearSelectionTableEvent(), MODULE);
-        }, 2);
+        } , 2);
         assertTrue(victim.getSelectionModel().getSelectedIndices().isEmpty());
     }
 
@@ -252,7 +256,7 @@ public class SelectionTableTest extends GuiTest {
     public void removeByContextMenu() throws Exception {
         populate();
         rightClick("temp.pdf");
-        click(AwesomeIcon.MINUS_SQUARE_ALT.toString());
+        click(MaterialDesignIcon.MINUS.toString());
         SelectionTable victim = find("#victim");
         assertEquals(3, victim.getItems().size());
         assertEquals(1, victim.getSelectionModel().getSelectedIndices().size());
@@ -266,7 +270,7 @@ public class SelectionTableTest extends GuiTest {
         click("temp.pdf").press(KeyCode.CONTROL).click("temp3.pdf").release(KeyCode.CONTROL);
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(new RemoveSelectedEvent(), MODULE);
-        }, 2);
+        } , 2);
         SelectionTable victim = find("#victim");
         assertEquals(2, victim.getItems().size());
         assertEquals(1, victim.getSelectionModel().getSelectedIndices().size());
@@ -277,13 +281,13 @@ public class SelectionTableTest extends GuiTest {
         populate();
         SelectionTable victim = find("#victim");
         Optional<SelectionTableRowData> item = victim.getItems().stream()
-                .filter(i -> "temp.pdf".equals(i.getFileName())).findFirst();
+                .filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).findFirst();
         assertTrue(item.isPresent());
         click("temp.pdf");
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(new RemoveSelectedEvent(), MODULE);
-        }, 2);
-        assertTrue(item.get().isInvalid());
+        } , 2);
+        assertFalse(item.get().descriptor().hasReferences());
     }
 
     @Test
@@ -291,22 +295,23 @@ public class SelectionTableTest extends GuiTest {
         populate();
         SelectionTable victim = find("#victim");
         Optional<SelectionTableRowData> item = victim.getItems().stream()
-                .filter(i -> "temp.pdf".equals(i.getFileName())).findFirst();
+                .filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).findFirst();
         rightClick("temp.pdf");
-        click(AwesomeIcon.COPY.toString());
+        click(DefaultI18nContext.getInstance().i18n("Duplicate"));
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(new ClearSelectionTableEvent(), MODULE);
-        }, 2);
-        assertTrue(item.get().isInvalid());
+        } , 2);
+        assertFalse(item.get().descriptor().hasReferences());
     }
 
     @Test
     public void duplicate() throws Exception {
         populate();
         rightClick("temp.pdf");
-        click(AwesomeIcon.COPY.toString());
+        click(DefaultI18nContext.getInstance().i18n("Duplicate"));
         SelectionTable victim = find("#victim");
-        assertEquals(2, victim.getItems().stream().filter(i -> "temp.pdf".equals(i.getFileName())).count());
+        assertEquals(2,
+                victim.getItems().stream().filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).count());
     }
 
     @Test
@@ -316,7 +321,7 @@ public class SelectionTableTest extends GuiTest {
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 0);
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(new MoveSelectedEvent(MoveType.DOWN), MODULE);
-        }, 2);
+        } , 2);
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 1);
     }
 
@@ -325,7 +330,7 @@ public class SelectionTableTest extends GuiTest {
         populate();
         rightClick("temp.pdf");
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 0);
-        click(AwesomeIcon.ANGLE_DOWN.toString());
+        click(DefaultI18nContext.getInstance().i18n("Move Down"));
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 1);
     }
 
@@ -335,7 +340,7 @@ public class SelectionTableTest extends GuiTest {
         rightClick("temp.pdf");
         SelectionTable victim = find("#victim");
         assertEquals(0, victim.getSelectionModel().getSelectedIndex());
-        click(AwesomeIcon.ANGLE_DOUBLE_DOWN.toString());
+        click(DefaultI18nContext.getInstance().i18n("Move to Bottom"));
         assertEquals(3, victim.getSelectionModel().getSelectedIndex());
     }
 
@@ -344,7 +349,7 @@ public class SelectionTableTest extends GuiTest {
         populate();
         rightClick("temp3.pdf");
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 2);
-        click(AwesomeIcon.ANGLE_UP.toString());
+        click(DefaultI18nContext.getInstance().i18n("Move Up"));
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 1);
     }
 
@@ -353,7 +358,7 @@ public class SelectionTableTest extends GuiTest {
         populate();
         rightClick("temp3.pdf");
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 2);
-        click(AwesomeIcon.ANGLE_DOUBLE_UP.toString());
+        click(DefaultI18nContext.getInstance().i18n("Move to Top"));
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 0);
     }
 
@@ -371,7 +376,7 @@ public class SelectionTableTest extends GuiTest {
             }
         };
         eventStudio().add(SetDestinationRequest.class, notFallbackListener, MODULE);
-        click(AwesomeIcon.FILE_PDF_ALT.toString());
+        click(DefaultI18nContext.getInstance().i18n("Set destination"));
         assertTrue(listener.isHit());
         assertTrue(notFallbackListener.isHit());
     }
@@ -382,7 +387,7 @@ public class SelectionTableTest extends GuiTest {
         eventStudio().add(OpenFileRequest.class, listener);
         populate();
         rightClick("temp3.pdf");
-        click(AwesomeIcon.FILE_ALT.toString());
+        click(DefaultI18nContext.getInstance().i18n("Open"));
         assertTrue(listener.isHit());
     }
 
@@ -392,7 +397,7 @@ public class SelectionTableTest extends GuiTest {
         eventStudio().add(OpenFileRequest.class, listener);
         populate();
         rightClick("temp3.pdf");
-        click(AwesomeIcon.FOLDER_ALTPEN.toString());
+        click(DefaultI18nContext.getInstance().i18n("Open Folder"));
         assertTrue(listener.isHit());
     }
 
@@ -402,71 +407,90 @@ public class SelectionTableTest extends GuiTest {
         eventStudio().add(ShowPdfDescriptorRequest.class, listener);
         populate();
         rightClick("temp3.pdf");
-        click(AwesomeIcon.INFO.toString());
+        click(DefaultI18nContext.getInstance().i18n("Document properties"));
         verify(listener, timeout(2000)).onEvent(any());
     }
 
     @Test
     public void iconsAreShown() throws Exception {
-        SelectionTableRowData firstItem = populate();
+        PdfDocumentDescriptor firstItem = populate();
         FXTestUtils.invokeAndWait(() -> firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED), 2);
-        exists(PdfDescriptorLoadingStatus.REQUESTED.getIcon().toString());
+        Text icon = find(".glyph-icon");
+        assertEquals(PdfDescriptorLoadingStatus.REQUESTED.getIcon().characterToString(), icon.getText());
         FXTestUtils.invokeAndWait(() -> firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING), 2);
-        exists(PdfDescriptorLoadingStatus.LOADING.getIcon().toString());
+        icon = find(".glyph-icon");
+        assertEquals(PdfDescriptorLoadingStatus.LOADING.getIcon().characterToString(), icon.getText());
     }
 
     @Test
     public void clickWithErrorsShowsLogStage() throws Exception {
-        SelectionTableRowData firstItem = populate();
+        PdfDocumentDescriptor firstItem = populate();
         FXTestUtils.invokeAndWait(() -> {
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.WITH_ERRORS);
-        }, 2);
+        } , 2);
         Listener<ShowStageRequest> listener = mock(Listener.class);
         eventStudio().add(ShowStageRequest.class, listener, "LogStage");
-        click(PdfDescriptorLoadingStatus.WITH_ERRORS.getIcon().toString());
+        click(".glyph-icon");
         verify(listener).onEvent(any());
     }
 
     @Test
     public void clickEncryptedThrowsRequest() throws Exception {
-        SelectionTableRowData firstItem = populate();
+        PdfDocumentDescriptor firstItem = populate();
         FXTestUtils.invokeAndWait(() -> {
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.ENCRYPTED);
-        }, 2);
+        } , 2);
         Listener<PdfLoadRequestEvent> listener = mock(Listener.class);
         eventStudio().add(PdfLoadRequestEvent.class, listener);
-        click(PdfDescriptorLoadingStatus.ENCRYPTED.getIcon().toString());
-        type("pwd").click("Unlock");
+        click(".glyph-icon");
+        type("pwd").click(DefaultI18nContext.getInstance().i18n("Unlock"));
         verify(listener, times(2)).onEvent(any());
     }
 
     @Test
     public void logEventOnClick() throws Exception {
-        SelectionTableRowData firstItem = populate();
+        PdfDocumentDescriptor firstItem = populate();
         FXTestUtils.invokeAndWait(() -> firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED), 2);
-        exists(PdfDescriptorLoadingStatus.REQUESTED.getIcon().toString());
+        Text icon = find(".glyph-icon");
+        assertEquals(PdfDescriptorLoadingStatus.REQUESTED.getIcon().characterToString(), icon.getText());
         FXTestUtils.invokeAndWait(() -> firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING), 2);
-        exists(PdfDescriptorLoadingStatus.LOADING.getIcon().toString());
+        icon = find(".glyph-icon");
+        assertEquals(PdfDescriptorLoadingStatus.LOADING.getIcon().characterToString(), icon.getText());
     }
 
-    private SelectionTableRowData populate() throws Exception {
+    @Test
+    @Ignore("Fails on Travis")
+    public void editCommitOnFocusLost() throws Exception {
+        populate();
+        SelectionTable victim = find("#victim");
+        Optional<SelectionTableRowData> item = victim.getItems().stream()
+                .filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).findFirst();
+        assertTrue(item.isPresent());
+        item.get().setPageSelection("2");
+        Thread.sleep(1000);
+        click("2").type(KeyCode.ENTER, KeyCode.DIGIT5);
+        click("temp4.pdf");
+        assertEquals(item.get().getPageSelection(), "5");
+    }
+
+    private PdfDocumentDescriptor populate() throws Exception {
         File file = folder.newFile("temp.pdf");
         File file2 = folder.newFile("®¯°±²³要选择需要转换的文.pdf");
         File file3 = folder.newFile("temp3.pdf");
         File file4 = folder.newFile("temp4.pdf");
-        PdfLoadRequestEvent<SelectionTableRowData> loadEvent = new PdfLoadRequestEvent<>(MODULE);
-        SelectionTableRowData ret = new SelectionTableRowData(file);
+        PdfLoadRequestEvent loadEvent = new PdfLoadRequestEvent(MODULE);
+        PdfDocumentDescriptor ret = PdfDocumentDescriptor.newDescriptorNoPassword(file);
         loadEvent.add(ret);
-        loadEvent.add(new SelectionTableRowData(file2));
-        loadEvent.add(new SelectionTableRowData(file3));
-        loadEvent.add(new SelectionTableRowData(file4));
+        loadEvent.add(PdfDocumentDescriptor.newDescriptorNoPassword(file2));
+        loadEvent.add(PdfDocumentDescriptor.newDescriptorNoPassword(file3));
+        loadEvent.add(PdfDocumentDescriptor.newDescriptorNoPassword(file4));
         FXTestUtils.invokeAndWait(() -> {
             eventStudio().broadcast(loadEvent, MODULE);
-        }, 2);
+        } , 2);
         return ret;
     }
 }

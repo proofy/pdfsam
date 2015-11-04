@@ -27,6 +27,7 @@ import org.sejda.model.input.PdfMergeInput;
 import org.sejda.model.outline.OutlinePolicy;
 import org.sejda.model.output.FileTaskOutput;
 import org.sejda.model.parameter.MergeParameters;
+import org.sejda.model.pdf.form.AcroFormPolicy;
 
 /**
  * Builder for {@link MergeParameters}
@@ -40,11 +41,15 @@ class MergeParametersBuilder extends AbstractPdfOutputParametersBuilder<MergePar
     private Set<PdfMergeInput> inputs = new NullSafeSet<>();
     private OutlinePolicy outlinePolicy = OutlinePolicy.RETAIN;
     private boolean blankIfOdd;
-    private boolean copyFormFields;
+    private AcroFormPolicy formsPolicy = AcroFormPolicy.MERGE;
     private FileTaskOutput output;
 
     void addInput(PdfMergeInput input) {
         this.inputs.add(input);
+    }
+
+    boolean hasInput() {
+        return !inputs.isEmpty();
     }
 
     void outlinePolicy(OutlinePolicy outlinePolicy) {
@@ -55,8 +60,8 @@ class MergeParametersBuilder extends AbstractPdfOutputParametersBuilder<MergePar
         this.blankIfOdd = blankIfOdd;
     }
 
-    void copyFormFields(boolean copyFormFields) {
-        this.copyFormFields = copyFormFields;
+    void acroFormsPolicy(AcroFormPolicy formsPolicy) {
+        this.formsPolicy = formsPolicy;
     }
 
     public void output(FileTaskOutput output) {
@@ -71,7 +76,7 @@ class MergeParametersBuilder extends AbstractPdfOutputParametersBuilder<MergePar
         inputs.forEach(params::addInput);
         params.setOutlinePolicy(outlinePolicy);
         params.setBlankPageIfOdd(blankIfOdd);
-        params.setCopyFormFields(copyFormFields);
+        params.setAcroFormPolicy(formsPolicy);
         params.setOutput(output);
         return params;
     }

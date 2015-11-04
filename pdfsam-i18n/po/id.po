@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: info@pdfsam.org\n"
-"POT-Creation-Date: 2014-12-12 17:22+0100\n"
+"POT-Creation-Date: 2015-10-28 15:21+0100\n"
 "PO-Revision-Date: 2014-03-03 14:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Indonesian <id@li.org>\n"
@@ -15,8 +15,44 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-12-12 16:32+0000\n"
-"X-Generator: Launchpad (build 17286)\n"
+"X-Launchpad-Export-Date: 2015-10-28 14:24+0000\n"
+"X-Generator: Launchpad (build 17837)\n"
+
+msgid "Subscribe to the official news feed"
+msgstr ""
+
+msgid "Bug and feature requests"
+msgstr ""
+
+msgid "Play the \"get started\" video"
+msgstr ""
+
+msgid "Fork PDFsam on GitHub"
+msgstr ""
+
+msgid "Translate"
+msgstr ""
+
+msgid "Donate"
+msgstr ""
+
+msgid "Follow us on Twitter"
+msgstr ""
+
+msgid "Follow us on Google Plus"
+msgstr ""
+
+msgid "Like us on Facebook"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Overwrite"
+msgstr ""
 
 #, java-format
 msgid "Installing theme {0}."
@@ -50,9 +86,6 @@ msgstr ""
 msgid "Closing PDFsam..."
 msgstr ""
 
-msgid "Application menu"
-msgstr ""
-
 msgid "_Modules"
 msgstr ""
 
@@ -80,7 +113,7 @@ msgstr ""
 msgid "Select the workspace to load"
 msgstr ""
 
-msgid "Dashboard"
+msgid "What's new"
 msgstr ""
 
 msgid "Document details"
@@ -94,9 +127,6 @@ msgstr ""
 
 msgid "About"
 msgstr "Tentang"
-
-msgid "Subscribe to the official news feed"
-msgstr ""
 
 msgid "Environment"
 msgstr ""
@@ -117,34 +147,10 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-msgid "Bug and feature requests"
-msgstr ""
-
-msgid "Play the \"get started\" video"
-msgstr ""
-
 msgid "Contribute"
 msgstr ""
 
-msgid "Fork PDFsam on GitHub"
-msgstr ""
-
-msgid "Translate"
-msgstr ""
-
-msgid "Donate"
-msgstr ""
-
 msgid "Social"
-msgstr ""
-
-msgid "Follow us on Twitter"
-msgstr ""
-
-msgid "Follow us on Google Plus"
-msgstr ""
-
-msgid "Like us on Facebook"
 msgstr ""
 
 msgid "Manually selected"
@@ -195,6 +201,12 @@ msgstr ""
 msgid "Pixel size of the thumbnails (between {0}px and {1}px)"
 msgstr ""
 
+msgid "Maximum number of rows mast be a positive number"
+msgstr ""
+
+msgid "Maximum number of rows displayed by the Log register"
+msgstr ""
+
 msgid "Generate high quality thumbnails (slower)"
 msgstr ""
 
@@ -235,10 +247,7 @@ msgstr ""
 msgid "Default working directory:"
 msgstr ""
 
-msgid "Set how often the PDFsam news panel should be opened"
-msgstr ""
-
-msgid "News panel:"
+msgid "Log register rows:"
 msgstr ""
 
 msgid "Language:"
@@ -316,12 +325,6 @@ msgstr ""
 msgid "New version available"
 msgstr ""
 
-msgid "Show this:"
-msgstr ""
-
-msgid "What's new"
-msgstr ""
-
 msgid "Directory not empty"
 msgstr ""
 
@@ -343,16 +346,19 @@ msgstr ""
 msgid "Do you want to overwrite it?"
 msgstr ""
 
-msgid "Overwrite"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
 msgid "Unable to find the latest available version."
 msgstr ""
 
 msgid "Checking for updates"
+msgstr ""
+
+msgid "Fetching latest news"
+msgstr ""
+
+msgid "Unable to retrieve the latest news"
+msgstr ""
+
+msgid "Unable to retrieve latest news"
 msgstr ""
 
 msgid "Loading pdf documents"
@@ -385,13 +391,19 @@ msgstr ""
 msgid "Workspace saved"
 msgstr ""
 
+msgid "Split after"
+msgstr ""
+
+msgid "Split the document after the given page numbers"
+msgstr ""
+
+msgid "No page selected"
+msgstr ""
+
 msgid "Split after the following page numbers"
 msgstr ""
 
 msgid "Page numbers to split at (n1,n2,n3..)"
-msgstr ""
-
-msgid "Split the document after the given page numbers"
 msgstr ""
 
 msgid "Invalid page numbers"
@@ -400,7 +412,7 @@ msgstr ""
 msgid "Split"
 msgstr "Pisah"
 
-msgid "Split a pdf document at the given page numbers."
+msgid "Split a PDF document at the given page numbers."
 msgstr ""
 
 msgid "Select or drag and drop the PDF you want to split"
@@ -415,22 +427,13 @@ msgstr ""
 msgid "Destination directory"
 msgstr ""
 
-msgid "Burst (Split into single pages)"
+msgid "Every page"
 msgstr ""
 
-msgid "Split even pages"
-msgstr "Pisahkan halaman bernomor genap"
-
-msgid "Split odd pages"
-msgstr "Pisahkan halaman bernomor ganjil"
-
-msgid "Explode the document into single pages"
+msgid "Even pages"
 msgstr ""
 
-msgid "Split the document after every even page"
-msgstr ""
-
-msgid "Split the document after every odd page"
+msgid "Odd pages"
 msgstr ""
 
 msgid "Split by every \"n\" pages"
@@ -439,7 +442,7 @@ msgstr ""
 msgid "Number of pages"
 msgstr "Jumlah halaman"
 
-msgid "Splits the pdf every \"n\" pages creating documents of \"n\" pages each"
+msgid "Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
 msgstr ""
 
 msgid "Invalid number of pages"
@@ -448,7 +451,7 @@ msgstr ""
 msgid "Split by size"
 msgstr ""
 
-msgid "Split a pdf document in files of the give size (roughly)."
+msgid "Split a PDF document in files of the given size (roughly)."
 msgstr ""
 
 msgid "Set the size to split at"
@@ -463,16 +466,16 @@ msgstr ""
 msgid "Invalid split size"
 msgstr "Ukuran pemisahan tidak sahih"
 
-msgid "Kilobytes"
-msgstr ""
-
-msgid "KB"
-msgstr ""
-
 msgid "Megabytes"
 msgstr ""
 
 msgid "MB"
+msgstr ""
+
+msgid "Kilobytes"
+msgstr ""
+
+msgid "KB"
 msgstr ""
 
 msgid "Alternate Mix"
@@ -518,6 +521,61 @@ msgstr ""
 msgid "The selected PDF document is invalid"
 msgstr ""
 
+msgid "Completed"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Running"
+msgstr ""
+
+msgid "Requested"
+msgstr ""
+
+msgid "Select a file"
+msgstr ""
+
+msgid "Unlock"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Move Down"
+msgstr "Bergerak turun"
+
+msgid "Move to Bottom"
+msgstr ""
+
+msgid "Move Up"
+msgstr "Bergerak naik"
+
+msgid "Move to Top"
+msgstr ""
+
+msgid "Set destination"
+msgstr ""
+
+msgid "Open"
+msgstr "Buka"
+
+msgid "Open Folder"
+msgstr ""
+
+msgid "Document properties"
+msgstr "Properti dokumen"
+
+msgid "Remove"
+msgstr "Hapus"
+
+msgid "Loading..."
+msgstr ""
+
+#, java-format
+msgid "Pages: {0}, PDF Version: {1}"
+msgstr ""
+
 msgid "Open the generated document"
 msgstr ""
 
@@ -527,18 +585,6 @@ msgstr ""
 msgid "Ready"
 msgstr ""
 
-msgid "Running"
-msgstr ""
-
-msgid "Requested"
-msgstr ""
-
-msgid "Completed"
-msgstr ""
-
-msgid "Failed"
-msgstr ""
-
 msgid "Run"
 msgstr "Jalankan"
 
@@ -546,10 +592,7 @@ msgid "Overwrite if already exists"
 msgstr "Ditimpa jika sudah ada"
 
 msgid ""
-"Tick the box if you want to overwrite the outpuf files if they already exist."
-msgstr ""
-
-msgid "Select a file"
+"Tick the box if you want to overwrite the output files if they already exist."
 msgstr ""
 
 msgid "The selected file must exist. "
@@ -571,7 +614,7 @@ msgstr ""
 msgid "Compress output file/files"
 msgstr ""
 
-msgid "Output pdf version:"
+msgid "Output PDF version:"
 msgstr ""
 
 #, java-format
@@ -582,7 +625,7 @@ msgid "Same as the input document"
 msgstr ""
 
 #, java-format
-msgid "Pdf version required: {0}"
+msgid "PDF version required: {0}"
 msgstr ""
 
 msgid "Select an existing directory"
@@ -591,7 +634,7 @@ msgstr ""
 msgid "The selected output directory is invalid"
 msgstr ""
 
-msgid "Generated pdf documents name prefix:"
+msgid "Generated PDF documents name prefix:"
 msgstr ""
 
 msgid "Prefix for the generated files names"
@@ -610,9 +653,6 @@ msgid "Right click to add these keywords."
 msgstr ""
 
 msgid "Enter the user password"
-msgstr ""
-
-msgid "Unlock"
 msgstr ""
 
 msgid ""
@@ -684,55 +724,24 @@ msgstr ""
 msgid "Drag and drop PDF files here"
 msgstr ""
 
-msgid "Document properties"
-msgstr "Properti dokumen"
-
-msgid "Set destination"
-msgstr ""
-
-msgid "Remove"
-msgstr "Hapus"
-
-msgid "Move to Top"
-msgstr ""
-
-msgid "Move Up"
-msgstr "Bergerak naik"
-
-msgid "Move Down"
-msgstr "Bergerak turun"
-
-msgid "Move to Bottom"
-msgstr ""
-
-msgid "Open"
-msgstr "Buka"
-
-msgid "Open Folder"
-msgstr ""
-
-msgid "Duplicate"
-msgstr ""
-
-#, java-format
-msgid "Pages: {0}, PDF Version: {1}"
-msgstr ""
-
-msgid "Loading..."
-msgstr ""
-
-msgid "Merge form fields"
-msgstr ""
-
-msgid "Some of the selected PDF documents contain forms, merge them"
-msgstr ""
-
 msgid "Add a blank page if page number is odd"
 msgstr ""
 
 msgid ""
 "Adds a blank page after each merged document if the document has an odd "
 "number of pages"
+msgstr ""
+
+msgid "Merge fields"
+msgstr ""
+
+msgid "Merge renaming existing fields"
+msgstr ""
+
+msgid "Discard forms"
+msgstr ""
+
+msgid "Interactive forms (AcroForms):"
 msgstr ""
 
 msgid "Retain bookmarks"
@@ -747,13 +756,13 @@ msgstr ""
 msgid "Bookmarks handling:"
 msgstr ""
 
-msgid "No pdf document has been selected"
+msgid "No PDF document has been selected"
 msgstr ""
 
 msgid "Merge"
 msgstr ""
 
-msgid "Merge together multiple pdf documents or subsections of them."
+msgid "Merge together multiple PDF documents or subsections of them."
 msgstr ""
 
 msgid "Merge settings"
@@ -781,6 +790,9 @@ msgstr ""
 msgid "This document is encrypted, click to provide a password."
 msgstr ""
 
+msgid "An error has occurred, click for more details."
+msgstr ""
+
 msgid "Squared green"
 msgstr ""
 
@@ -788,18 +800,6 @@ msgid "Squared cornflower"
 msgstr ""
 
 msgid "Roundish"
-msgstr ""
-
-msgid "Never"
-msgstr ""
-
-msgid "Once a day"
-msgstr ""
-
-msgid "Once a week"
-msgstr ""
-
-msgid "Always"
 msgstr ""
 
 msgid "Set the bookmarks level to split at"
@@ -812,10 +812,10 @@ msgid "Split by bookmarks"
 msgstr ""
 
 msgid ""
-"Split a pdf document at bookmarked pages by specifying a bookmark level."
+"Split a PDF document at bookmarked pages by specifying a bookmark level."
 msgstr ""
 
-msgid "Regexp the bookmark has to match"
+msgid "Regular expression the bookmark has to match"
 msgstr ""
 
 msgid "Split at this bookmark level:"
@@ -825,12 +825,6 @@ msgid "Matching regular expression:"
 msgstr ""
 
 msgid "All pages"
-msgstr ""
-
-msgid "Even pages"
-msgstr ""
-
-msgid "Odd pages"
 msgstr ""
 
 msgid "90 degrees clockwise"
@@ -853,6 +847,12 @@ msgstr ""
 
 msgid "Rotate settings"
 msgstr ""
+
+#~ msgid "Split even pages"
+#~ msgstr "Pisahkan halaman bernomor genap"
+
+#~ msgid "Split odd pages"
+#~ msgstr "Pisahkan halaman bernomor ganjil"
 
 #~ msgid "Destination folder"
 #~ msgstr "Folder tujuan"

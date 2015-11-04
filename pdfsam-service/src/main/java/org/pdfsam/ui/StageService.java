@@ -18,8 +18,6 @@
  */
 package org.pdfsam.ui;
 
-import java.time.Instant;
-
 /**
  * Service providing stage related functionality
  * 
@@ -41,12 +39,7 @@ public interface StageService {
     public StageStatus getLatestStatus();
 
     /**
-     * The service is informed that the Latest news stage has been displayed to the user
+     * clear all stored information about the latest {@link StageStatus}
      */
-    public void newsStageDisplayed();
-
-    /**
-     * @return the latest {@link Instant} when the news stage has been displayed to the user
-     */
-    Instant getLatestNewsStageDisplayInstant();
+    void clear();
 }

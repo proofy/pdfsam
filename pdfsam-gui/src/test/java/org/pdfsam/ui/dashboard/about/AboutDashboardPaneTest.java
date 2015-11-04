@@ -24,9 +24,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
-import javafx.scene.Parent;
-import javafx.scene.input.Clipboard;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,13 +35,16 @@ import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
 import org.loadui.testfx.utils.FXTestUtils;
 import org.mockito.ArgumentCaptor;
+import org.pdfsam.ConfigurableProperty;
 import org.pdfsam.Pdfsam;
 import org.pdfsam.PdfsamEdition;
+import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.ui.commons.OpenUrlRequest;
 import org.sejda.eventstudio.Listener;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import javafx.scene.Parent;
+import javafx.scene.input.Clipboard;
 
 /**
  * @author Andrea Vacondio
@@ -65,82 +67,102 @@ public class AboutDashboardPaneTest extends GuiTest {
 
     @Override
     protected Parent getRootNode() {
-        return new AboutDashboardPane(new Pdfsam(PdfsamEdition.COMMUNITY, "PDFsam", "3.0.0"));
+        Pdfsam pdfsam = mock(Pdfsam.class);
+        when(pdfsam.edition()).thenReturn(PdfsamEdition.COMMUNITY);
+        when(pdfsam.name()).thenReturn("PDFsam");
+        when(pdfsam.property(ConfigurableProperty.VERSION)).thenReturn("3.0.0");
+        when(pdfsam.property(ConfigurableProperty.HOME_URL)).thenReturn("http://www.pdfsam.org");
+        when(pdfsam.property(ConfigurableProperty.HOME_LABEL)).thenReturn("home");
+        when(pdfsam.property(ConfigurableProperty.FEED_URL)).thenReturn("http://www.pdfsam.org/feed/");
+        when(pdfsam.property(ConfigurableProperty.QUICKSTART_URL)).thenReturn("http://www.pdfsam.org/quickstart_video");
+        when(pdfsam.property(ConfigurableProperty.SUPPORT_URL)).thenReturn("http://www.pdfsam.org/support");
+        when(pdfsam.property(ConfigurableProperty.SCM_URL)).thenReturn("http://www.pdfsam.org/scm");
+        when(pdfsam.property(ConfigurableProperty.TRANSLATE_URL)).thenReturn("http://www.pdfsam.org/translate");
+        when(pdfsam.property(ConfigurableProperty.TWITTER_URL)).thenReturn("http://www.pdfsam.org/twitter");
+        when(pdfsam.property(ConfigurableProperty.DONATE_URL)).thenReturn("http://www.pdfsam.org/donate");
+        when(pdfsam.property(ConfigurableProperty.GPLUS_URL)).thenReturn("http://www.pdfsam.org/gplus");
+        when(pdfsam.property(ConfigurableProperty.FACEBOOK_URL)).thenReturn("http://www.pdfsam.org/facebook");
+        when(pdfsam.property(ConfigurableProperty.LICENSE_NAME)).thenReturn("agpl3");
+        when(pdfsam.property(ConfigurableProperty.LICENSE_URL)).thenReturn("http://www.gnu.org/licenses/agpl-3.0.html");
+        when(pdfsam.property(ConfigurableProperty.TRACKER_URL)).thenReturn("http://www.pdfsam.org/issue_tracker");
+        when(pdfsam.property(ConfigurableProperty.THANKS_URL)).thenReturn("http://www.pdfsam.org/issue_tracker");
+        when(pdfsam.property(ConfigurableProperty.GPLUS_URL)).thenReturn("http://www.pdfsam.org/gplus");
+        return new AboutDashboardPane(pdfsam);
     }
 
     @Test
     public void clickHome() {
-        click(AwesomeIcon.HOME.toString());
+        click("home");
         verify(listener).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org", captor.getValue().getUrl());
     }
 
     @Test
     public void clickFeed() {
-        click(AwesomeIcon.RSS_SQUARE.toString());
+        click(DefaultI18nContext.getInstance().i18n("Subscribe to the official news feed"));
         verify(listener).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/feed/", captor.getValue().getUrl());
     }
 
     @Test
     public void clickBugs() {
-        click(AwesomeIcon.BUG.toString());
+        click(DefaultI18nContext.getInstance().i18n("Bug and feature requests"));
         verify(listener).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/issue_tracker", captor.getValue().getUrl());
     }
 
     @Test
-    public void clickWiki() {
-        click(AwesomeIcon.QUESTION_CIRCLE.toString());
+    public void clickLicense() {
+        click("agpl3");
         verify(listener, atLeastOnce()).onEvent(captor.capture());
-        assertEquals("http://www.pdfsam.org/wiki", captor.getValue().getUrl());
+        assertEquals("http://www.gnu.org/licenses/agpl-3.0.html", captor.getValue().getUrl());
     }
 
     @Test
     public void clickQuickstart() {
-        click(AwesomeIcon.YOUTUBE_PLAY.toString());
+        click(DefaultI18nContext.getInstance().i18n("Play the \"get started\" video"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/quickstart_video", captor.getValue().getUrl());
     }
 
     @Test
     public void clickScm() {
-        click(AwesomeIcon.GITHUB.toString());
+        click(DefaultI18nContext.getInstance().i18n("Fork PDFsam on GitHub"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/scm", captor.getValue().getUrl());
     }
 
     @Test
     public void clickTranslate() {
-        click(AwesomeIcon.FLAG_ALT.toString());
+        click(DefaultI18nContext.getInstance().i18n("Translate"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/translate", captor.getValue().getUrl());
     }
 
     @Test
     public void clickDonate() {
-        click(AwesomeIcon.DOLLAR.toString());
+        click(DefaultI18nContext.getInstance().i18n("Donate"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/donate", captor.getValue().getUrl());
     }
 
     @Test
     public void clickTwitter() {
-        click(AwesomeIcon.TWITTER_SQUARE.toString());
+        click(DefaultI18nContext.getInstance().i18n("Follow us on Twitter"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/twitter", captor.getValue().getUrl());
     }
 
     @Test
     public void clickGPlus() {
-        click(AwesomeIcon.GOOGLE_PLUS_SQUARE.toString());
+        click(DefaultI18nContext.getInstance().i18n("Follow us on Google Plus"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/gplus", captor.getValue().getUrl());
     }
 
     @Test
     public void clickFacebook() {
-        click(AwesomeIcon.FACEBOOK_SQUARE.toString());
+        click(DefaultI18nContext.getInstance().i18n("Like us on Facebook"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
         assertEquals("http://www.pdfsam.org/facebook", captor.getValue().getUrl());
     }
@@ -150,7 +172,7 @@ public class AboutDashboardPaneTest extends GuiTest {
         FXTestUtils.invokeAndWait(() -> {
             Clipboard.getSystemClipboard().clear();
             assertTrue(isBlank(Clipboard.getSystemClipboard().getString()));
-        }, 2);
+        } , 2);
         click("#copyEnvDetails");
         FXTestUtils.invokeAndWait(() -> assertTrue(Clipboard.getSystemClipboard().getString().contains("PDFsam")), 1);
     }

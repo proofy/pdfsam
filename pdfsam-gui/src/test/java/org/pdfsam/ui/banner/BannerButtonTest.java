@@ -18,14 +18,16 @@
  */
 package org.pdfsam.ui.banner;
 
-import javafx.scene.Parent;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import javafx.scene.Parent;
+import javafx.scene.text.Text;
 
 /**
  * @author Andrea Vacondio
@@ -36,11 +38,12 @@ public class BannerButtonTest extends GuiTest {
 
     @Override
     protected Parent getRootNode() {
-        return new BannerButton(AwesomeIcon.ADJUST);
+        return new BannerButton(FontAwesomeIcon.ADJUST);
     }
 
     @Test
     public void exists() {
-        exists(AwesomeIcon.ADJUST.toString());
+        Text icon = find(".glyph-icon");
+        assertEquals(FontAwesomeIcon.ADJUST.characterToString(), icon.getText());
     }
 }

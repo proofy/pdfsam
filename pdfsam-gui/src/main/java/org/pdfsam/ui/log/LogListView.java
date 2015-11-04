@@ -18,13 +18,21 @@
  */
 package org.pdfsam.ui.log;
 
-import javafx.scene.control.Label;
+import static java.util.Objects.nonNull;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.pdfsam.context.UserContext;
+import org.pdfsam.ui.support.CircularObservableList;
+import org.sejda.eventstudio.Listener;
+
+import javafx.application.Platform;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.util.Callback;
-
-import javax.inject.Named;
 
 /**
  * {@link ListView} showing log messages
@@ -33,10 +41,14 @@ import javax.inject.Named;
  *
  */
 @Named
-class LogListView extends ListView<LogMessage> {
+class LogListView extends ListView<LogMessage>implements Listener<LogMessage> {
 
-    public LogListView() {
+    @Inject
+    public LogListView(UserContext userContext) {
+        CircularObservableList<LogMessage> items = new CircularObservableList<>(userContext.getNumberOfLogRows());
+        eventStudio().add(MaxLogRowsChangedEvent.class, e -> items.setMaxCapacity(userContext.getNumberOfLogRows()));
         setId("log-view");
+        setItems(items);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setCellFactory(new Callback<ListView<LogMessage>, ListCell<LogMessage>>() {
             @Override
@@ -46,23 +58,27 @@ class LogListView extends ListView<LogMessage> {
         });
     }
 
-    void appendLog(LogLevel level, String message) {
-        getItems().add(new LogMessage(message, level));
-        scrollTo(getItems().size() - 1);
-    }
-
     static class TextCell extends ListCell<LogMessage> {
         @Override
         public void updateItem(LogMessage item, boolean empty) {
             super.updateItem(item, empty);
-            if (item != null) {
-                Label msg = new Label(item.getMessage());
-                msg.getStyleClass().add(item.getLevel().style());
-                setGraphic(msg);
+            for (LogLevel current : LogLevel.values()) {
+                getStyleClass().remove(current.style());
+            }
+            if (nonNull(item)) {
+                setText(item.getMessage());
+                getStyleClass().add(item.getLevel().style());
             } else {
-                setGraphic(null);
+                setText("");
             }
         }
+    }
+
+    public void onEvent(LogMessage event) {
+        Platform.runLater(() -> {
+            getItems().add(event);
+            scrollTo(getItems().size() - 1);
+        });
     }
 
 }

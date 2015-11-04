@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
-import javafx.scene.Parent;
 
 import javax.inject.Inject;
 
@@ -41,7 +40,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import javafx.scene.Parent;
 
 /**
  * @author Andrea Vacondio
@@ -68,7 +67,7 @@ public class ModulesMenuTest extends GuiTest {
         Listener<SetActiveModuleRequest> listener = mock(Listener.class);
         eventStudio().add(SetActiveModuleRequest.class, listener);
         ArgumentCaptor<SetActiveModuleRequest> argument = ArgumentCaptor.forClass(SetActiveModuleRequest.class);
-        click(AwesomeIcon.BARS.toString()).click("#modulesMenu")
+        click(".button").click("#modulesMenu")
                 .click(module.descriptor().getCategory().getDescription()).click(module.descriptor().getName());
         verify(listener).onEvent(argument.capture());
         assertEquals(module.id(), argument.getValue().getActiveModuleId().get());
