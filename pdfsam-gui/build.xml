@@ -1,0 +1,31 @@
+<project name="PdfSam" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+        uri="javafx:com.sun.javafx.tools.ant"
+		xmlns:fx="javafx:com.sun.javafx.tools.ant"
+        classpath="${javafx.sdk.path}/lib/ant-javafx.jar"/>
+ 
+    <target name="default">
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+                uri="javafx:com.sun.javafx.tools.ant"
+                classpath=".:${javafx.sdk.path}/lib/ant-javafx.jar"/>    
+
+    	<fx:jar destfile="target/dist-web/PdfSam.jar">
+    	    <fx:application mainClass="org.pdfsam.App"/>
+    	    <fileset dir="target/classes/">
+    	        <include name="**"/>
+    	    </fileset>
+    	</fx:jar>
+    	 
+    	<fx:deploy width="800" height="600" outdir="target/dist-web" 
+    	        outfile="PdfSam" nativeBundles="all">
+    	    <fx:info title="PDFsam"/>
+    	    <fx:application name="PDFsam"
+    	            mainClass="org.pdfsam.App"/>
+    	    <fx:resources>
+    	        <fx:fileset dir="target/dist-web" includes="ColorfulCircles.jar"/>
+    	    </fx:resources>
+    	</fx:deploy> 
+    
+    </target>
+	
+</project>
