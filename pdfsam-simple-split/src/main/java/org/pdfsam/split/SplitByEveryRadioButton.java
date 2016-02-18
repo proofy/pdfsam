@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.pdfsam.i18n.DefaultI18nContext;
-import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
+import org.pdfsam.support.params.SplitParametersBuilder;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
@@ -34,7 +34,6 @@ import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.parameter.SplitByEveryXPagesParameters;
 
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tooltip;
 
 /**
  * {@link RadioButton} driving a text field that can accept an integer number.
@@ -52,9 +51,7 @@ public class SplitByEveryRadioButton extends RadioButton implements SplitParamet
         this.field.setOnEnterValidation(true);
         this.field.setEnableInvalidStyle(true);
         this.field.setPromptText(DefaultI18nContext.getInstance().i18n("Number of pages"));
-        setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
-"Splits the PDF every \"n\" pages creating documents of \"n\" pages each")));
-        this.field.setValidator(Validators.newRegexMatchingString("^(\\d)+$"));
+        this.field.setValidator(Validators.positiveInteger());
         this.field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid number of pages"));
     }
 
@@ -79,14 +76,19 @@ public class SplitByEveryRadioButton extends RadioButton implements SplitParamet
         field.setText(Optional.ofNullable(data.get("splitByEvery.field")).orElse(EMPTY));
     }
 
+    void setMaxPages(Integer value) {
+        if (value > 1) {
+            this.field.setValidator(Validators.positiveIntRange(1, value - 1));
+        }
+    }
+
     /**
      * Builder for the {@link SplitByEveryXPagesParameters}
      * 
      * @author Andrea Vacondio
      *
      */
-    static class SplitByEveryXPagesParametersBuilder extends
-            SinglePdfSourceMultipleOutputParametersBuilder<SplitByEveryXPagesParameters> {
+    static class SplitByEveryXPagesParametersBuilder extends SplitParametersBuilder<SplitByEveryXPagesParameters> {
 
         private int step;
 
@@ -97,11 +99,12 @@ public class SplitByEveryRadioButton extends RadioButton implements SplitParamet
         public SplitByEveryXPagesParameters build() {
             SplitByEveryXPagesParameters params = new SplitByEveryXPagesParameters(step);
             params.setCompress(isCompress());
-            params.setOverwrite(isOverwrite());
+            params.setExistingOutputPolicy(existingOutput());
             params.setVersion(getVersion());
             params.setOutput(getOutput());
             params.setOutputPrefix(getPrefix());
             params.setSource(getSource());
+            params.setOptimizationPolicy(getOptimizationPolicy());
             return params;
         }
     }

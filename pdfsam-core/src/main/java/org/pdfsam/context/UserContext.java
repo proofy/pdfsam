@@ -47,29 +47,24 @@ public interface UserContext {
     boolean isPlaySounds();
 
     /**
+     * @return true if the notification should be shown
+     */
+    boolean isDonationNotification();
+
+    /**
      * @return if updates check should be performed
      */
     boolean isCheckForUpdates();
 
     /**
+     * @return if workspace should be saved on application exit
+     */
+    boolean isSaveWorkspaceOnExit();
+
+    /**
      * @return the locale
      */
     String getLocale();
-
-    /**
-     * @return true if the thumbnails should be rendered with high quality
-     */
-    boolean isHighQualityThumbnails();
-
-    /**
-     * @return the thumbnails creator identifier
-     */
-    String getThumbnailsCreatorIdentifier();
-
-    /**
-     * @return the thumbnails default size
-     */
-    int getThumbnailsSize();
 
     /**
      * @return the max number of rows that the log view should display

@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 10/ott/2014
+ * Created on 03 dic 2015
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,30 +18,22 @@
  */
 package org.pdfsam.ui.dialog;
 
-import javafx.scene.Parent;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.loadui.testfx.GuiTest;
-import org.loadui.testfx.categories.TestFX;
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 
 /**
+ * Possible dialog styles
+ * 
  * @author Andrea Vacondio
- *
  */
-@Category(TestFX.class)
-public class OverwriteConfirmationDialogContentTest extends GuiTest {
-    @Override
-    protected Parent getRootNode() {
-        OverwriteConfirmationDialogContent victim = new OverwriteConfirmationDialogContent();
-        victim.messageTitle("MessageTitle");
-        victim.messageContent("MessageContent");
-        return victim;
+public enum DialogStyle {
+    WARNING("-pdfsam-warning-dialog", MaterialDesignIcon.ALERT),
+    QUESTION("-pdfsam-question-dialog", MaterialDesignIcon.HELP_CIRCLE);
+    public final String style;
+    public final MaterialDesignIcon icon;
+
+    private DialogStyle(String style, MaterialDesignIcon icon) {
+        this.style = style;
+        this.icon = icon;
     }
 
-    @Test
-    public void contentIsShown() {
-        find("MessageTitle");
-        find("MessageContent");
-    }
 }

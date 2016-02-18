@@ -64,7 +64,7 @@ public class OverwriteConfirmationDialogTest extends GuiTest {
         OverwriteConfirmationDialog victim = new OverwriteConfirmationDialog(styles);
         Button button = new Button("show");
         button.setOnAction(a -> overwrite = victim.title("Title").messageTitle("MessageTitle")
-                .messageContent("MessageContent").shouldOverwrite());
+                .messageContent("MessageContent").response());
         return button;
     }
 

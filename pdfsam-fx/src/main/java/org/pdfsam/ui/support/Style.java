@@ -18,7 +18,6 @@
  */
 package org.pdfsam.ui.support;
 
-
 /**
  * Defines css style classes
  * 
@@ -28,6 +27,7 @@ package org.pdfsam.ui.support;
 public enum Style {
     BUTTON("pdfsam-button"),
     BROWSE_BUTTON("pdfsam-button", "browse-button"),
+    FOOTER_BUTTON("pdfsam-button", "footer-button"),
     TITLED_PANE("titled-pane"),
     DEAULT_CONTAINER("default-container"),
     CONTAINER("pdfsam-container"),
@@ -37,7 +37,8 @@ public enum Style {
     VITEM("spaced-vitem"),
     HCONTAINER("spaced-hcontainer"),
     MAIN_PANEL("main-scroll-panel"),
-    GRID("pdfsam-grid");
+    GRID("pdfsam-grid"),
+    WITH_HELP("with-help");
 
     public static final int DEFAULT_SPACING = 5;
     private String[] classes;

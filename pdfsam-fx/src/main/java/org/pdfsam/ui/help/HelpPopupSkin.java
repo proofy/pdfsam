@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 21/mar/2014
+ * Created on 15 dic 2015
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,36 +16,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.module;
+package org.pdfsam.ui.help;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import static java.util.Optional.ofNullable;
 
-import org.pdfsam.ui.support.Style;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-
-import javafx.scene.layout.HBox;
+import javafx.scene.Node;
+import javafx.scene.control.Skin;
 
 /**
- * Footer common to all the modules that include the run button and the progress bar.
+ * Skin for an {@link HelpPopup}
  * 
  * @author Andrea Vacondio
  *
  */
-@Named
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-class ModuleFooterPane extends HBox {
+public class HelpPopupSkin implements Skin<HelpPopup> {
+    private HelpPopup popup;
 
-    private RunButton runButton = new RunButton();
-
-    @Inject
-    public ModuleFooterPane(ProgressPane progress) {
-        this.getStyleClass().addAll(Style.CLOSE_FOOTER.css());
-        this.getChildren().addAll(progress, runButton);
+    public HelpPopupSkin(final HelpPopup popup) {
+        this.popup = popup;
+        getNode().styleProperty().bind(popup.styleProperty());
+        getNode().getStyleClass().addAll(popup.getStyleClass());
     }
 
-    RunButton runButton() {
-        return runButton;
+    @Override
+    public HelpPopup getSkinnable() {
+        return popup;
     }
+
+    @Override
+    public Node getNode() {
+        return ofNullable(popup).map(HelpPopup::getPopupContent).orElse(null);
+    }
+
+    @Override
+    public void dispose() {
+        popup = null;
+    }
+
 }

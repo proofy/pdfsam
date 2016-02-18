@@ -20,12 +20,14 @@ package org.pdfsam.ui.prefix;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.pdfsam.ui.help.HelpUtils.helpIcon;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.i18n.I18nContext;
 import org.pdfsam.support.params.MultipleOutputTaskParametersBuilder;
 import org.pdfsam.support.params.TaskParametersBuildStep;
 import org.pdfsam.ui.support.Style;
@@ -34,8 +36,8 @@ import org.sejda.model.prefix.Prefix;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  * Panel with a text field to set the prefix for a task
@@ -43,17 +45,22 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-public class PrefixPane extends HBox implements TaskParametersBuildStep<MultipleOutputTaskParametersBuilder<?>>,
-        RestorableView {
+public class PrefixPane extends HBox
+        implements TaskParametersBuildStep<MultipleOutputTaskParametersBuilder<?>>, RestorableView {
 
     private PrefixField field = new PrefixField();
 
     public PrefixPane() {
         getStyleClass().addAll(Style.CONTAINER.css());
         getStyleClass().addAll(Style.HCONTAINER.css());
-        VBox.setVgrow(field, Priority.ALWAYS);
+        I18nContext ctx = DefaultI18nContext.getInstance();
         getChildren().addAll(new Label(DefaultI18nContext.getInstance().i18n("Generated PDF documents name prefix:")),
-                field);
+                field,
+                        helpIcon(new TextFlow(
+                                new Text(ctx.i18n("Prefix for the output files name.") + System.lineSeparator()),
+                                new Text(ctx.i18n("Some special keywords are replaced with runtime values.")
+                                        + System.lineSeparator()),
+                        new Text(ctx.i18n("Right click to add these keywords.")))));
     }
 
     public void addMenuItemFor(Prefix... prefixes) {

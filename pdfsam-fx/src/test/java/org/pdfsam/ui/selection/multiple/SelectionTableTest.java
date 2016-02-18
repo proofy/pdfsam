@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +62,6 @@ import org.pdfsam.ui.selection.multiple.move.MoveSelectedEvent;
 import org.pdfsam.ui.selection.multiple.move.MoveType;
 import org.sejda.eventstudio.Listener;
 
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
@@ -80,11 +80,16 @@ public class SelectionTableTest extends GuiTest {
 
     @Override
     protected Parent getRootNode() {
-        SelectionTable victim = new SelectionTable(MODULE, true,
+        SelectionTable victim = new SelectionTable(MODULE, true, true,
                 new SelectionTableColumn<?>[] { new LoadingColumn(MODULE), FileColumn.NAME, LongColumn.SIZE,
                         IntColumn.PAGES, LongColumn.LAST_MODIFIED, StringColumn.PAGE_SELECTION });
         victim.setId("victim");
         return victim;
+    }
+
+    @After
+    public void tearDown() {
+        type(KeyCode.ESCAPE);
     }
 
     @Test
@@ -251,12 +256,10 @@ public class SelectionTableTest extends GuiTest {
     }
 
     @Test
-    @Ignore("Fails on CI server")
-    // TODO
     public void removeByContextMenu() throws Exception {
         populate();
         rightClick("temp.pdf");
-        click(MaterialDesignIcon.MINUS.toString());
+        click(DefaultI18nContext.getInstance().i18n("Remove"));
         SelectionTable victim = find("#victim");
         assertEquals(3, victim.getItems().size());
         assertEquals(1, victim.getSelectionModel().getSelectedIndices().size());
@@ -348,18 +351,20 @@ public class SelectionTableTest extends GuiTest {
     public void moveUpByContextMenu() throws Exception {
         populate();
         rightClick("temp3.pdf");
-        verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 2);
+        SelectionTable victim = find("#victim");
+        assertEquals(2, victim.getSelectionModel().getSelectedIndex());
         click(DefaultI18nContext.getInstance().i18n("Move Up"));
-        verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 1);
+        assertEquals(1, victim.getSelectionModel().getSelectedIndex());
     }
 
     @Test
     public void moveTopByContextMenu() throws Exception {
         populate();
         rightClick("temp3.pdf");
-        verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 2);
+        SelectionTable victim = find("#victim");
+        assertEquals(2, victim.getSelectionModel().getSelectedIndex());
         click(DefaultI18nContext.getInstance().i18n("Move to Top"));
-        verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 0);
+        assertEquals(0, victim.getSelectionModel().getSelectedIndex());
     }
 
     @Test

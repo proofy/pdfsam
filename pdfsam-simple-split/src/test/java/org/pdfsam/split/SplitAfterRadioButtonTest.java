@@ -33,10 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javafx.scene.Parent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,8 +47,13 @@ import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.sejda.model.input.PdfFileSource;
 import org.sejda.model.output.DirectoryTaskOutput;
+import org.sejda.model.output.ExistingOutputPolicy;
 import org.sejda.model.parameter.SplitByPagesParameters;
 import org.sejda.model.pdf.PdfVersion;
+
+import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 
 /**
  * @author Andrea Vacondio
@@ -90,10 +91,34 @@ public class SplitAfterRadioButtonTest extends GuiTest {
     }
 
     @Test
+    public void validWhiteSpace() {
+        ValidableTextField field = find("#field");
+        assertEquals(ValidationState.NOT_VALIDATED, field.getValidationState());
+        click(field).type("2, 4 ,10").push(KeyCode.ENTER);
+        assertEquals(ValidationState.VALID, field.getValidationState());
+    }
+
+    @Test
     public void invalid() {
         ValidableTextField field = find("#field");
         assertEquals(ValidationState.NOT_VALIDATED, field.getValidationState());
         click(field).type("Chuck").push(KeyCode.ENTER);
+        assertEquals(ValidationState.INVALID, field.getValidationState());
+    }
+
+    @Test
+    public void invalidZero() {
+        ValidableTextField field = find("#field");
+        assertEquals(ValidationState.NOT_VALIDATED, field.getValidationState());
+        click(field).type("0").push(KeyCode.ENTER);
+        assertEquals(ValidationState.INVALID, field.getValidationState());
+    }
+
+    @Test
+    public void invalidContainsZero() {
+        ValidableTextField field = find("#field");
+        assertEquals(ValidationState.NOT_VALIDATED, field.getValidationState());
+        click(field).type("14,0").push(KeyCode.ENTER);
         assertEquals(ValidationState.INVALID, field.getValidationState());
     }
 
@@ -119,14 +144,14 @@ public class SplitAfterRadioButtonTest extends GuiTest {
             builder.compress(true);
             DirectoryTaskOutput output = mock(DirectoryTaskOutput.class);
             builder.output(output);
-            builder.overwrite(true);
+            builder.existingOutput(ExistingOutputPolicy.OVERWRITE);
             builder.prefix("prefix");
             PdfFileSource source = PdfFileSource.newInstanceNoPassword(file);
             builder.source(source);
             builder.version(PdfVersion.VERSION_1_7);
             SplitByPagesParameters params = builder.build();
             assertTrue(params.isCompress());
-            assertTrue(params.isOverwrite());
+            assertEquals(ExistingOutputPolicy.OVERWRITE, params.getExistingOutputPolicy());
             assertEquals(PdfVersion.VERSION_1_7, params.getVersion());
             assertThat(params.getPages(20), contains(1, 10));
             assertEquals("prefix", params.getOutputPrefix());

@@ -20,6 +20,7 @@ package org.pdfsam.ui.dashboard.preference;
 
 import static org.pdfsam.support.KeyStringValueItem.keyEmptyValue;
 import static org.pdfsam.support.KeyStringValueItem.keyValue;
+import static org.pdfsam.ui.help.HelpUtils.helpIcon;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.Arrays;
@@ -43,10 +44,9 @@ import org.pdfsam.ui.Theme;
 import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
 import org.pdfsam.ui.log.MaxLogRowsChangedEvent;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
+import org.pdfsam.ui.support.Style;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javafx.scene.control.Tooltip;
 
 /**
  * Configuration for the PDFsam preferences components
@@ -56,9 +56,6 @@ import javafx.scene.control.Tooltip;
  */
 @Configuration
 public class PreferenceConfig {
-
-    private static final Integer THUMB_SIZE_LOWER = 130;
-    private static final Integer THUMB_SIZE_UPPER = 390;
 
     @Inject
     private UserContext userContext;
@@ -70,12 +67,11 @@ public class PreferenceConfig {
 
     @Bean(name = "themeCombo")
     public PreferenceComboBox<KeyStringValueItem<String>> themeCombo() {
-        PreferenceComboBox<KeyStringValueItem<String>> themeCombo = new PreferenceComboBox<>(
-                StringUserPreference.THEME, userContext);
+        PreferenceComboBox<KeyStringValueItem<String>> themeCombo = new PreferenceComboBox<>(StringUserPreference.THEME,
+                userContext);
         themeCombo.setId("themeCombo");
-        themeCombo.getItems().addAll(
-                Arrays.stream(Theme.values()).map(t -> keyValue(t.toString(), t.friendlyName()))
-                        .collect(Collectors.toList()));
+        themeCombo.getItems().addAll(Arrays.stream(Theme.values()).map(t -> keyValue(t.toString(), t.friendlyName()))
+                .collect(Collectors.toList()));
 
         themeCombo.setValue(keyEmptyValue(userContext.getTheme()));
         return themeCombo;
@@ -92,40 +88,40 @@ public class PreferenceConfig {
         return startupModuleCombo;
     }
 
-    // @Bean(name = "thumbnailsCombo")
-    public PreferenceComboBox<KeyStringValueItem<String>> thumbnailsCombo() {
-        return new PreferenceComboBox<>(StringUserPreference.THUMBNAILS_IDENTIFIER, userContext);
-    }
-
     @Bean(name = "checkForUpdates")
     public PreferenceCheckBox checkForUpdates() {
         PreferenceCheckBox checkForUpdates = new PreferenceCheckBox(BooleanUserPreference.CHECK_UPDATES,
                 DefaultI18nContext.getInstance().i18n("Check for updates at startup"), userContext.isCheckForUpdates(),
                 userContext);
         checkForUpdates.setId("checkForUpdates");
-        checkForUpdates.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n(
-                "Set whether new version availability should be checked on startup (restart needed)")));
+        checkForUpdates.setGraphic(helpIcon(DefaultI18nContext.getInstance()
+                .i18n("Set whether new version availability should be checked on startup (restart needed)")));
+        checkForUpdates.getStyleClass().addAll(Style.WITH_HELP.css());
         checkForUpdates.getStyleClass().add("spaced-vitem");
         return checkForUpdates;
     }
 
     @Bean(name = "playSounds")
     public PreferenceCheckBox playSounds() {
-        PreferenceCheckBox playSounds = new PreferenceCheckBox(BooleanUserPreference.PLAY_SOUNDS, DefaultI18nContext
-                .getInstance().i18n("Play alert sounds"), userContext.isPlaySounds(), userContext);
+        PreferenceCheckBox playSounds = new PreferenceCheckBox(BooleanUserPreference.PLAY_SOUNDS,
+                DefaultI18nContext.getInstance().i18n("Play alert sounds"), userContext.isPlaySounds(), userContext);
         playSounds.setId("playSounds");
-        playSounds.setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Turn on or off alert sounds")));
+        playSounds.setGraphic(helpIcon(DefaultI18nContext.getInstance().i18n("Turn on or off alert sounds")));
+        playSounds.getStyleClass().addAll(Style.WITH_HELP.css());
         playSounds.getStyleClass().add("spaced-vitem");
         return playSounds;
     }
 
-    // @Bean(name = "highQualityThumbnails")
-    public PreferenceCheckBox highQualityThumbnails() {
-        PreferenceCheckBox highQualityThumbnails = new PreferenceCheckBox(BooleanUserPreference.HIGH_QUALITY_THUMB,
-                DefaultI18nContext.getInstance().i18n("High quality thumbnails"),
-                userContext.isHighQualityThumbnails(), userContext);
-        highQualityThumbnails.setId("highQualityThumbnails");
-        return highQualityThumbnails;
+    @Bean(name = "donationNotification")
+    public PreferenceCheckBox donationNotification() {
+        PreferenceCheckBox donationNotification = new PreferenceCheckBox(BooleanUserPreference.DONATION_NOTIFICATION,
+                DefaultI18nContext.getInstance().i18n("Show donation window"), userContext.isPlaySounds(), userContext);
+        donationNotification.setId("donationNotification");
+        donationNotification.setGraphic(helpIcon(DefaultI18nContext.getInstance().i18n(
+                "Turn on or off the notification appearing once in a while and asking the user to support PDFsam with a donation")));
+        donationNotification.getStyleClass().addAll(Style.WITH_HELP.css());
+        donationNotification.getStyleClass().add("spaced-vitem");
+        return donationNotification;
     }
 
     @Bean(name = "smartRadio")
@@ -143,44 +139,40 @@ public class PreferenceConfig {
                 StringUserPreference.WORKING_PATH, userContext);
         workingDirectory.getTextField().setText(userContext.getDefaultWorkingPath());
         workingDirectory.setId("workingDirectory");
+        workingDirectory.getStyleClass().add("spaced-vitem");
         return workingDirectory;
     }
 
     @Bean(name = "workspace")
     public PreferenceBrowsableFileField workspace() {
         PreferenceBrowsableFileField workspace = new PreferenceBrowsableFileField(StringUserPreference.WORKSPACE_PATH,
-                FileType.XML, OpenType.OPEN, userContext);
+                FileType.JSON, OpenType.OPEN, userContext);
         workspace.getTextField().setText(userContext.getDefaultWorkspacePath());
         workspace.setId("workspace");
+        workspace.getStyleClass().add("spaced-vitem");
         return workspace;
     }
 
-    // @Bean(name = "thumbnailsSize")
-    public PreferenceIntTextField thumbnailsSize() {
-        PreferenceIntTextField thumbnails = new PreferenceIntTextField(IntUserPreference.THUMBNAILS_SIZE, userContext,
-                Validators.newPositiveIntRangeString(THUMB_SIZE_LOWER, THUMB_SIZE_UPPER));
-        thumbnails.setText(Integer.toString(userContext.getThumbnailsSize()));
-        thumbnails.setErrorMessage(DefaultI18nContext.getInstance().i18n("Size must be between {0}px and {1}px",
-                THUMB_SIZE_LOWER.toString(), THUMB_SIZE_UPPER.toString()));
-        String helpText = DefaultI18nContext.getInstance().i18n(
-                "Pixel size of the thumbnails (between {0}px and {1}px)", THUMB_SIZE_LOWER.toString(),
-                THUMB_SIZE_UPPER.toString());
-        thumbnails.setPromptText(helpText);
-        thumbnails.setTooltip(new Tooltip(helpText));
-        thumbnails.setId("thumbnailsSize");
-        return thumbnails;
+    @Bean(name = "saveWorkspaceOnExit")
+    public PreferenceCheckBox saveWorkspaceOnExit() {
+        PreferenceCheckBox saveWorkspaceOnExit = new PreferenceCheckBox(BooleanUserPreference.SAVE_WORKSPACE_ON_EXIT,
+                DefaultI18nContext.getInstance().i18n("Save default workspace on exit"),
+                userContext.isSaveWorkspaceOnExit(), userContext);
+        saveWorkspaceOnExit.setId("saveWorkspaceOnExit");
+        saveWorkspaceOnExit.setGraphic(helpIcon(
+                DefaultI18nContext.getInstance().i18n("If a default workspace is set, save it on application exit")));
+        saveWorkspaceOnExit.getStyleClass().addAll(Style.WITH_HELP.css());
+        saveWorkspaceOnExit.getStyleClass().add("spaced-vitem");
+        return saveWorkspaceOnExit;
     }
 
     @Bean(name = "logViewRowsNumber")
     public PreferenceIntTextField logViewRowsNumber() {
         PreferenceIntTextField logRowsNumber = new PreferenceIntTextField(IntUserPreference.LOGVIEW_ROWS_NUMBER,
-                userContext, Validators.newPositiveIntegerString());
+                userContext, Validators.positiveInteger());
         logRowsNumber.setText(Integer.toString(userContext.getNumberOfLogRows()));
-        logRowsNumber.setErrorMessage(DefaultI18nContext.getInstance().i18n(
-                "Maximum number of rows mast be a positive number"));
-        String helpText = DefaultI18nContext.getInstance().i18n("Maximum number of rows displayed by the Log register");
-        logRowsNumber.setPromptText(helpText);
-        logRowsNumber.setTooltip(new Tooltip(helpText));
+        logRowsNumber.setErrorMessage(
+                DefaultI18nContext.getInstance().i18n("Maximum number of rows mast be a positive number"));
         logRowsNumber.setId("logViewRowsNumber");
         logRowsNumber.validProperty().addListener((o, oldVal, newVal) -> {
             if (newVal == ValidationState.VALID) {

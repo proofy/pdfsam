@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 16/nov/2012
- * Copyright 2012 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Created on 03 dic 2015
+ * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -16,20 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.support.validation;
+package org.pdfsam.ui.commons;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.pdfsam.support.RequireUtils.requireNotNull;
+
+import java.nio.file.Path;
 
 /**
- * Validates that the input string is not blank, empty or null.
+ * Event signaling that a non existing output directory was requested
  * 
  * @author Andrea Vacondio
- * 
+ *
  */
-class NonBlankStringValidator implements Validator<String> {
+public class NonExistingOutputDirectoryEvent {
 
-    public boolean isValid(String input) {
-        return StringUtils.isNotBlank(input);
+    public final Path outputDirectory;
+
+    public NonExistingOutputDirectoryEvent(Path outputDirectory) {
+        requireNotNull(outputDirectory, "Cannot create a null output directory");
+        this.outputDirectory = outputDirectory;
     }
-
 }

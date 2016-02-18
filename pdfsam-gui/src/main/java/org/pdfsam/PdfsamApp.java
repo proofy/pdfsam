@@ -19,6 +19,7 @@
 package org.pdfsam;
 
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.pdfsam.ui.event.SetActiveModuleRequest.activeteModule;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
@@ -28,8 +29,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pdfsam.configuration.ApplicationContextHolder;
@@ -51,6 +54,8 @@ import org.pdfsam.ui.dialog.OverwriteConfirmationDialog;
 import org.pdfsam.ui.io.SetLatestDirectoryEvent;
 import org.pdfsam.ui.log.LogMessageBroadcaster;
 import org.pdfsam.ui.notification.NotificationsContainer;
+import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
+import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
 import org.pdfsam.update.UpdateCheckRequest;
 import org.sejda.core.Sejda;
 import org.sejda.eventstudio.EventStudio;
@@ -80,14 +85,13 @@ public class PdfsamApp extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(PdfsamApp.class);
     private static StopWatch STOPWATCH = new StopWatch();
     private Stage primaryStage;
+    UserContext userContext = new DefaultUserContext();
 
     @Override
     public void init() {
         STOPWATCH.start();
-        UserContext userContext = new DefaultUserContext();
         System.setProperty(EventStudio.MAX_QUEUE_SIZE_PROP, Integer.toString(userContext.getNumberOfLogRows()));
         LOG.info("Starting PDFsam");
-        System.setProperty(Sejda.UNETHICAL_READ_PROPERTY_NAME, "true");
         cleanUserContextIfNeeded(userContext);
         String localeString = userContext.getLocale();
         if (isNotBlank(localeString)) {
@@ -118,6 +122,7 @@ public class PdfsamApp extends Application {
         ApplicationContextHolder.getContext();
         startLogAppender();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionLogger());
+        initSejda();
         cleanIfNeeded();
         primaryStage.setScene(initScene());
         primaryStage.getIcons().addAll(ApplicationContextHolder.getContext().getBeansOfType(Image.class).values());
@@ -126,6 +131,7 @@ public class PdfsamApp extends Application {
         initWindowsStatusController(primaryStage);
         initOverwriteDialogController(primaryStage);
         initActiveModule();
+        loadWorkspaceIfRequired();
         primaryStage.show();
 
         requestCheckForUpdateIfNecessary();
@@ -135,6 +141,12 @@ public class PdfsamApp extends Application {
         STOPWATCH.stop();
         LOG.info(DefaultI18nContext.getInstance().i18n("Started in {0}",
                 DurationFormatUtils.formatDurationWords(STOPWATCH.getTime(), true, true)));
+    }
+
+    private void initSejda() {
+        Pdfsam pdfsam = ApplicationContextHolder.getContext().getBean(Pdfsam.class);
+        Sejda.CREATOR = pdfsam.shortName() + " v" + pdfsam.property(ConfigurableProperty.VERSION);
+        System.setProperty(Sejda.UNETHICAL_READ_PROPERTY_NAME, "true");
     }
 
     private void startLogAppender() {
@@ -174,6 +186,7 @@ public class PdfsamApp extends Application {
             status.setMode(StageMode.valueFor(this.primaryStage));
             eventStudio().broadcast(new SetLatestStageStatusRequest(status));
         }
+        saveWorkspaceIfRequired();
         ApplicationContextHolder.getContext().close();
     }
 
@@ -184,7 +197,9 @@ public class PdfsamApp extends Application {
     }
 
     private void cleanIfNeeded() {
-        if (getParameters().getRaw().contains("-clean")) {
+        List<String> raws = getParameters().getRaw();
+        if (raws.contains("--clean") || raws.contains("-clean") || raws.contains("-c")) {
+            LOG.debug("Cleaning...");
             ApplicationContextHolder.getContext().getBean(NewsService.class).clear();
             ApplicationContextHolder.getContext().getBean(StageService.class).clear();
         }
@@ -217,10 +232,27 @@ public class PdfsamApp extends Application {
     }
 
     private void initActiveModule() {
-        String startupModule = new DefaultUserContext().getStartupModule();
+        String startupModule = userContext.getStartupModule();
         if (isNotBlank(startupModule)) {
             LOG.trace("Activating startup module '{}'", startupModule);
             eventStudio().broadcast(activeteModule(startupModule));
+        }
+    }
+
+    private void loadWorkspaceIfRequired() {
+        String workspace = ofNullable(getParameters().getNamed().get("workspace")).filter(StringUtils::isNotBlank)
+                .orElseGet(userContext::getDefaultWorkspacePath);
+        if (isNotBlank(workspace) && Files.exists(Paths.get(workspace))) {
+            eventStudio().broadcast(new LoadWorkspaceEvent(new File(workspace)));
+        }
+    }
+
+    private void saveWorkspaceIfRequired() {
+        if (userContext.isSaveWorkspaceOnExit()) {
+            String workspace = userContext.getDefaultWorkspacePath();
+            if (isNotBlank(workspace) && Files.exists(Paths.get(workspace))) {
+                eventStudio().broadcast(new SaveWorkspaceEvent(new File(workspace), true));
+            }
         }
     }
 }

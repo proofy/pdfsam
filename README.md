@@ -16,6 +16,10 @@ Requirements
 -------------------
 PDFsam Basic is written using the JavaFX and requires a Java Runtime Environment 8 (or above) with JavaFx to run
 
+Documentation
+-------------------
+Some [documentation](http://www.pdfsam.org/documentation/) and [FAQ](http://www.pdfsam.org/faq/)
+
 Build
 -------------------
 This is a [simple guide](pdfsam-docs/BUILDnRUN.md) that can help you building PDFsam Basic
@@ -24,9 +28,13 @@ Contribute
 ------------------
 Contributes are more then welcome, just please make sure you first read the [contributing guidelines](CONTRIBUTING.md)   
 
+Translations
+------------------
+If you want to contribute translating PDFsam to your language you can do it [here](https://translations.launchpad.net/pdfsam/pdfsam-v3)
+
 Tips and tweaks  
 ------------------
-A list of properties and arguments that can tweak PDFsam behavior and be found [here](pdfsam-docs/PROPERTIESnARGS.md) 
+A list of properties and arguments that can tweak PDFsam behavior can be found [here](pdfsam-docs/PROPERTIESnARGS.md) 
 
   [GNU Affero General Public License]: http://www.gnu.org/licenses/agpl-3.0.html
 

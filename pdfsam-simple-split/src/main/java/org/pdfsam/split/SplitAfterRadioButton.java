@@ -26,17 +26,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tooltip;
-
 import org.pdfsam.i18n.DefaultI18nContext;
-import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
+import org.pdfsam.support.params.SplitParametersBuilder;
 import org.pdfsam.support.validation.Validators;
 import org.pdfsam.ui.commons.ValidableTextField;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.conversion.PageNumbersListAdapter;
 import org.sejda.model.parameter.SplitByPagesParameters;
+
+import javafx.scene.control.RadioButton;
 
 /**
  * {@link RadioButton} driving a text field that can accept a comma separated list of integer numbers.
@@ -54,8 +53,7 @@ class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilde
         this.field.setOnEnterValidation(true);
         this.field.setEnableInvalidStyle(true);
         this.field.setPromptText(DefaultI18nContext.getInstance().i18n("Page numbers to split at (n1,n2,n3..)"));
-        setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Split the document after the given page numbers")));
-        this.field.setValidator(Validators.newRegexMatchingString("^([0-9]+,?)+$"));
+        this.field.setValidator(Validators.regexMatching("^([1-9]\\d*(\\s*,\\s*)?)+$"));
         this.field.setErrorMessage(DefaultI18nContext.getInstance().i18n("Invalid page numbers"));
     }
 
@@ -64,7 +62,7 @@ class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilde
         if (this.field.getValidationState() == ValidationState.VALID) {
             return new SplitByPageParametersBuilder(new PageNumbersListAdapter(this.field.getText()).getPageNumbers());
         }
-        onError.accept(DefaultI18nContext.getInstance().i18n("Invalid page numbers"));
+        onError.accept(DefaultI18nContext.getInstance().i18n("Only valid positive page numbers are allowed"));
         return null;
     }
 
@@ -86,8 +84,7 @@ class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilde
      * @author Andrea Vacondio
      *
      */
-    static class SplitByPageParametersBuilder extends
-            SinglePdfSourceMultipleOutputParametersBuilder<SplitByPagesParameters> {
+    static class SplitByPageParametersBuilder extends SplitParametersBuilder<SplitByPagesParameters> {
 
         private List<Integer> pages;
 
@@ -99,11 +96,12 @@ class SplitAfterRadioButton extends RadioButton implements SplitParametersBuilde
             SplitByPagesParameters params = new SplitByPagesParameters();
             params.addPages(pages);
             params.setCompress(isCompress());
-            params.setOverwrite(isOverwrite());
+            params.setExistingOutputPolicy(existingOutput());
             params.setVersion(getVersion());
             params.setOutput(getOutput());
             params.setOutputPrefix(getPrefix());
             params.setSource(getSource());
+            params.setOptimizationPolicy(getOptimizationPolicy());
             return params;
         }
     }

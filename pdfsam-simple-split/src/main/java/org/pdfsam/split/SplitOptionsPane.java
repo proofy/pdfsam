@@ -18,12 +18,10 @@
  */
 package org.pdfsam.split;
 
+import static org.pdfsam.ui.help.HelpUtils.helpIcon;
+
 import java.util.Map;
 import java.util.function.Consumer;
-
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.VBox;
 
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.KeyStringValueItem;
@@ -34,6 +32,10 @@ import org.pdfsam.ui.support.Style;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.parameter.AbstractSplitByPageParameters;
 import org.sejda.model.pdf.page.PredefinedSetOfPages;
+
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.VBox;
 
 /**
  * Panel for the Split options
@@ -51,15 +53,12 @@ class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator, Re
     SplitOptionsPane() {
         super(Style.DEFAULT_SPACING);
         ComboBox<KeyStringValueItem<PredefinedSetOfPages>> predefinedCombo = new ComboBox<>();
-        predefinedCombo.getItems().add(
-                KeyStringValueItem.keyValue(PredefinedSetOfPages.ALL_PAGES,
-                        DefaultI18nContext.getInstance().i18n("Every page")));
-        predefinedCombo.getItems().add(
-                KeyStringValueItem.keyValue(PredefinedSetOfPages.EVEN_PAGES,
-                        DefaultI18nContext.getInstance().i18n("Even pages")));
-        predefinedCombo.getItems().add(
-                KeyStringValueItem.keyValue(PredefinedSetOfPages.ODD_PAGES,
-                        DefaultI18nContext.getInstance().i18n("Odd pages")));
+        predefinedCombo.getItems().add(KeyStringValueItem.keyValue(PredefinedSetOfPages.ALL_PAGES,
+                DefaultI18nContext.getInstance().i18n("Every page")));
+        predefinedCombo.getItems().add(KeyStringValueItem.keyValue(PredefinedSetOfPages.EVEN_PAGES,
+                DefaultI18nContext.getInstance().i18n("Even pages")));
+        predefinedCombo.getItems().add(KeyStringValueItem.keyValue(PredefinedSetOfPages.ODD_PAGES,
+                DefaultI18nContext.getInstance().i18n("Odd pages")));
         splitAfterPredefined = new SplitAfterPredefinedSetOfPagesRadioButton(predefinedCombo);
         ValidableTextField splitAfterField = new ValidableTextField();
         splitAfter = new SplitAfterRadioButton(splitAfterField);
@@ -70,14 +69,20 @@ class SplitOptionsPane extends VBox implements SplitParametersBuilderCreator, Re
         splitAfterPredefined.setToggleGroup(group);
         splitAfter.setToggleGroup(group);
         splitByEvery.setToggleGroup(group);
-
-        grid.addRow(splitAfterPredefined, predefinedCombo);
-        grid.addRow(splitAfter, splitAfterField);
-        grid.addRow(splitByEvery, splitByEveryField);
+        grid.addRow(splitAfterPredefined, predefinedCombo,
+                helpIcon(DefaultI18nContext.getInstance().i18n("Split the document after the given page numbers")));
+        grid.addRow(splitAfter, splitAfterField,
+                helpIcon(DefaultI18nContext.getInstance().i18n("Split the document after the given page numbers")));
+        grid.addRow(splitByEvery, splitByEveryField, helpIcon(DefaultI18nContext.getInstance()
+                .i18n("Splits the PDF every \"n\" pages creating documents of \"n\" pages each")));
         splitAfterPredefined.setSelected(true);
 
         getStyleClass().addAll(Style.CONTAINER.css());
         getChildren().addAll(grid);
+    }
+
+    void setMaxPages(Integer value) {
+        splitByEvery.setMaxPages(value);
     }
 
     public SinglePdfSourceMultipleOutputParametersBuilder<? extends AbstractSplitByPageParameters> getBuilder(

@@ -23,18 +23,7 @@ import javax.inject.Named;
 
 import org.pdfsam.configuration.StylesConfig;
 import org.pdfsam.i18n.DefaultI18nContext;
-import org.pdfsam.ui.commons.HideOnEscapeHandler;
-import org.pdfsam.ui.support.Style;
 import org.springframework.context.annotation.Lazy;
-
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 
 /**
  * Dialog asking the user to confirm for the output file overwrite
@@ -44,61 +33,12 @@ import javafx.stage.Window;
  */
 @Named
 @Lazy
-public class OverwriteConfirmationDialog extends Stage {
-
-    private boolean overwrite = false;
-    private OverwriteConfirmationDialogContent dialogContent = new OverwriteConfirmationDialogContent();
+public class OverwriteConfirmationDialog extends ConfirmationDialog {
 
     @Inject
     public OverwriteConfirmationDialog(StylesConfig styles) {
-        initModality(Modality.WINDOW_MODAL);
-        initStyle(StageStyle.UTILITY);
-        setResizable(false);
-        BorderPane containerPane = new BorderPane();
-        containerPane.getStyleClass().addAll(Style.CONTAINER.css());
-        containerPane.getStyleClass().addAll("-pdfsam-dialog", "-pdfsam-warning-dialog");
-        containerPane.setCenter(dialogContent);
-        HBox buttons = new HBox(buildButton(DefaultI18nContext.getInstance().i18n("Overwrite"), true), buildButton(
-                DefaultI18nContext.getInstance().i18n("Cancel"), false));
-        buttons.getStyleClass().add("-pdfsam-dialog-buttons");
-        containerPane.setBottom(buttons);
-        Scene scene = new Scene(containerPane);
-        scene.getStylesheets().addAll(styles.styles());
-        scene.setOnKeyReleased(new HideOnEscapeHandler(this));
-        setScene(scene);
+        super(styles, DialogStyle.WARNING, DefaultI18nContext.getInstance().i18n("Overwrite"),
+                DefaultI18nContext.getInstance().i18n("Cancel"));
     }
 
-    public void setOwner(Window owner) {
-        initOwner(owner);
-    }
-
-    OverwriteConfirmationDialog title(String title) {
-        setTitle(title);
-        return this;
-    }
-
-    OverwriteConfirmationDialog messageTitle(String title) {
-        dialogContent.messageTitle(title);
-        return this;
-    }
-
-    OverwriteConfirmationDialog messageContent(String title) {
-        dialogContent.messageContent(title);
-        return this;
-    }
-
-    public boolean shouldOverwrite() {
-        showAndWait();
-        return overwrite;
-    }
-
-    private Button buildButton(String text, boolean result) {
-        Button button = new Button(text);
-        button.getStyleClass().addAll(Style.BUTTON.css());
-        button.setOnAction(e -> {
-            this.overwrite = result;
-            hide();
-        });
-        return button;
-    }
 }

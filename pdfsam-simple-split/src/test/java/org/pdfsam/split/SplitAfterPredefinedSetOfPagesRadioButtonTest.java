@@ -34,10 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.HBox;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,12 +44,19 @@ import org.loadui.testfx.categories.TestFX;
 import org.loadui.testfx.utils.FXTestUtils;
 import org.pdfsam.split.SplitAfterPredefinedSetOfPagesRadioButton.SimpleSplitParametersBuilder;
 import org.pdfsam.support.KeyStringValueItem;
+import org.pdfsam.support.params.SplitParametersBuilder;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.sejda.model.input.PdfFileSource;
+import org.sejda.model.optimization.OptimizationPolicy;
 import org.sejda.model.output.DirectoryTaskOutput;
+import org.sejda.model.output.ExistingOutputPolicy;
 import org.sejda.model.parameter.SimpleSplitParameters;
 import org.sejda.model.pdf.PdfVersion;
 import org.sejda.model.pdf.page.PredefinedSetOfPages;
+
+import javafx.scene.Parent;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.HBox;
 
 /**
  * @author Andrea Vacondio
@@ -95,22 +98,45 @@ public class SplitAfterPredefinedSetOfPagesRadioButtonTest extends GuiTest {
             builder.compress(true);
             DirectoryTaskOutput output = mock(DirectoryTaskOutput.class);
             builder.output(output);
-            builder.overwrite(true);
+            builder.existingOutput(ExistingOutputPolicy.OVERWRITE);
             builder.prefix("prefix");
             PdfFileSource source = PdfFileSource.newInstanceNoPassword(file);
             builder.source(source);
             builder.version(PdfVersion.VERSION_1_7);
             SimpleSplitParameters params = builder.build();
             assertTrue(params.isCompress());
-            assertTrue(params.isOverwrite());
+            assertEquals(ExistingOutputPolicy.OVERWRITE, params.getExistingOutputPolicy());
             assertEquals(PdfVersion.VERSION_1_7, params.getVersion());
             assertThat(params.getPages(6), contains(1, 3, 5));
             assertThat(params.getPages(6), not(contains(2, 4, 6)));
             assertEquals("prefix", params.getOutputPrefix());
             assertEquals(output, params.getOutput());
             assertEquals(source, params.getSource());
+            assertEquals(OptimizationPolicy.AUTO, params.getOptimizationPolicy());
             verify(onError, never()).accept(anyString());
-        }, 2);
+        } , 2);
+    }
+    @Test
+    public void builderDisabledOptimization() throws Exception {
+        SplitAfterPredefinedSetOfPagesRadioButton victim = find("#victim");
+        click("#combo").click("Odd pages");
+        final File file = folder.newFile("my.pdf");
+        FXTestUtils.invokeAndWait(() -> {
+            SimpleSplitParametersBuilder builder = victim.getBuilder(onError);
+            builder.compress(true);
+            DirectoryTaskOutput output = mock(DirectoryTaskOutput.class);
+            builder.output(output);
+            builder.existingOutput(ExistingOutputPolicy.OVERWRITE);
+            builder.prefix("prefix");
+            PdfFileSource source = PdfFileSource.newInstanceNoPassword(file);
+            builder.source(source);
+            builder.version(PdfVersion.VERSION_1_7);
+            System.setProperty(SplitParametersBuilder.PDFSAM_DISABLE_SPLIT_OPTIMIZATION, Boolean.TRUE.toString());
+            SimpleSplitParameters params = builder.build();
+            assertEquals(OptimizationPolicy.NO, params.getOptimizationPolicy());
+            verify(onError, never()).accept(anyString());
+        } , 2);
+        System.setProperty(SplitParametersBuilder.PDFSAM_DISABLE_SPLIT_OPTIMIZATION, Boolean.FALSE.toString());
     }
 
     @Test

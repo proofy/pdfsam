@@ -24,16 +24,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tooltip;
-
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.support.KeyStringValueItem;
-import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
+import org.pdfsam.support.params.SplitParametersBuilder;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.parameter.SimpleSplitParameters;
 import org.sejda.model.pdf.page.PredefinedSetOfPages;
+
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 
 /**
  * A {@link RadioButton} showing a combo to select a {@link PredefinedSetOfPages} as split option
@@ -41,8 +40,8 @@ import org.sejda.model.pdf.page.PredefinedSetOfPages;
  * @author Andrea Vacondio
  *
  */
-class SplitAfterPredefinedSetOfPagesRadioButton extends RadioButton implements SplitParametersBuilderCreator,
-        RestorableView {
+class SplitAfterPredefinedSetOfPagesRadioButton extends RadioButton
+        implements SplitParametersBuilderCreator, RestorableView {
 
     private ComboBox<KeyStringValueItem<PredefinedSetOfPages>> combo;
 
@@ -50,7 +49,6 @@ class SplitAfterPredefinedSetOfPagesRadioButton extends RadioButton implements S
         super(DefaultI18nContext.getInstance().i18n("Split after"));
         this.combo = combo;
         combo.getSelectionModel().selectFirst();
-        setTooltip(new Tooltip(DefaultI18nContext.getInstance().i18n("Split the document after the given page numbers")));
     }
 
     public SimpleSplitParametersBuilder getBuilder(Consumer<String> onError) {
@@ -85,8 +83,7 @@ class SplitAfterPredefinedSetOfPagesRadioButton extends RadioButton implements S
      * @author Andrea Vacondio
      *
      */
-    static class SimpleSplitParametersBuilder extends
-            SinglePdfSourceMultipleOutputParametersBuilder<SimpleSplitParameters> {
+    static class SimpleSplitParametersBuilder extends SplitParametersBuilder<SimpleSplitParameters> {
 
         private PredefinedSetOfPages pages;
 
@@ -97,11 +94,12 @@ class SplitAfterPredefinedSetOfPagesRadioButton extends RadioButton implements S
         public SimpleSplitParameters build() {
             SimpleSplitParameters params = new SimpleSplitParameters(pages);
             params.setCompress(isCompress());
-            params.setOverwrite(isOverwrite());
+            params.setExistingOutputPolicy(existingOutput());
             params.setVersion(getVersion());
             params.setOutput(getOutput());
             params.setOutputPrefix(getPrefix());
             params.setSource(getSource());
+            params.setOptimizationPolicy(getOptimizationPolicy());
             return params;
         }
     }
