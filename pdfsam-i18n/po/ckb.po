@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-01-19 12:33+0100\n"
+"POT-Creation-Date: 2016-05-07 18:34+0200\n"
 "PO-Revision-Date: 2015-02-04 19:18+0000\n"
 "Last-Translator: Haval Abdulkarim <haval.abdulkarim@gmail.com>\n"
 "Language-Team: Kurdish (Sorani) <ckb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-20 10:40+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-05-11 10:24+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 
 msgid "Subscribe to the official news feed"
 msgstr ""
@@ -209,6 +209,12 @@ msgstr ""
 msgid "Use the selected PDF document directory as output directory"
 msgstr ""
 
+msgid "Save default workspace on exit"
+msgstr ""
+
+msgid "If a default workspace is set, save it on application exit"
+msgstr ""
+
 msgid "Maximum number of rows mast be a positive number"
 msgstr ""
 
@@ -228,14 +234,6 @@ msgid "Clear usage statistics"
 msgstr ""
 
 msgid ""
-"Select a previously saved workspace that will be automatically loaded at "
-"startup"
-msgstr ""
-
-msgid "Select a workspace"
-msgstr ""
-
-msgid ""
 "Select a directory where documents will be saved and loaded by default"
 msgstr ""
 
@@ -243,14 +241,17 @@ msgid "Select a directory"
 msgstr "بوخچە دیاریبکە"
 
 msgid ""
-"Usage statistics are used to populate the modules quick bar on the left with "
-"the most used and most recently used modules."
+"Select a previously saved workspace that will be automatically loaded at "
+"startup"
 msgstr ""
 
-msgid "Load default workspace at startup:"
+msgid "Select a workspace"
 msgstr ""
 
 msgid "Default working directory:"
+msgstr ""
+
+msgid "Load default workspace at startup:"
 msgstr ""
 
 msgid "Log register rows:"
@@ -275,6 +276,11 @@ msgid "Startup module:"
 msgstr ""
 
 msgid "Set the module to open at application startup (restart needed)"
+msgstr ""
+
+msgid ""
+"Usage statistics are used to populate the modules quick bar on the left with "
+"the most used and most recently used modules."
 msgstr ""
 
 msgid "Check for updates now"
@@ -322,6 +328,9 @@ msgid "Give something back"
 msgstr ""
 
 msgid "PDFsam worked hard!"
+msgstr ""
+
+msgid "Spread the word!"
 msgstr ""
 
 #, java-format
@@ -386,6 +395,10 @@ msgid "Unable to save modules workspace"
 msgstr ""
 
 #, java-format
+msgid "Unable to save workspace to {0}"
+msgstr ""
+
+#, java-format
 msgid "Loading workspace from {0}"
 msgstr ""
 
@@ -436,7 +449,7 @@ msgstr ""
 msgid "Split settings"
 msgstr ""
 
-msgid "Destination directory"
+msgid "Output settings"
 msgstr ""
 
 msgid "Every page"
@@ -543,6 +556,10 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+#, java-format
+msgid "Running {0}%"
+msgstr ""
+
 msgid "Running"
 msgstr ""
 
@@ -595,10 +612,6 @@ msgstr ""
 msgid "Show errors"
 msgstr ""
 
-#, java-format
-msgid "Running {0}%"
-msgstr ""
-
 msgid "Run"
 msgstr ""
 
@@ -626,6 +639,14 @@ msgid "The selected PDF file is invalid"
 msgstr ""
 
 msgid "Compress output file/files"
+msgstr ""
+
+msgid "Discard bookmarks"
+msgstr ""
+
+msgid ""
+"Tick the box if you don't want to retain any bookmark from the original PDF "
+"document"
 msgstr ""
 
 msgid "Output PDF version:"
@@ -749,6 +770,12 @@ msgid ""
 "number of pages"
 msgstr ""
 
+msgid "Add a footer"
+msgstr ""
+
+msgid "Adds a page footer with the name of the file the page belonged to."
+msgstr ""
+
 msgid "Merge fields"
 msgstr ""
 
@@ -761,10 +788,10 @@ msgstr ""
 msgid "Interactive forms (AcroForms):"
 msgstr ""
 
-msgid "Retain bookmarks"
+msgid "What to do in case one or more input documents contain Acro Forms"
 msgstr ""
 
-msgid "Discard bookmarks"
+msgid "Retain bookmarks"
 msgstr ""
 
 msgid "Create one entry for each merged document"
@@ -774,6 +801,25 @@ msgid "Retain bookmarks as one entry for each merged document"
 msgstr ""
 
 msgid "Bookmarks handling:"
+msgstr ""
+
+msgid "What to do in case one or more input documents contain bookmarks"
+msgstr ""
+
+msgid "Don't generate"
+msgstr ""
+
+msgid "Generate from file names"
+msgstr ""
+
+msgid "Generate from documents titles"
+msgstr ""
+
+msgid "Table of contents:"
+msgstr ""
+
+msgid ""
+"Set if a table of contents should be added to the generated PDF document"
 msgstr ""
 
 msgid "No PDF document has been selected"
@@ -870,6 +916,9 @@ msgid "Rotate the pages of multiple PDF documents."
 msgstr ""
 
 msgid "Rotate settings"
+msgstr ""
+
+msgid "Destination directory"
 msgstr ""
 
 #~ msgid "Split odd pages"

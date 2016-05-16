@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-01-19 12:33+0100\n"
-"PO-Revision-Date: 2015-12-06 11:31+0000\n"
-"Last-Translator: Rodrigo Borges Freitas <rodrigo.borges.freitas@gmail.com>\n"
+"POT-Creation-Date: 2016-05-07 18:34+0200\n"
+"PO-Revision-Date: 2016-03-22 23:02+0000\n"
+"Last-Translator: Daniel Silvestre <daniel.silvestre@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-20 10:41+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"X-Launchpad-Export-Date: 2016-05-11 10:24+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 
 msgid "Subscribe to the official news feed"
 msgstr "Inscreva-se no canal ofício de notícias"
@@ -203,16 +203,24 @@ msgid "Turn on or off alert sounds"
 msgstr "Ligar ou desligar alertas sonoros"
 
 msgid "Show donation window"
-msgstr ""
+msgstr "Mostrar janela de doação"
 
 msgid ""
 "Turn on or off the notification appearing once in a while and asking the "
 "user to support PDFsam with a donation"
 msgstr ""
+"Ativa ou desativa a notificação que aparece de vez em quando pedindo ao "
+"usuário para suportar o PDFsam com uma doação"
 
 msgid "Use the selected PDF document directory as output directory"
 msgstr ""
 "Use o diretório do documento PDF selecionado como o diretório de saída"
+
+msgid "Save default workspace on exit"
+msgstr "Salvar área de trabalho padrão ao sair"
+
+msgid "If a default workspace is set, save it on application exit"
+msgstr "Se uma área de trabalho padrão"
 
 msgid "Maximum number of rows mast be a positive number"
 msgstr "Número máximo de linhas deve ser um número positivo"
@@ -233,6 +241,13 @@ msgid "Clear usage statistics"
 msgstr "Limpar estatísticas de uso"
 
 msgid ""
+"Select a directory where documents will be saved and loaded by default"
+msgstr "Selecione a pasta onde os arquivos serão salvos e lidos por padrão"
+
+msgid "Select a directory"
+msgstr "Selecione uma pasta"
+
+msgid ""
 "Select a previously saved workspace that will be automatically loaded at "
 "startup"
 msgstr ""
@@ -242,25 +257,11 @@ msgstr ""
 msgid "Select a workspace"
 msgstr "Selecione um espaço de trabalho"
 
-msgid ""
-"Select a directory where documents will be saved and loaded by default"
-msgstr "Selecione a pasta onde os arquivos serão salvos e lidos por padrão"
-
-msgid "Select a directory"
-msgstr "Selecione uma pasta"
-
-msgid ""
-"Usage statistics are used to populate the modules quick bar on the left with "
-"the most used and most recently used modules."
-msgstr ""
-"As estatísticas de uso são utilizadas para preencher os módulos da barra de "
-"acesso rápido, à esquerda, com os módulos usados com maior frequência."
+msgid "Default working directory:"
+msgstr "Pasta de trabalho padrão:"
 
 msgid "Load default workspace at startup:"
 msgstr "Carregar o espaço de trabalho padrão ao iniciar"
-
-msgid "Default working directory:"
-msgstr "Pasta de trabalho padrão:"
 
 msgid "Log register rows:"
 msgstr "Linhas do arquivo de registro:"
@@ -289,6 +290,13 @@ msgstr "Módulo de início"
 msgid "Set the module to open at application startup (restart needed)"
 msgstr ""
 "Seleciona o módulo inicial ao abrir o aplicativo (é necessário reiniciar)"
+
+msgid ""
+"Usage statistics are used to populate the modules quick bar on the left with "
+"the most used and most recently used modules."
+msgstr ""
+"As estatísticas de uso são utilizadas para preencher os módulos da barra de "
+"acesso rápido, à esquerda, com os módulos usados com maior frequência."
 
 msgid "Check for updates now"
 msgstr "Verifica agora por atualizações"
@@ -346,6 +354,9 @@ msgstr "Contribua"
 
 msgid "PDFsam worked hard!"
 msgstr "PDFsam trabalhou pesado!"
+
+msgid "Spread the word!"
+msgstr "Espalhe a palavra!"
 
 #, java-format
 msgid "PDFsam {0} is available for download"
@@ -409,6 +420,10 @@ msgid "Unable to save modules workspace"
 msgstr "Incapaz de salva a área de trabalho dos módulos"
 
 #, java-format
+msgid "Unable to save workspace to {0}"
+msgstr "Impossível salvar área de trabalho em {0}"
+
+#, java-format
 msgid "Loading workspace from {0}"
 msgstr "Lendo área de trabalho de {0}"
 
@@ -459,8 +474,8 @@ msgstr "Configurações de nomes de arquivo"
 msgid "Split settings"
 msgstr "Configurações de divisão"
 
-msgid "Destination directory"
-msgstr "Diretório de destino"
+msgid "Output settings"
+msgstr ""
 
 msgid "Every page"
 msgstr "Cada página"
@@ -575,6 +590,10 @@ msgstr "Concluído"
 msgid "Failed"
 msgstr "Erro"
 
+#, java-format
+msgid "Running {0}%"
+msgstr "Executando {0}%"
+
 msgid "Running"
 msgstr "Executando"
 
@@ -639,11 +658,7 @@ msgid "Pages: {0}, PDF Version: {1}"
 msgstr "Páginas: {0}, Versão do PDF: {1}"
 
 msgid "Show errors"
-msgstr ""
-
-#, java-format
-msgid "Running {0}%"
-msgstr ""
+msgstr "Mostrar erros"
 
 # G:\Documents\eclipse_workspace\PDFSAMsplit\it\pdfsam\plugin\split\GUI\SplitMainGUI.java:368
 # F:\workspace_pdfsam_enhanced\pdfsam-cover\it\pdfsam\plugin\coverfooter\GUI\CoverFooterMainGUI.java:542
@@ -687,6 +702,14 @@ msgstr "O arquivo PDF selecionado é inválido"
 
 msgid "Compress output file/files"
 msgstr "Compactar arquivo(s) gerado(s)"
+
+msgid "Discard bookmarks"
+msgstr "Descartar marcações de texto"
+
+msgid ""
+"Tick the box if you don't want to retain any bookmark from the original PDF "
+"document"
+msgstr ""
 
 msgid "Output PDF version:"
 msgstr "Versão do PDF de saída"
@@ -821,11 +844,17 @@ msgstr ""
 "Adiciona uma página em branco após cada documento mesclado se o documento "
 "tiver um número ímpar de páginas"
 
+msgid "Add a footer"
+msgstr ""
+
+msgid "Adds a page footer with the name of the file the page belonged to."
+msgstr ""
+
 msgid "Merge fields"
 msgstr "Campos unidos"
 
 msgid "Merge renaming existing fields"
-msgstr ""
+msgstr "Unir renomeando os campos existentes"
 
 msgid "Discard forms"
 msgstr "Formulários discartados"
@@ -833,20 +862,42 @@ msgstr "Formulários discartados"
 msgid "Interactive forms (AcroForms):"
 msgstr "Formulários interativos (AcroForms)"
 
+msgid "What to do in case one or more input documents contain Acro Forms"
+msgstr ""
+"O que fazer no caso de um ou mais documentos de entrada conterem Acro Forms"
+
 msgid "Retain bookmarks"
 msgstr "Manter marcações de texto"
-
-msgid "Discard bookmarks"
-msgstr "Descartar marcações de texto"
 
 msgid "Create one entry for each merged document"
 msgstr "Criar uma entrada para cada documento mesclado"
 
 msgid "Retain bookmarks as one entry for each merged document"
 msgstr ""
+"Mantenha os marcadores como uma entrada para cada documento consolidado"
 
 msgid "Bookmarks handling:"
 msgstr "Manipulação de marcações de texto:"
+
+msgid "What to do in case one or more input documents contain bookmarks"
+msgstr ""
+"O que fazer no caso de um ou mais documentos de entrada conterem marcadores"
+
+msgid "Don't generate"
+msgstr "Não gere"
+
+msgid "Generate from file names"
+msgstr "Gerar a partir dos nomes de arquivos"
+
+msgid "Generate from documents titles"
+msgstr "Gerar a partir do título dos documentos"
+
+msgid "Table of contents:"
+msgstr "Tabela de conteúdo:"
+
+msgid ""
+"Set if a table of contents should be added to the generated PDF document"
+msgstr "Marque se uma tabela de conteúdo deve ser adicionada ao PFD gerado"
 
 msgid "No PDF document has been selected"
 msgstr "Nenhum documento PDF foi selecionado"
@@ -916,11 +967,13 @@ msgid "Matching regular expression:"
 msgstr "Procura pela expressão regular:"
 
 msgid "A regular expression the bookmark text has to match"
-msgstr ""
+msgstr "Uma expressão regular que o texto do marcador tem que corresponder"
 
 msgid ""
 "Example: use .*Chapter.* to match bookmarks containing the word \"Chapter\""
 msgstr ""
+"Exemplo: use .*Capítulo* para encontrar marcadores contendo a palavra "
+"\"Capítulo\""
 
 msgid "All pages"
 msgstr "Todas as páginas"
@@ -932,7 +985,7 @@ msgid "180 degrees clockwise"
 msgstr "180 graus no sentido horário"
 
 msgid "90 degrees counterclockwise"
-msgstr ""
+msgstr "90 graus anti-horário"
 
 msgid "Rotate "
 msgstr "Rotaciona "
@@ -945,6 +998,9 @@ msgstr "Rotaciona as páginas de múltiplos documentos PDF"
 
 msgid "Rotate settings"
 msgstr "Configuração de rotação"
+
+msgid "Destination directory"
+msgstr "Diretório de destino"
 
 # G:\Documents\eclipse_workspace\PDFSAMsplit\it\pdfsam\plugin\split\GUI\SplitMainGUI.java:193
 # F:\workspace_pdfsam_enhanced\pdfsam-split\it\pdfsam\plugin\split\GUI\SplitMainGUI.java:206

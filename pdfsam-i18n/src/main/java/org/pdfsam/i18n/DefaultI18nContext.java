@@ -53,6 +53,7 @@ public final class DefaultI18nContext implements I18nContext {
         supportedLocalesCache.add(Locale.SIMPLIFIED_CHINESE);
         supportedLocalesCache.add(Locale.TRADITIONAL_CHINESE);
         supportedLocalesCache.add(new Locale("co"));
+        supportedLocalesCache.add(new Locale("hr"));
         supportedLocalesCache.add(new Locale("cs"));
         supportedLocalesCache.add(new Locale("da"));
         supportedLocalesCache.add(new Locale("nl"));
@@ -60,8 +61,10 @@ public final class DefaultI18nContext implements I18nContext {
         supportedLocalesCache.add(Locale.FRENCH);
         supportedLocalesCache.add(Locale.GERMAN);
         supportedLocalesCache.add(new Locale("hu"));
+        supportedLocalesCache.add(new Locale("el"));
         supportedLocalesCache.add(Locale.JAPANESE);
         supportedLocalesCache.add(Locale.ITALIAN);
+        supportedLocalesCache.add(new Locale("pl"));
         supportedLocalesCache.add(new Locale("pt"));
         supportedLocalesCache.add(new Locale("ro"));
         supportedLocalesCache.add(new Locale("ru"));
