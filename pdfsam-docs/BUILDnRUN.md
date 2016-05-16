@@ -20,4 +20,5 @@ Once you built the artifacts and they are locally installed you can run PDFsam f
 * move to the pdfsam-community module with `cd pdfsam-community`
 * run it with `mvn exec:java`   
 Or you can find the zip bindle in the `target` directory of the `pdfsam-community` module.
+Or short cut for linux users: run ./runpdfsam.sh
 
