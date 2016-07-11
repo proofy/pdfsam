@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-05-07 18:34+0200\n"
-"PO-Revision-Date: 2016-02-25 15:36+0000\n"
-"Last-Translator: Pedro Gomes <pemagomes@gmail.com>\n"
+"POT-Creation-Date: 2016-06-22 17:45+0200\n"
+"PO-Revision-Date: 2016-05-15 11:15+0000\n"
+"Last-Translator: Sérgio Marques <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-11 10:24+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-06-29 07:48+0000\n"
+"X-Generator: Launchpad (build 18115)\n"
 "Language: pt\n"
 
 msgid "Subscribe to the official news feed"
@@ -203,6 +203,14 @@ msgstr "Tocar sons de alerta"
 msgid "Turn on or off alert sounds"
 msgstr "Ligar/desligar sons de alerta"
 
+msgid "Store passwords when saving a workspace file"
+msgstr ""
+
+msgid ""
+"If an encrypted PDF document has been opened with a password, save the "
+"password in the workspace file"
+msgstr ""
+
 msgid "Show donation window"
 msgstr "Mostrar janela de donativos"
 
@@ -210,6 +218,8 @@ msgid ""
 "Turn on or off the notification appearing once in a while and asking the "
 "user to support PDFsam with a donation"
 msgstr ""
+"Ativar ou desativar a notificação que surge de vez em quando a solicitar que "
+"o utilizador ajude o projeto com um donativo."
 
 msgid "Use the selected PDF document directory as output directory"
 msgstr ""
@@ -465,7 +475,7 @@ msgid "Split settings"
 msgstr "Definições de separação"
 
 msgid "Output settings"
-msgstr ""
+msgstr "Definições de saída"
 
 msgid "Every page"
 msgstr "Cada página"
@@ -668,6 +678,8 @@ msgid ""
 "Tick the box if you don't want to retain any bookmark from the original PDF "
 "document"
 msgstr ""
+"Assinale a caixa se não quiser guardar os marcadores do documento PDF "
+"original"
 
 msgid "Output PDF version:"
 msgstr "Versão de saída PDF:"
@@ -713,11 +725,11 @@ msgstr "Adicionar prefixo"
 msgid "Enter the user password"
 msgstr "Indique a senha de utilizador"
 
-msgid ""
-"Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
+msgid "Double click to set selected pages (ex: 2 or 5-23 or 2,5-7,12-)"
 msgstr ""
-"Duplo clique para definir as páginas que pretende unir (ex: 2 ou 5-23 ou 2,5-"
-"7,12-)"
+
+msgid "Page ranges"
+msgstr "Intervalo"
 
 msgid "Pages"
 msgstr "Páginas"
@@ -758,30 +770,11 @@ msgstr "Mover documentos selecionados para baixo"
 msgid "Move _Down"
 msgstr "Mover a_baixo"
 
-msgid "Page ranges"
-msgstr "Intervalo"
-
 msgid "Size"
 msgstr "Tamanho"
 
 msgid "Modified"
 msgstr "Modificado"
-
-#, java-format
-msgid "Invalid range: {0}."
-msgstr "Intervalo inválido: {0}."
-
-#, java-format
-msgid ""
-"Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
-"or [-n] or [n-]"
-msgstr ""
-"Definição de intervalo de páginas ambígua: {0}. Utilize estes formatos: [n] "
-"ou [n1-n2] ou [-n] or [n-]"
-
-#, java-format
-msgid "Invalid number: {0}."
-msgstr "Número inválido: {0}."
 
 msgid "Drag and drop PDF files here"
 msgstr "Arraste e largue aqui os ficheiros"
@@ -797,10 +790,10 @@ msgstr ""
 "um número ímpar de páginas"
 
 msgid "Add a footer"
-msgstr ""
+msgstr "Adicionar rodapé"
 
 msgid "Adds a page footer with the name of the file the page belonged to."
-msgstr ""
+msgstr "Adiciona um rodapé com o nome do ficheiro a que a página pertence."
 
 msgid "Merge fields"
 msgstr "Unir campos"
@@ -816,6 +809,7 @@ msgstr "Formulários interativos (AcroForms):"
 
 msgid "What to do in case one or more input documents contain Acro Forms"
 msgstr ""
+"O que fazer se um ou mais documentos de origem contiverem formulários Acro"
 
 msgid "Retain bookmarks"
 msgstr "Manter marcadores"
@@ -824,29 +818,36 @@ msgid "Create one entry for each merged document"
 msgstr "Criar uma entrada para cada documento unido"
 
 msgid "Retain bookmarks as one entry for each merged document"
-msgstr ""
+msgstr "Manter marcadores como uma entrada para cada documento unido"
 
 msgid "Bookmarks handling:"
 msgstr "Gestão de marcadores:"
 
 msgid "What to do in case one or more input documents contain bookmarks"
-msgstr ""
+msgstr "O que fazer se um ou mais documentos de origem contiver marcadores"
 
 msgid "Don't generate"
-msgstr ""
+msgstr "Não gerar"
 
 msgid "Generate from file names"
-msgstr ""
+msgstr "Gerar com base no nome dos ficheiros"
 
 msgid "Generate from documents titles"
-msgstr ""
+msgstr "Gerar com base no título dos documentos"
 
 msgid "Table of contents:"
-msgstr ""
+msgstr "Índice remissivo:"
 
 msgid ""
 "Set if a table of contents should be added to the generated PDF document"
 msgstr ""
+"Define se deve ser adicionado um índice remissivo ao documento PDF gerado"
+
+msgid ""
+"Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+"Duplo clique para definir as páginas que pretende unir (ex: 2 ou 5-23 ou 2,5-"
+"7,12-)"
 
 msgid "No PDF document has been selected"
 msgstr "Não selecionou um documento PDF"
@@ -875,6 +876,22 @@ msgstr "Ficheiro {0} gravado."
 
 msgid "Directories"
 msgstr "Diretórios"
+
+#, java-format
+msgid "Invalid range: {0}."
+msgstr "Intervalo inválido: {0}."
+
+#, java-format
+msgid ""
+"Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
+"or [-n] or [n-]"
+msgstr ""
+"Definição de intervalo de páginas ambígua: {0}. Utilize estes formatos: [n] "
+"ou [n1-n2] ou [-n] or [n-]"
+
+#, java-format
+msgid "Invalid number: {0}."
+msgstr "Número inválido: {0}."
 
 msgid "Valid user password provided."
 msgstr "Senha de utilizador inválida"
@@ -915,10 +932,37 @@ msgid "Matching regular expression:"
 msgstr "Expressão regular coincidente:"
 
 msgid "A regular expression the bookmark text has to match"
-msgstr ""
+msgstr "Uma expressão regular a que o texto do marcador deve coincidir"
 
 msgid ""
 "Example: use .*Chapter.* to match bookmarks containing the word \"Chapter\""
+msgstr ""
+"Por exemplo: *.Capítulo* para fazer coincidir os marcadores que contenham a "
+"palavra \"Capítulo\""
+
+msgid "Extract"
+msgstr ""
+
+msgid "Extract pages from a PDF document."
+msgstr ""
+
+msgid "Select or drag and drop a PDF"
+msgstr ""
+
+msgid "Extract settings"
+msgstr ""
+
+msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+
+msgid "Invalid page ranges"
+msgstr ""
+
+msgid "Extract pages:"
+msgstr ""
+
+msgid ""
+"Double click to set pages you want to rotate (ex: 2 or 5-23 or 2,5-7,12-)"
 msgstr ""
 
 msgid "All pages"
@@ -931,7 +975,7 @@ msgid "180 degrees clockwise"
 msgstr "180 graus à direita"
 
 msgid "90 degrees counterclockwise"
-msgstr ""
+msgstr "90 graus à esquerda"
 
 msgid "Rotate "
 msgstr "Rodar "

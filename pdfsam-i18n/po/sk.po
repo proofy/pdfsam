@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-05-07 18:34+0200\n"
+"POT-Creation-Date: 2016-06-22 17:45+0200\n"
 "PO-Revision-Date: 2014-04-17 21:16+0000\n"
 "Last-Translator: DAG Software <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-11 10:24+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-06-29 07:48+0000\n"
+"X-Generator: Launchpad (build 18115)\n"
 
 msgid "Subscribe to the official news feed"
 msgstr ""
@@ -197,6 +197,14 @@ msgstr "Prehrávať upozorňujúce zvuky"
 
 msgid "Turn on or off alert sounds"
 msgstr "Zapnúť alebo vypnúť upozorňujúce zvuky"
+
+msgid "Store passwords when saving a workspace file"
+msgstr ""
+
+msgid ""
+"If an encrypted PDF document has been opened with a password, save the "
+"password in the workspace file"
+msgstr ""
 
 msgid "Show donation window"
 msgstr ""
@@ -693,8 +701,10 @@ msgstr "Pridať predponu"
 msgid "Enter the user password"
 msgstr ""
 
-msgid ""
-"Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
+msgid "Double click to set selected pages (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+
+msgid "Page ranges"
 msgstr ""
 
 msgid "Pages"
@@ -736,28 +746,11 @@ msgstr ""
 msgid "Move _Down"
 msgstr "Posunúť _nižšie"
 
-msgid "Page ranges"
-msgstr ""
-
 msgid "Size"
 msgstr "Veľkosť"
 
 msgid "Modified"
 msgstr "Upravené"
-
-#, java-format
-msgid "Invalid range: {0}."
-msgstr ""
-
-#, java-format
-msgid ""
-"Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
-"or [-n] or [n-]"
-msgstr ""
-
-#, java-format
-msgid "Invalid number: {0}."
-msgstr ""
 
 msgid "Drag and drop PDF files here"
 msgstr "Pretiahnite a pusťte sem PDF súbory"
@@ -822,6 +815,10 @@ msgid ""
 "Set if a table of contents should be added to the generated PDF document"
 msgstr ""
 
+msgid ""
+"Double click to set pages you want to merge (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+
 msgid "No PDF document has been selected"
 msgstr ""
 
@@ -849,6 +846,20 @@ msgstr "Súbor {0} uložený"
 
 msgid "Directories"
 msgstr "Priečinky"
+
+#, java-format
+msgid "Invalid range: {0}."
+msgstr ""
+
+#, java-format
+msgid ""
+"Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
+"or [-n] or [n-]"
+msgstr ""
+
+#, java-format
+msgid "Invalid number: {0}."
+msgstr ""
 
 msgid "Valid user password provided."
 msgstr ""
@@ -892,6 +903,31 @@ msgstr ""
 
 msgid ""
 "Example: use .*Chapter.* to match bookmarks containing the word \"Chapter\""
+msgstr ""
+
+msgid "Extract"
+msgstr ""
+
+msgid "Extract pages from a PDF document."
+msgstr ""
+
+msgid "Select or drag and drop a PDF"
+msgstr ""
+
+msgid "Extract settings"
+msgstr ""
+
+msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
+msgstr ""
+
+msgid "Invalid page ranges"
+msgstr ""
+
+msgid "Extract pages:"
+msgstr ""
+
+msgid ""
+"Double click to set pages you want to rotate (ex: 2 or 5-23 or 2,5-7,12-)"
 msgstr ""
 
 msgid "All pages"

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.pdfsam</groupId>
 		<artifactId>pdfsam-parent</artifactId>
-		<version>3.0.4.RELEASE-SNAPSHOT</version>
+		<version>3.1.1.RELEASE-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -26,6 +26,20 @@
 		<dependency>
 			<groupId>org.sejda</groupId>
 			<artifactId>sejda-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-core</artifactId>
+			<version>${sejda.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-model</artifactId>
+			<version>${sejda.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.sejda</groupId>

@@ -18,109 +18,29 @@
  */
 package org.pdfsam.ui.selection.multiple;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
-import java.util.Set;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.test.ClearEventStudioRule;
-import org.sejda.conversion.exception.ConversionException;
-import org.sejda.model.pdf.page.PageRange;
 
 /**
  * @author Andrea Vacondio
  *
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SelectionTableRowDataTest {
 
     @Rule
     public ClearEventStudioRule eventStudioRule = new ClearEventStudioRule();
-    @Mock
-    private File file;
 
     @Test
     public void empty() {
+        File file = mock(File.class);
         assertTrue(new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file)).toPageRangeSet()
                 .isEmpty());
-    }
-
-    @Test(expected = ConversionException.class)
-    public void invalid() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("Chuck Norris");
-        victim.toPageRangeSet();
-    }
-
-    @Test(expected = ConversionException.class)
-    public void invalidRange() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("1-2-3");
-        victim.toPageRangeSet();
-    }
-
-    @Test(expected = ConversionException.class)
-    public void endLower() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("10-5");
-        victim.toPageRangeSet();
-    }
-
-    @Test
-    public void singlePage() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("5");
-        Set<PageRange> pageSet = victim.toPageRangeSet();
-        assertEquals(1, pageSet.size());
-        assertEquals(5, pageSet.stream().findFirst().get().getStart());
-        assertEquals(5, pageSet.stream().findFirst().get().getEnd());
-    }
-
-    @Test
-    public void rangePage() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("5-10");
-        Set<PageRange> pageSet = victim.toPageRangeSet();
-        assertEquals(1, pageSet.size());
-        assertEquals(5, pageSet.stream().findFirst().get().getStart());
-        assertEquals(10, pageSet.stream().findFirst().get().getEnd());
-    }
-
-    @Test
-    public void endPage() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("-10");
-        Set<PageRange> pageSet = victim.toPageRangeSet();
-        assertEquals(1, pageSet.size());
-        assertEquals(1, pageSet.stream().findFirst().get().getStart());
-        assertEquals(10, pageSet.stream().findFirst().get().getEnd());
-    }
-
-    @Test
-    public void startPage() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("10-");
-        Set<PageRange> pageSet = victim.toPageRangeSet();
-        assertEquals(1, pageSet.size());
-        assertEquals(10, pageSet.stream().findFirst().get().getStart());
-        assertTrue(pageSet.stream().findFirst().get().isUnbounded());
-    }
-
-    @Test
-    public void multiple() {
-        SelectionTableRowData victim = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        victim.setPageSelection("2-4,10-");
-        Set<PageRange> pageSet = victim.toPageRangeSet();
-        assertEquals(2, pageSet.size());
-        assertEquals(2, pageSet.stream().findFirst().get().getStart());
-        assertEquals(4, pageSet.stream().findFirst().get().getEnd());
-        assertTrue(pageSet.stream().anyMatch(PageRange::isUnbounded));
     }
 }

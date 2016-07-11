@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 06/ago/2014
+ * Created on 20/ago/2014
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,40 +16,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.selection.multiple;
+package org.pdfsam.ui.commons;
 
-import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
-import java.io.File;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
-import org.pdfsam.pdf.PdfDocumentDescriptor;
+import org.pdfsam.ui.commons.SetActiveModuleRequest;
 
 /**
  * @author Andrea Vacondio
  *
  */
-public class StringColumnTest {
+public class SetActiveModuleRequestTest {
 
-    @Test
-    public void getObservableValue() {
-        File file = mock(File.class);
-        SelectionTableRowData data = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        data.setPageSelection("2");
-        assertEquals("2", StringColumn.PAGE_SELECTION.getObservableValue(data).getValue());
+    @Test(expected = IllegalArgumentException.class)
+    public void blank() {
+        SetActiveModuleRequest.activeteModule(" ");
     }
 
     @Test
-    public void getNullTextValue() {
-        assertThat(StringColumn.PAGE_SELECTION.getTextValue(null), isEmptyString());
+    public void id() {
+        assertEquals("moduleId", SetActiveModuleRequest.activeteModule("moduleId").getActiveModuleId().get());
     }
 
     @Test
-    public void comparator() {
-        assertEquals(-1, StringColumn.PAGE_SELECTION.comparator().compare("1", "2"));
+    public void current() {
+        assertFalse(SetActiveModuleRequest.activeteCurrentModule().getActiveModuleId().isPresent());
     }
-
 }

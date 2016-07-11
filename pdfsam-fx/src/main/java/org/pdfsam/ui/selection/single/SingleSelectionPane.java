@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pdfsam.context.DefaultUserContext;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
@@ -43,8 +44,8 @@ import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfDocumentDescriptorProvider;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
 import org.pdfsam.support.io.FileType;
+import org.pdfsam.ui.commons.ClearSelectionEvent;
 import org.pdfsam.ui.commons.OpenFileRequest;
-import org.pdfsam.ui.commons.RemoveSelectedEvent;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
 import org.pdfsam.ui.commons.ShowStageRequest;
 import org.pdfsam.ui.commons.ToggleChangeListener;
@@ -230,7 +231,9 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
     public void saveStateTo(Map<String, String> data) {
         if (descriptor != null) {
             data.put(defaultString(getId()) + "input", descriptor.getFile().getAbsolutePath());
-            data.put(defaultString(getId()) + "input.password", descriptor.getPassword());
+            if (new DefaultUserContext().isSavePwdInWorkspaceFile()) {
+                data.put(defaultString(getId()) + "input.password", descriptor.getPassword());
+            }
         }
     }
 
@@ -261,7 +264,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
                 e -> Platform.runLater(() -> eventStudio().broadcast(new ShowPdfDescriptorRequest(descriptor))));
 
         removeSelected = createMenuItem(DefaultI18nContext.getInstance().i18n("Remove"), MaterialDesignIcon.MINUS);
-        removeSelected.setOnAction(e -> eventStudio().broadcast(new RemoveSelectedEvent(), getOwnerModule()));
+        removeSelected.setOnAction(e -> eventStudio().broadcast(new ClearSelectionEvent(), getOwnerModule()));
 
         MenuItem setDestinationItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set destination"),
                 MaterialIcon.FLIGHT_LAND);
@@ -283,9 +286,15 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
     }
 
     @EventListener
-    public void onRemoveSelected(RemoveSelectedEvent event) {
+    public void onClearSelected(ClearSelectionEvent event) {
         field.getTextField().setText("");
         disableRemoveMenuItemIfNeeded();
+    }
+
+    @EventListener
+    public void onLoadDocumentsRequest(PdfLoadRequestEvent loadEvent) {
+        loadEvent.getDocuments().stream().findFirst().map(PdfDocumentDescriptor::getFile)
+                .ifPresent(field::setTextFromFile);
     }
 
     private MenuItem createMenuItem(String text, GlyphIcons icon) {

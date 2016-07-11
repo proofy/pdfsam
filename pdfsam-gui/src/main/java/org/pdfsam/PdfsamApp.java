@@ -21,7 +21,7 @@ package org.pdfsam;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.pdfsam.ui.event.SetActiveModuleRequest.activeteModule;
+import static org.pdfsam.ui.commons.SetActiveModuleRequest.activeteModule;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.awt.SplashScreen;
@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,7 @@ import org.pdfsam.context.DefaultUserContext;
 import org.pdfsam.context.UserContext;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.i18n.SetLocaleEvent;
+import org.pdfsam.module.Module;
 import org.pdfsam.news.FetchLatestNewsRequest;
 import org.pdfsam.news.NewsService;
 import org.pdfsam.ui.MainPane;
@@ -54,6 +56,7 @@ import org.pdfsam.ui.commons.ShowStageRequest;
 import org.pdfsam.ui.dialog.OverwriteConfirmationDialog;
 import org.pdfsam.ui.io.SetLatestDirectoryEvent;
 import org.pdfsam.ui.log.LogMessageBroadcaster;
+import org.pdfsam.ui.module.OpenButton;
 import org.pdfsam.ui.notification.NotificationsContainer;
 import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
 import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
@@ -61,6 +64,7 @@ import org.pdfsam.update.UpdateCheckRequest;
 import org.sejda.core.Sejda;
 import org.sejda.eventstudio.EventStudio;
 import org.sejda.eventstudio.annotation.EventListener;
+import org.sejda.impl.sambox.component.PDDocumentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +96,7 @@ public class PdfsamApp extends Application {
     public void init() {
         STOPWATCH.start();
         System.setProperty(EventStudio.MAX_QUEUE_SIZE_PROP, Integer.toString(userContext.getNumberOfLogRows()));
+        System.setProperty(PDDocumentHandler.SAMBOX_USE_ASYNC_WRITER, Boolean.TRUE.toString());
         LOG.info("Starting PDFsam");
         cleanUserContextIfNeeded(userContext);
         String localeString = userContext.getLocale();
@@ -133,6 +138,7 @@ public class PdfsamApp extends Application {
         initOverwriteDialogController(primaryStage);
         initActiveModule();
         loadWorkspaceIfRequired();
+        initOpenButtons();
         primaryStage.show();
 
         requestCheckForUpdateIfNecessary();
@@ -247,6 +253,14 @@ public class PdfsamApp extends Application {
         if (isNotBlank(startupModule)) {
             LOG.trace("Activating startup module '{}'", startupModule);
             eventStudio().broadcast(activeteModule(startupModule));
+        }
+    }
+
+    private void initOpenButtons() {
+        Map<String, Module> modules = ApplicationContextHolder.getContext().getBeansOfType(Module.class);
+        Map<String, OpenButton> openButtons = ApplicationContextHolder.getContext().getBeansOfType(OpenButton.class);
+        for (OpenButton button : openButtons.values()) {
+            button.initModules(modules.values());
         }
     }
 

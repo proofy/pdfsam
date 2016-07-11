@@ -30,8 +30,6 @@ import org.sejda.model.parameter.base.SinglePdfSourceMultipleOutputParameters;
 public abstract class SplitParametersBuilder<P extends SinglePdfSourceMultipleOutputParameters>
         extends SinglePdfSourceMultipleOutputParametersBuilder<P> {
 
-    public static final String PDFSAM_DISABLE_SPLIT_OPTIMIZATION = "org.pdfsam.disable.split.optimization";
-
     private OptimizationPolicy optimizationPolicy = OptimizationPolicy.AUTO;
 
     public void optimizationPolicy(OptimizationPolicy optimizationPolicy) {
