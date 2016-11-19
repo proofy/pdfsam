@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 17/ott/2014
+ * Created on 06 nov 2016
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,15 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam;
+package org.pdfsam.news;
+
+import org.sejda.injector.Components;
+import org.sejda.injector.Provides;
 
 /**
- * Edition types for PDFsam
- * 
  * @author Andrea Vacondio
  *
  */
-public enum PdfsamEdition {
-    COMMUNITY,
-    ENTERPRISE;
+@Components({ LatestNewsController.class })
+public class NewsServiceConfig {
+    @Provides
+    NewsService news(DefaultNewsService news) {
+        return news;
+    }
 }

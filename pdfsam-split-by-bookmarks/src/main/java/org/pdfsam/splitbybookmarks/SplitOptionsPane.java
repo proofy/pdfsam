@@ -25,6 +25,7 @@ import static org.pdfsam.ui.help.HelpUtils.helpIcon;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.function.Consumer;
 
 import org.pdfsam.i18n.DefaultI18nContext;
@@ -63,15 +64,14 @@ class SplitOptionsPane extends VBox
         regexpField.setPrefWidth(350);
         getChildren().addAll(createLine(new Label(ctx.i18n("Split at this bookmark level:")), levelCombo),
                 createLine(new Label(ctx.i18n("Matching regular expression:")), regexpField,
-                        helpIcon(new TextFlow(
-                                new Text(ctx.i18n("A regular expression the bookmark text has to match")
-                                        + System.lineSeparator()),
+                        helpIcon(new TextFlow(new Text(ctx.i18n("A regular expression the bookmark text has to match")
+                                + System.lineSeparator()),
                         new Text(ctx.i18n(
                                 "Example: use .*Chapter.* to match bookmarks containing the word \"Chapter\""))))));
     }
 
-    void setMaxBookmarkLevel(int max) {
-        levelCombo.setMaxBookmarkLevel(max);
+    void setValidBookmarkLevels(SortedSet<Integer> levels) {
+        levelCombo.setValidBookmarkLevels(levels);
     }
 
     private HBox createLine(Node... items) {
@@ -81,6 +81,7 @@ class SplitOptionsPane extends VBox
         return item;
     }
 
+    @Override
     public void apply(SplitByOutlineLevelParametersBuilder builder, Consumer<String> onError) {
         levelCombo.apply(builder, onError);
         if (isNotBlank(regexpField.getText())) {
@@ -88,11 +89,13 @@ class SplitOptionsPane extends VBox
         }
     }
 
+    @Override
     public void saveStateTo(Map<String, String> data) {
         data.put("regexp", defaultString(regexpField.getText()));
         levelCombo.saveStateTo(data);
     }
 
+    @Override
     public void restoreStateFrom(Map<String, String> data) {
         regexpField.setText(Optional.ofNullable(data.get("regexp")).orElse(EMPTY));
         levelCombo.restoreStateFrom(data);

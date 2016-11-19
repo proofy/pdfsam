@@ -43,23 +43,29 @@ public abstract class MultiplePdfSourceMultipleOutputParametersBuilder<P extends
         this.inputs.add(input);
     }
 
+    @Override
     public void prefix(String prefix) {
         this.prefix = prefix;
     }
 
+    @Override
     public void output(DirectoryTaskOutput output) {
         this.output = output;
     }
 
-    protected DirectoryTaskOutput getOutput() {
+    public DirectoryTaskOutput getOutput() {
         return output;
     }
 
-    protected String getPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
-    protected Set<PdfFileSource> getInputs() {
+    public Set<PdfFileSource> getInputs() {
         return inputs;
+    }
+
+    public boolean hasInput() {
+        return !inputs.isEmpty();
     }
 }

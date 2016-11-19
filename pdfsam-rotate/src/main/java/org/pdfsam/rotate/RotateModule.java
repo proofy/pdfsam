@@ -32,7 +32,6 @@ import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
 import org.pdfsam.module.ModuleInputOutputType;
 import org.pdfsam.module.ModulePriority;
-import org.pdfsam.module.PdfsamModule;
 import org.pdfsam.ui.io.BrowsableOutputDirectoryField;
 import org.pdfsam.ui.io.PdfDestinationPane;
 import org.pdfsam.ui.module.BaseTaskExecutionModule;
@@ -42,9 +41,10 @@ import org.pdfsam.ui.module.RunButton;
 import org.pdfsam.ui.prefix.PrefixPane;
 import org.pdfsam.ui.support.Views;
 import org.sejda.eventstudio.annotation.EventStation;
+import org.sejda.injector.Auto;
+import org.sejda.injector.Components;
+import org.sejda.injector.Provides;
 import org.sejda.model.prefix.Prefix;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -59,7 +59,7 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-@PdfsamModule
+@Auto
 public class RotateModule extends BaseTaskExecutionModule {
 
     private static final String MODULE_ID = "rotate";
@@ -81,6 +81,7 @@ public class RotateModule extends BaseTaskExecutionModule {
         super(footer);
         this.destinationDirectoryField = destinationDirectoryField;
         this.destinationPane = destinationPane;
+        initModuleSettingsPanel(settingPanel());
     }
 
     @Override
@@ -99,6 +100,7 @@ public class RotateModule extends BaseTaskExecutionModule {
         return builder;
     }
 
+    @Override
     public void onSaveWorkspace(Map<String, String> data) {
         selectionPane.saveStateTo(data);
         rotateOptions.saveStateTo(data);
@@ -107,6 +109,7 @@ public class RotateModule extends BaseTaskExecutionModule {
         prefix.saveStateTo(data);
     }
 
+    @Override
     public void onLoadWorkspace(Map<String, String> data) {
         selectionPane.restoreStateFrom(data);
         rotateOptions.restoreStateFrom(data);
@@ -115,8 +118,7 @@ public class RotateModule extends BaseTaskExecutionModule {
         prefix.restoreStateFrom(data);
     }
 
-    @Override
-    protected VBox getInnerPanel() {
+    private VBox settingPanel() {
         VBox pane = new VBox();
         pane.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(selectionPane, Priority.ALWAYS);
@@ -128,7 +130,7 @@ public class RotateModule extends BaseTaskExecutionModule {
         TitledPane options = Views.titledPane(DefaultI18nContext.getInstance().i18n("Rotate settings"), rotateOptions);
 
         pane.getChildren().addAll(selectionPane, options,
-                Views.titledPane(DefaultI18nContext.getInstance().i18n("Destination directory"), destinationPane),
+                Views.titledPane(DefaultI18nContext.getInstance().i18n("Output settings"), destinationPane),
                 prefixTitled);
         return pane;
     }
@@ -139,29 +141,34 @@ public class RotateModule extends BaseTaskExecutionModule {
         return MODULE_ID;
     }
 
+    @Override
     public Node graphic() {
         return new ImageView("rotate.png");
     }
 
-    @Configuration
+    @Components({ RotateModule.class })
     public static class ModuleConfig {
-        @Bean(name = MODULE_ID + "field")
+        @Provides
+        @Named(MODULE_ID + "field")
         public BrowsableOutputDirectoryField destinationDirectoryField() {
             return new BrowsableOutputDirectoryField();
         }
 
-        @Bean(name = MODULE_ID + "pane")
+        @Provides
+        @Named(MODULE_ID + "pane")
         public PdfDestinationPane destinationPane(@Named(MODULE_ID + "field") BrowsableOutputDirectoryField outputField,
                 UserContext userContext) {
             return new PdfDestinationPane(outputField, MODULE_ID, userContext);
         }
 
-        @Bean(name = MODULE_ID + "footer")
+        @Provides
+        @Named(MODULE_ID + "footer")
         public Footer footer(RunButton runButton, @Named(MODULE_ID + "openButton") OpenButton openButton) {
             return new Footer(runButton, openButton, MODULE_ID);
         }
 
-        @Bean(name = MODULE_ID + "openButton")
+        @Provides
+        @Named(MODULE_ID + "openButton")
         public OpenButton openButton() {
             return new OpenButton(MODULE_ID, ModuleInputOutputType.MULTIPLE_PDF);
         }

@@ -23,6 +23,7 @@ import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.pdfsam.support.RequireUtils.requireNotNull;
+import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.io.File;
 import java.time.Instant;
@@ -34,10 +35,9 @@ import java.util.Map.Entry;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.annotation.PreDestroy;
-import javax.inject.Named;
-
+import org.pdfsam.ShutdownEvent;
 import org.pdfsam.support.LRUMap;
+import org.sejda.eventstudio.annotation.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +47,10 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Vacondio
  *
  */
-@Named
 class PreferencesRecentWorkspacesService implements RecentWorkspacesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PreferencesRecentWorkspacesService.class);
+
     static final int MAX_CAPACITY = 5;
     static final String WORKSPACES_PATH = "/org/pdfsam/user/workspaces";
 
@@ -58,21 +58,7 @@ class PreferencesRecentWorkspacesService implements RecentWorkspacesService {
 
     public PreferencesRecentWorkspacesService() {
         populateCache();
-    }
-
-    @PreDestroy
-    public void flush() {
-        Preferences prefs = Preferences.userRoot().node(WORKSPACES_PATH);
-        LOG.trace("Flushing recently used workspaces");
-        try {
-            prefs.clear();
-            for (Entry<String, String> entry : cache.entrySet()) {
-                prefs.put(entry.getValue(), entry.getKey());
-            }
-            prefs.flush();
-        } catch (BackingStoreException e) {
-            LOG.error("Error storing recently used workspace", e);
-        }
+        eventStudio().addAnnotatedListeners(this);
     }
 
     private void populateCache() {
@@ -113,6 +99,25 @@ class PreferencesRecentWorkspacesService implements RecentWorkspacesService {
         } catch (BackingStoreException e) {
             LOG.error("Unable to clear recently used workspaces", e);
         }
+    }
+
+    public void flush() {
+        Preferences prefs = Preferences.userRoot().node(WORKSPACES_PATH);
+        LOG.trace("Flushing recently used workspaces");
+        try {
+            prefs.clear();
+            for (Entry<String, String> entry : cache.entrySet()) {
+                prefs.put(entry.getValue(), entry.getKey());
+            }
+            prefs.flush();
+        } catch (BackingStoreException e) {
+            LOG.error("Error storing recently used workspace", e);
+        }
+    }
+
+    @EventListener
+    public void onShutdown(ShutdownEvent event) {
+        flush();
     }
 
 }

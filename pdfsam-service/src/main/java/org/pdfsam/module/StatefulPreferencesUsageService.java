@@ -23,9 +23,9 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * {@link UsageService} implemented ab/using the {@link Preferences} framework
@@ -33,38 +33,42 @@ import javax.inject.Named;
  * @author Andrea Vacondio
  * 
  */
-@Named
 class StatefulPreferencesUsageService implements UsageService {
 
     private PreferencesUsageDataStore dataStore;
     private Map<String, Module> modulesMap;
 
     @Inject
-    StatefulPreferencesUsageService(PreferencesUsageDataStore dataStore, Map<String, Module> modulesMap) {
+    StatefulPreferencesUsageService(List<Module> modules, PreferencesUsageDataStore dataStore) {
+        this.modulesMap = modules.stream().collect(Collectors.toMap(Module::id, m -> m));
         this.dataStore = dataStore;
-        this.modulesMap = modulesMap;
     }
 
+    @Override
     public void incrementUsageFor(String moduleId) {
         dataStore.incrementUsageFor(moduleId);
     }
 
+    @Override
     public List<Module> getMostUsed() {
         List<ModuleUsage> used = dataStore.getUsages();
         used.sort((a, b) -> Long.compare(b.getTotalUsed(), a.getTotalUsed()));
         return used.stream().map(u -> modulesMap.get(u.getModuleId())).filter(m -> m != null).collect(toList());
     }
 
+    @Override
     public List<Module> getMostRecentlyUsed() {
         List<ModuleUsage> used = dataStore.getUsages();
         used.sort((a, b) -> Long.compare(b.getLastSeen(), a.getLastSeen()));
         return used.stream().map(u -> modulesMap.get(u.getModuleId())).filter(m -> m != null).collect(toList());
     }
 
+    @Override
     public void clear() {
         dataStore.clear();
     }
 
+    @Override
     public long getTotalUsage() {
         return dataStore.getTotalUsage();
     }

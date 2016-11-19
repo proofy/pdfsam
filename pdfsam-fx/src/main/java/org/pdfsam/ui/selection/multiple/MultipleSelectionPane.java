@@ -42,7 +42,7 @@ public class MultipleSelectionPane extends BorderPane implements ModuleOwned, Re
     private SelectionTable table;
 
     public MultipleSelectionPane(String ownerModule, boolean canDuplicate, boolean canMove,
-            SelectionTableColumn<?>... columns) {
+            TableColumnProvider<?>... columns) {
         require(columns.length > 0, "No column has been selected");
         this.ownerModule = defaultString(ownerModule);
         setTop(new SelectionTableToolbar(ownerModule, canMove));
@@ -50,6 +50,7 @@ public class MultipleSelectionPane extends BorderPane implements ModuleOwned, Re
         setCenter(table);
     }
 
+    @Override
     public String getOwnerModule() {
         return ownerModule;
     }
@@ -58,10 +59,12 @@ public class MultipleSelectionPane extends BorderPane implements ModuleOwned, Re
         return table;
     }
 
+    @Override
     public void saveStateTo(Map<String, String> data) {
         table.saveStateTo(data);
     }
 
+    @Override
     public void restoreStateFrom(Map<String, String> data) {
         table.restoreStateFrom(data);
     }

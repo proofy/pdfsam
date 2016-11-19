@@ -19,30 +19,27 @@
 package org.pdfsam.community;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
 
 import org.junit.Test;
-import org.pdfsam.PdfsamEdition;
-import org.springframework.core.env.Environment;
+import org.pdfsam.ConfigurableProperty;
 
 public class PdfsamCommunityTest {
     @Test(expected = IllegalArgumentException.class)
-    public void blankName() {
-        new PdfsamCommunity(" ", "something", mock(Environment.class));
+    public void blankName() throws IOException {
+        new PdfsamCommunity(" ", "something");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void blankShortName() {
-        new PdfsamCommunity("Something", " ", mock(Environment.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void nullEnv() {
-        new PdfsamCommunity("name", "short", null);
+    public void blankShortName() throws IOException {
+        new PdfsamCommunity("Something", " ");
     }
 
     @Test
-    public void edition() {
-        assertEquals(PdfsamEdition.COMMUNITY, new PdfsamCommunity("name", "short", mock(Environment.class)).edition());
+    public void property() throws IOException {
+        PdfsamCommunity pdfsam = new PdfsamCommunity("name", "short");
+        assertEquals("1.0.0", pdfsam.property(ConfigurableProperty.VERSION));
+        assertEquals("Chuck", pdfsam.property(ConfigurableProperty.FEED_URL, "Chuck"));
     }
 }

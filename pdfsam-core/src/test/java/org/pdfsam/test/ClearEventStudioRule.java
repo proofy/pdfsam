@@ -37,7 +37,7 @@ public class ClearEventStudioRule extends ExternalResource {
     private Set<String> stations = new NullSafeSet<>();
 
     public ClearEventStudioRule(String... stations) {
-        Arrays.stream(stations).parallel().forEach(this.stations::add);
+        Arrays.stream(stations).forEach(this.stations::add);
     }
 
     private void clearAll() {

@@ -27,13 +27,10 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.io.File;
 import java.util.Arrays;
 
-import javax.inject.Inject;
-
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
 import org.pdfsam.test.ClearEventStudioRule;
@@ -42,11 +39,7 @@ import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
 import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
 import org.pdfsam.ui.workspace.WorkspaceLoadedEvent;
 import org.sejda.eventstudio.Listener;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.sejda.injector.Injector;
 
 import javafx.scene.Parent;
 
@@ -55,18 +48,15 @@ import javafx.scene.Parent;
  *
  */
 @Category(TestFX.class)
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { MenuConfig.class })
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class WorkspaceMenuTest extends GuiTest {
     @Rule
     public ClearEventStudioRule clearStudio = new ClearEventStudioRule();
-    @Inject
-    private ApplicationContext applicationContext;
+    private Injector injector;
 
     @Override
     protected Parent getRootNode() {
-        return applicationContext.getBean(MenuButton.class);
+        injector = Injector.start(new MenuConfig());
+        return injector.instance(MenuButton.class);
     }
 
     @Test
@@ -98,9 +88,8 @@ public class WorkspaceMenuTest extends GuiTest {
     }
 
     @Test
-    @DirtiesContext
     public void recentIsUpdated() {
-        RecentWorkspacesService service = applicationContext.getBean(RecentWorkspacesService.class);
+        RecentWorkspacesService service = injector.instance(RecentWorkspacesService.class);
         when(service.getRecentlyUsedWorkspaces()).thenReturn(Arrays.asList("Micheal"));
         eventStudio().broadcast(new WorkspaceLoadedEvent(mock(File.class)));
         click(".button").click("#workspaceMenu").move("#loadWorkspace").move("#saveWorkspace")
@@ -108,9 +97,8 @@ public class WorkspaceMenuTest extends GuiTest {
     }
 
     @Test
-    @DirtiesContext
     public void recentIsUpdatedAndMnemonicAreNotParsed() {
-        RecentWorkspacesService service = applicationContext.getBean(RecentWorkspacesService.class);
+        RecentWorkspacesService service = injector.instance(RecentWorkspacesService.class);
         when(service.getRecentlyUsedWorkspaces()).thenReturn(Arrays.asList("I_have_underscores"));
         eventStudio().broadcast(new WorkspaceLoadedEvent(mock(File.class)));
         click(".button").click("#workspaceMenu").move("#loadWorkspace").move("#saveWorkspace").click("#recentWorkspace")

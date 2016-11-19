@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +35,13 @@ import com.fasterxml.jackson.jr.ob.JSON;
  * @author Andrea Vacondio
  *
  */
-@Named
 class DefaultStageService implements StageService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultStageService.class);
     static final String STAGE_PATH = "/org/pdfsam/stage";
     static final String STAGE_STATUS_KEY = "stage.status";
 
+    @Override
     public void save(StageStatus status) {
         Preferences node = Preferences.userRoot().node(STAGE_PATH);
         try {
@@ -54,6 +52,7 @@ class DefaultStageService implements StageService {
         }
     }
 
+    @Override
     public StageStatus getLatestStatus() {
         Preferences node = Preferences.userRoot().node(STAGE_PATH);
         try {
@@ -67,6 +66,7 @@ class DefaultStageService implements StageService {
         return StageStatus.NULL;
     }
 
+    @Override
     public void clear() {
         Preferences prefs = Preferences.userRoot().node(STAGE_PATH);
         try {

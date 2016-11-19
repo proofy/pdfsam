@@ -20,48 +20,50 @@ package org.pdfsam.community;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.pdfsam.support.RequireUtils.requireNotBlank;
-import static org.pdfsam.support.RequireUtils.requireNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.pdfsam.ConfigurableProperty;
 import org.pdfsam.Pdfsam;
-import org.pdfsam.PdfsamEdition;
-import org.springframework.core.env.Environment;
 
 /**
  * @author Andrea Vacondio
  *
  */
 public class PdfsamCommunity implements Pdfsam {
-    private Environment env;
+    private Properties properties = new Properties();
     private String name;
     private String shortName;
 
-    public PdfsamCommunity(String name, String shortName, Environment env) {
+    public PdfsamCommunity(String name, String shortName) throws IOException {
         requireNotBlank(name, "Application name cannot be blank");
         requireNotBlank(shortName, "Application short name cannot be blank");
-        requireNotNull(env, "Environment cannot be null");
-        this.env = env;
         this.name = name;
         this.shortName = shortName;
+        try (InputStream stream = this.getClass().getResourceAsStream("/pdfsam.properties")) {
+            properties.load(stream);
+        }
     }
 
-    public PdfsamEdition edition() {
-        return PdfsamEdition.COMMUNITY;
-    }
-
+    @Override
     public String name() {
         return name;
     }
 
+    @Override
     public String shortName() {
         return shortName;
     }
 
+    @Override
     public String property(ConfigurableProperty prop, String defaultValue) {
-        return env.getProperty(prop.prop, defaultValue);
+        return properties.getProperty(prop.prop, defaultValue);
     }
 
+    @Override
     public String property(ConfigurableProperty prop) {
-        return env.getProperty(prop.prop, EMPTY);
+        return properties.getProperty(prop.prop, EMPTY);
     }
 }

@@ -46,7 +46,6 @@ import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
 import org.pdfsam.ui.commons.SetDestinationRequest;
 import org.sejda.model.pdf.PdfVersion;
-import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * @author Andrea Vacondio
@@ -84,7 +83,6 @@ public class PdfDestinationPaneTest {
     }
 
     @Test
-    @DirtiesContext
     public void setFallbackDestination() throws IOException {
         destination.getTextField().setText("");
         when(userContext.isUseSmartOutput()).thenReturn(Boolean.TRUE);
@@ -117,7 +115,7 @@ public class PdfDestinationPaneTest {
         Map<String, String> data = new HashMap<>();
         victim.saveStateTo(data);
         assertEquals(Boolean.TRUE.toString(), data.get("overwrite"));
-        assertEquals(Boolean.FALSE.toString(), data.get("compress"));
+        assertEquals(Boolean.TRUE.toString(), data.get("compress"));
         assertNull(data.get("discardBookmarks"));
         assertTrue(isNotEmpty(data.get("version")));
     }

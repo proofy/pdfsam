@@ -22,9 +22,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import java.util.function.Consumer;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.builder.Builder;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.Module;
@@ -49,7 +46,6 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-@Named
 public abstract class BaseTaskExecutionModule implements Module {
 
     private BorderPane modulePanel = new BorderPane();
@@ -59,12 +55,10 @@ public abstract class BaseTaskExecutionModule implements Module {
         this.footer = footer;
     }
 
-    @PostConstruct
-    final void init() {
-        VBox innerPanel = getInnerPanel();
-        innerPanel.getStyleClass().addAll(Style.DEAULT_CONTAINER.css());
-        innerPanel.getStyleClass().addAll(Style.MODULE_CONTAINER.css());
-        innerPanel.getChildren().add(footer);
+    protected final void initModuleSettingsPanel(VBox panel) {
+        panel.getStyleClass().addAll(Style.DEAULT_CONTAINER.css());
+        panel.getStyleClass().addAll(Style.MODULE_CONTAINER.css());
+        panel.getChildren().add(footer);
 
         footer.runButton().setOnAction(event -> {
             ErrorTracker errorTracker = new ErrorTracker();
@@ -75,7 +69,7 @@ public abstract class BaseTaskExecutionModule implements Module {
                 eventStudio().broadcast(new TaskExecutionRequestEvent(id(), builder.build()));
             }
         });
-        modulePanel.setCenter(innerPanel);
+        modulePanel.setCenter(panel);
         eventStudio().addAnnotatedListeners(this);
     }
 
@@ -90,17 +84,13 @@ public abstract class BaseTaskExecutionModule implements Module {
     }
 
     /**
-     * @return the inner panel that allows the user to set options and preferences for this module
-     */
-    protected abstract VBox getInnerPanel();
-
-    /**
      * @param onError
      *            function to be called in case of error while building the task parameters
      * @return a {@link Builder} for the parameters to be used to perform a pdf manipulation
      */
     protected abstract Builder<? extends AbstractParameters> getBuilder(Consumer<String> onError);
 
+    @Override
     public Pane modulePanel() {
         return modulePanel;
     }
@@ -114,6 +104,7 @@ public abstract class BaseTaskExecutionModule implements Module {
     private static class ErrorTracker implements Consumer<String> {
         boolean errorOnBuild = false;
 
+        @Override
         public void accept(String error) {
             errorOnBuild = true;
         }

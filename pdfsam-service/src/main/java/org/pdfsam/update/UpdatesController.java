@@ -26,15 +26,13 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.pdfsam.Pdfsam;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.sejda.eventstudio.annotation.EventListener;
+import org.sejda.injector.Auto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javafx.application.Platform;
 
 /**
  * Component listening for updates related requests
@@ -42,7 +40,7 @@ import javafx.application.Platform;
  * @author Andrea Vacondio
  *
  */
-@Named
+@Auto
 public class UpdatesController {
     private static final Logger LOG = LoggerFactory.getLogger(UpdatesController.class);
 
@@ -62,7 +60,7 @@ public class UpdatesController {
         CompletableFuture.supplyAsync(service::getLatestVersion).thenAccept(current -> {
             if (isNotBlank(current) && !pdfsam.property(VERSION).equals(current)) {
                 LOG.info(DefaultI18nContext.getInstance().i18n("PDFsam {0} is available for download", current));
-                Platform.runLater(() -> eventStudio().broadcast(new UpdateAvailableEvent(current)));
+                eventStudio().broadcast(new UpdateAvailableEvent(current));
             }
         }).whenComplete((r, e) -> {
             if (nonNull(e)) {

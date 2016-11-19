@@ -38,7 +38,7 @@ public class PageRangesColumnTest {
     public void getObservableValue() {
         File file = mock(File.class);
         SelectionTableRowData data = new SelectionTableRowData(PdfDocumentDescriptor.newDescriptorNoPassword(file));
-        data.setPageSelection("2");
+        data.pageSelection.set("2");
         assertEquals("2", new PageRangesColumn().getObservableValue(data).getValue());
     }
 

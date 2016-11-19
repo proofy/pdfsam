@@ -19,13 +19,13 @@
 package org.pdfsam.ui.dashboard.preference;
 
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
-import javafx.scene.control.Button;
-
-import javax.inject.Named;
 
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.support.Style;
 import org.pdfsam.update.UpdateCheckRequest;
+import org.sejda.injector.Prototype;
+
+import javafx.scene.control.Button;
 
 /**
  * Button requesting a check for update
@@ -33,12 +33,12 @@ import org.pdfsam.update.UpdateCheckRequest;
  * @author Andrea Vacondio
  *
  */
-@Named
+@Prototype
 class CheckForUpdatesButton extends Button {
 
     CheckForUpdatesButton() {
         super(DefaultI18nContext.getInstance().i18n("Check for updates now"));
         getStyleClass().addAll(Style.BUTTON.css());
-        setOnAction(e -> eventStudio().broadcast(new UpdateCheckRequest()));
+        setOnAction(e -> eventStudio().broadcast(UpdateCheckRequest.INSTANCE));
     }
 }

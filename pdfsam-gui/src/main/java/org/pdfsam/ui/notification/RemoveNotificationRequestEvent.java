@@ -28,15 +28,10 @@ import static org.pdfsam.support.RequireUtils.requireNotBlank;
  */
 class RemoveNotificationRequestEvent {
 
-    private String notificationId;
+    public final String notificationId;
 
     public RemoveNotificationRequestEvent(String notificationId) {
         requireNotBlank(notificationId, "Cannot request to remove a notification without supplying the id");
         this.notificationId = notificationId;
     }
-
-    public String getNotificationId() {
-        return notificationId;
-    }
-
 }

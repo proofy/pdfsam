@@ -19,10 +19,10 @@
 package org.pdfsam.ui.dashboard;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.ui.dashboard.preference.PreferencePane;
+import org.sejda.injector.Auto;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -33,7 +33,7 @@ import javafx.scene.layout.Pane;
  * @author Andrea Vacondio
  *
  */
-@Named
+@Auto
 class PreferencesDashboardItem implements DashboardItem {
 
     private PreferencePane pane;
@@ -43,22 +43,27 @@ class PreferencesDashboardItem implements DashboardItem {
         this.pane = pane;
     }
 
+    @Override
     public String id() {
         return "SETTINGS";
     }
 
+    @Override
     public String name() {
         return DefaultI18nContext.getInstance().i18n("Settings");
     }
 
+    @Override
     public Pane pane() {
         return pane;
     }
 
+    @Override
     public Node graphic() {
         return GlyphsDude.createIcon(MaterialDesignIcon.SETTINGS, "26.0");
     }
 
+    @Override
     public int priority() {
         return -5;
     }

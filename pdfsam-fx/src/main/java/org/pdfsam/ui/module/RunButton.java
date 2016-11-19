@@ -20,16 +20,13 @@ package org.pdfsam.ui.module;
 
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
-import javax.inject.Named;
-
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.TaskExecutionRequestEvent;
 import org.pdfsam.ui.support.Style;
 import org.sejda.eventstudio.annotation.EventListener;
+import org.sejda.injector.Prototype;
 import org.sejda.model.notification.event.TaskExecutionCompletedEvent;
 import org.sejda.model.notification.event.TaskExecutionFailedEvent;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -41,8 +38,7 @@ import javafx.scene.control.Button;
  * @author Andrea Vacondio
  *
  */
-@Named
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Prototype
 public class RunButton extends Button {
 
     public RunButton() {
@@ -51,6 +47,7 @@ public class RunButton extends Button {
         GlyphsDude.setIcon(this, MaterialDesignIcon.PLAY, "2.0em");
         setMaxHeight(Double.MAX_VALUE);
         setPrefHeight(Double.MAX_VALUE);
+        setDefaultButton(true);
         eventStudio().addAnnotatedListeners(this);
     }
 

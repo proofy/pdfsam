@@ -21,20 +21,19 @@ package org.pdfsam.task;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
-import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pdfsam.ShutdownEvent;
 import org.pdfsam.module.TaskExecutionRequestEvent;
 import org.pdfsam.module.UsageService;
 import org.sejda.core.notification.context.GlobalNotificationContext;
 import org.sejda.core.service.TaskExecutionService;
 import org.sejda.eventstudio.annotation.EventListener;
+import org.sejda.injector.Auto;
 import org.sejda.model.notification.event.AbstractNotificationEvent;
 import org.sejda.model.notification.event.PercentageOfWorkDoneChangedEvent;
 import org.sejda.model.notification.event.TaskExecutionCompletedEvent;
@@ -51,8 +50,8 @@ import javafx.application.Platform;
  * @author Andrea Vacondio
  * 
  */
-@Named
-class TaskExecutionController implements Closeable {
+@Auto
+public class TaskExecutionController {
     private static final Logger LOG = LoggerFactory.getLogger(TaskExecutionController.class);
 
     private TaskExecutionService executionService;
@@ -89,14 +88,15 @@ class TaskExecutionController implements Closeable {
         LOG.trace("Task execution submitted");
     }
 
-    @PreDestroy
-    public void close() {
+    @EventListener
+    public void onShutdown(ShutdownEvent event) {
         executor.shutdownNow();
     }
 
     class TaskEventBroadcaster<T extends AbstractNotificationEvent>
             implements org.sejda.model.notification.EventListener<T> {
 
+        @Override
         public void onEvent(T event) {
             Platform.runLater(() -> eventStudio().broadcast(event));
             if (isNoneBlank(currentModule)) {

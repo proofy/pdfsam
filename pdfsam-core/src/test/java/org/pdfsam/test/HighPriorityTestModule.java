@@ -22,13 +22,14 @@ import static org.pdfsam.module.ModuleDescriptorBuilder.builder;
 
 import java.util.Map;
 
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-
 import org.pdfsam.module.Module;
 import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
+import org.pdfsam.module.ModuleInputOutputType;
 import org.pdfsam.module.ModulePriority;
+
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 
 /**
  * @author Andrea Vacondio
@@ -39,28 +40,34 @@ public class HighPriorityTestModule implements Module {
 
     private ModuleDescriptor descriptor = builder().category(ModuleCategory.SECURITY)
             .description("High priority test module").name("HighPriorityTestModule").priority(ModulePriority.HIGH)
-            .build();
+            .inputTypes(ModuleInputOutputType.MULTIPLE_PDF).build();
 
+    @Override
     public String id() {
         return ID;
     }
 
+    @Override
     public ModuleDescriptor descriptor() {
         return descriptor;
     }
 
+    @Override
     public Pane modulePanel() {
         return null;
     }
 
+    @Override
     public Node graphic() {
         return null;
     }
 
+    @Override
     public void onSaveWorkspace(Map<String, String> data) {
         // nothing
     }
 
+    @Override
     public void onLoadWorkspace(Map<String, String> data) {
         // nothing
     }

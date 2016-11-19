@@ -78,7 +78,7 @@ public class MergeSelectionPaneTest {
     @Test
     public void emptyByZeroPagesSelected() throws Exception {
         populate();
-        victim.table().getItems().get(0).setPageSelection("0");
+        victim.table().getItems().get(0).pageSelection.set("0");
         victim.apply(builder, onError);
         verify(onError).accept(anyString());
         verify(builder, never()).addInput(any());
@@ -99,7 +99,7 @@ public class MergeSelectionPaneTest {
     public void notEmptyPageSelection() throws Exception {
         populate();
         when(builder.hasInput()).thenReturn(Boolean.TRUE);
-        victim.table().getItems().get(0).setPageSelection("1,3-10");
+        victim.table().getItems().get(0).pageSelection.set("1,3-10");
         victim.apply(builder, onError);
         verify(onError, never()).accept(anyString());
         ArgumentCaptor<PdfMergeInput> input = ArgumentCaptor.forClass(PdfMergeInput.class);

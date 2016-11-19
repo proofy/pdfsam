@@ -18,8 +18,6 @@
  */
 package org.pdfsam.pdf;
 
-import javax.inject.Named;
-
 import org.pdfsam.module.RequiredPdfData;
 import org.sejda.impl.sambox.component.OutlineUtils;
 import org.sejda.sambox.pdmodel.PDDocument;
@@ -30,13 +28,14 @@ import org.sejda.sambox.pdmodel.PDDocument;
  * @author Andrea Vacondio
  *
  */
-@Named
 class BookmarksLevelSAMBoxLoader implements PdfLoader<PDDocument> {
 
+    @Override
     public void accept(PDDocument document, PdfDocumentDescriptor descriptor) {
-        descriptor.setMaxGoToActionDepth(OutlineUtils.getMaxOutlineLevel(document));
+        descriptor.setValidBookmarksLevels(OutlineUtils.getOutlineLevelsWithPageDestination(document));
     }
 
+    @Override
     public RequiredPdfData key() {
         return RequiredPdfData.BOOMARKS;
     }

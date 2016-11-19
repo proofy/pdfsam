@@ -26,30 +26,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.pdfsam.ConfigurableProperty;
 import org.pdfsam.Pdfsam;
-import org.pdfsam.PdfsamEdition;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
 import org.pdfsam.ui.dashboard.about.AboutDashboardPane;
 import org.pdfsam.ui.event.SetActiveDashboardItemRequest;
 import org.pdfsam.ui.event.SetTitleEvent;
 import org.sejda.eventstudio.Listener;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.sejda.injector.Components;
+import org.sejda.injector.Injector;
+import org.sejda.injector.Provides;
 
 import javafx.scene.layout.StackPane;
 
@@ -57,23 +48,24 @@ import javafx.scene.layout.StackPane;
  * @author Andrea Vacondio
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
 public class DashboardTest {
     @ClassRule
     public static ClearEventStudioRule STUDIO_RULE = new ClearEventStudioRule();
     @Rule
     public InitializeAndApplyJavaFxThreadRule javaFxThread = new InitializeAndApplyJavaFxThreadRule();
-    @Inject
-    private ApplicationContext applicationContext;
 
-    @Configuration
-    @Lazy
+    private Injector injector;
+
+    @Before
+    public void setUp() {
+        injector = Injector.start(new Config());
+    }
+
+    @Components({ AboutDashboadItem.class })
     static class Config {
-        @Bean
+        @Provides
         public AboutDashboardPane aboutPane() {
             Pdfsam pdfsam = mock(Pdfsam.class);
-            when(pdfsam.edition()).thenReturn(PdfsamEdition.COMMUNITY);
             when(pdfsam.name()).thenReturn("PDFsam");
             when(pdfsam.property(ConfigurableProperty.VERSION)).thenReturn("3.0.0");
             when(pdfsam.property(ConfigurableProperty.HOME_URL)).thenReturn("http://www.pdfsam.org");
@@ -99,41 +91,22 @@ public class DashboardTest {
             return about;
         }
 
-        @Bean
-        public AboutDashboadItem item() {
-            return new AboutDashboadItem(aboutPane());
-        }
-
-        @Bean
-        public List<DashboardItem> items() {
-            return Arrays.asList(item());
-        }
-
-        @Bean
-        public QuickbarDashboardButtonsPane buttons() {
-            return new QuickbarDashboardButtonsPane(items());
-        }
-
-        @Bean
-        public Dashboard victim() {
-            return new Dashboard(items());
-        }
     }
 
     @Test
     public void wrongModuleDoesntBoom() {
-        Dashboard victim = applicationContext.getBean(Dashboard.class);
+        Dashboard victim = injector.instance(Dashboard.class);
         victim.onSetActiveDashboardItem(new SetActiveDashboardItemRequest("chuck norris"));
     }
 
     @Test
     public void eventIsSent() {
-        Dashboard victim = applicationContext.getBean(Dashboard.class);
+        Dashboard victim = injector.instance(Dashboard.class);
         assertTrue(((StackPane) victim.getCenter()).getChildren().isEmpty());
         Listener<SetTitleEvent> listener = mock(Listener.class);
         eventStudio().add(SetTitleEvent.class, listener);
-        victim.onSetActiveDashboardItem(new SetActiveDashboardItemRequest(applicationContext.getBean(
-                AboutDashboadItem.class).id()));
+        victim.onSetActiveDashboardItem(
+                new SetActiveDashboardItemRequest(injector.instance(AboutDashboadItem.class).id()));
         verify(listener).onEvent(any());
         assertFalse(((StackPane) victim.getCenter()).getChildren().isEmpty());
     }

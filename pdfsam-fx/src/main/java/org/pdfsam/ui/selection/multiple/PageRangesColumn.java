@@ -51,13 +51,14 @@ public class PageRangesColumn implements SelectionTableColumn<String> {
         }
     }
 
+    @Override
     public String getColumnTitle() {
         return DefaultI18nContext.getInstance().i18n("Page ranges");
     }
 
     @Override
     public ObservableValue<String> getObservableValue(SelectionTableRowData data) {
-        return data.pageSelectionProperty();
+        return data.pageSelection;
     }
 
     @Override
@@ -65,6 +66,7 @@ public class PageRangesColumn implements SelectionTableColumn<String> {
         return defaultString(item, EMPTY);
     }
 
+    @Override
     public Comparator<String> comparator() {
         return Comparator.naturalOrder();
     }
@@ -74,12 +76,14 @@ public class PageRangesColumn implements SelectionTableColumn<String> {
         TableColumn<SelectionTableRowData, String> tableColumn = SelectionTableColumn.super.getTableColumn();
         tableColumn.setEditable(true);
         tableColumn.setOnEditCommit(
-                t -> t.getTableView().getItems().get(t.getTablePosition().getRow()).setPageSelection(t.getNewValue()));
+                t -> t.getTableView().getItems().get(t.getTablePosition().getRow()).pageSelection.set(t.getNewValue()));
         return tableColumn;
     }
 
+    @Override
     public Callback<TableColumn<SelectionTableRowData, String>, TableCell<SelectionTableRowData, String>> cellFactory() {
         return new Callback<TableColumn<SelectionTableRowData, String>, TableCell<SelectionTableRowData, String>>() {
+            @Override
             public TableCell<SelectionTableRowData, String> call(TableColumn<SelectionTableRowData, String> param) {
                 return new TooltippedTextFieldTableCell(tooltipMessage);
             }

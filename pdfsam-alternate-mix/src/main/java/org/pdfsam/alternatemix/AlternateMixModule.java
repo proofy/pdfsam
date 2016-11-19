@@ -32,7 +32,6 @@ import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
 import org.pdfsam.module.ModuleInputOutputType;
 import org.pdfsam.module.ModulePriority;
-import org.pdfsam.module.PdfsamModule;
 import org.pdfsam.ui.io.BrowsablePdfOutputField;
 import org.pdfsam.ui.io.PdfDestinationPane;
 import org.pdfsam.ui.module.BaseTaskExecutionModule;
@@ -41,13 +40,14 @@ import org.pdfsam.ui.module.OpenButton;
 import org.pdfsam.ui.module.RunButton;
 import org.pdfsam.ui.support.Views;
 import org.sejda.eventstudio.annotation.EventStation;
-import org.sejda.model.input.PdfFileSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.sejda.injector.Auto;
+import org.sejda.injector.Components;
+import org.sejda.injector.Provides;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -56,21 +56,19 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-@PdfsamModule
+@Auto
 public class AlternateMixModule extends BaseTaskExecutionModule {
 
     private static final String MODULE_ID = "alternatemix";
 
-    private AlternateMixSingleSelectionPane firstDocument;
-    private AlternateMixSingleSelectionPane secondDocument;
+    private AlternateMixSelectionPane selectionPane = new AlternateMixSelectionPane(MODULE_ID);
     private BrowsablePdfOutputField destinationFileField;
     private PdfDestinationPane destinationPane;
-    private AlternateMixOptionsPane optionsPane = new AlternateMixOptionsPane();
-    private ModuleDescriptor descriptor = builder().category(ModuleCategory.MERGE).inputTypes(ModuleInputOutputType.OTHER)
-            .name(DefaultI18nContext.getInstance().i18n("Alternate Mix"))
+    private ModuleDescriptor descriptor = builder().category(ModuleCategory.MERGE)
+            .inputTypes(ModuleInputOutputType.MULTIPLE_PDF).name(DefaultI18nContext.getInstance().i18n("Alternate Mix"))
             .description(DefaultI18nContext.getInstance()
-                    .i18n("Merge two PDF documents taking pages alternately in straight or reverse order."))
-            .priority(ModulePriority.DEFAULT.getPriority()).supportURL("http://www.pdfsam.org/alternate-mix").build();
+                    .i18n("Merge two or more PDF documents taking pages alternately in natural or reverse order."))
+            .priority(ModulePriority.DEFAULT.getPriority()).supportURL("http://www.pdfsam.org/mix-pdf/").build();
 
     @Inject
     public AlternateMixModule(@Named(MODULE_ID + "field") BrowsablePdfOutputField destinationFileField,
@@ -78,26 +76,7 @@ public class AlternateMixModule extends BaseTaskExecutionModule {
         super(footer);
         this.destinationFileField = destinationFileField;
         this.destinationPane = destinationPane;
-        this.firstDocument = new AlternateMixSingleSelectionPane(id()) {
-            @Override
-            void onValidSource(AlternateMixParametersBuilder builder, PdfFileSource source) {
-                builder.first(source);
-            }
-        };
-        this.firstDocument.setId("firstDocumentMix");
-        this.firstDocument.setPromptText(
-                DefaultI18nContext.getInstance().i18n("Select or drag and drop the first PDF you want to mix"));
-        this.firstDocument.addOnLoaded(d -> optionsPane.setFirstDocumentMaxPages(d.pages().getValue()));
-        this.secondDocument = new AlternateMixSingleSelectionPane(id()) {
-            @Override
-            void onValidSource(AlternateMixParametersBuilder builder, PdfFileSource source) {
-                builder.second(source);
-            }
-        };
-        this.secondDocument.setId("secondDocumentMix");
-        this.secondDocument.setPromptText(
-                DefaultI18nContext.getInstance().i18n("Select or drag and drop the second PDF you want to mix"));
-        this.secondDocument.addOnLoaded(d -> optionsPane.setSecondDocumentMaxPages(d.pages().getValue()));
+        initModuleSettingsPanel(settingPanel());
     }
 
     @Override
@@ -105,29 +84,41 @@ public class AlternateMixModule extends BaseTaskExecutionModule {
         return descriptor;
     }
 
+    @Override
     public void onSaveWorkspace(Map<String, String> data) {
-        firstDocument.saveStateTo(data);
-        secondDocument.saveStateTo(data);
-        optionsPane.saveStateTo(data);
+        selectionPane.saveStateTo(data);
         destinationFileField.saveStateTo(data);
         destinationPane.saveStateTo(data);
     }
 
+    @Override
     public void onLoadWorkspace(Map<String, String> data) {
-        firstDocument.restoreStateFrom(data);
-        secondDocument.restoreStateFrom(data);
-        optionsPane.restoreStateFrom(data);
+        // backwards comp when alternate mix had 2 inputs
+        if (data.containsKey("firstDocumentMixinput")) {
+            data.put("input.0", data.get("firstDocumentMixinput"));
+            data.put("input.password.0", data.get("firstDocumentMixinputinput.password"));
+            data.put("input.step.0", data.get("firstStep"));
+            data.put("input.reverse.0", data.get("reverseFirst"));
+            data.put("input.size", "1");
+            if (data.containsKey("secondDocumentMixinput")) {
+                data.put("input.1", data.get("secondDocumentMixinput"));
+                data.put("input.password.1", data.get("secondDocumentMixinput.password"));
+                data.put("input.step.1", data.get("secondStep"));
+                data.put("input.reverse.1", data.get("reverseSecond"));
+                data.put("input.size", "2");
+            }
+        }
+        selectionPane.restoreStateFrom(data);
         destinationFileField.restoreStateFrom(data);
         destinationPane.restoreStateFrom(data);
     }
 
-    @Override
-    protected VBox getInnerPanel() {
+    private VBox settingPanel() {
         VBox pane = new VBox();
         pane.setAlignment(Pos.TOP_CENTER);
+        VBox.setVgrow(selectionPane, Priority.ALWAYS);
 
-        pane.getChildren().addAll(firstDocument, secondDocument,
-                Views.titledPane(DefaultI18nContext.getInstance().i18n("Mix settings"), optionsPane),
+        pane.getChildren().addAll(selectionPane,
                 Views.titledPane(DefaultI18nContext.getInstance().i18n("Destination file"), destinationPane));
         return pane;
     }
@@ -138,6 +129,7 @@ public class AlternateMixModule extends BaseTaskExecutionModule {
         return MODULE_ID;
     }
 
+    @Override
     public Node graphic() {
         return new ImageView("alternate_mix.png");
     }
@@ -145,33 +137,35 @@ public class AlternateMixModule extends BaseTaskExecutionModule {
     @Override
     protected AlternateMixParametersBuilder getBuilder(Consumer<String> onError) {
         AlternateMixParametersBuilder builder = new AlternateMixParametersBuilder();
-        firstDocument.apply(builder, onError);
-        secondDocument.apply(builder, onError);
+        selectionPane.apply(builder, onError);
         destinationFileField.apply(builder, onError);
         destinationPane.apply(builder, onError);
-        optionsPane.apply(builder, onError);
         return builder;
     }
 
-    @Configuration
+    @Components({ AlternateMixModule.class })
     public static class ModuleConfig {
-        @Bean(name = MODULE_ID + "field")
+        @Provides
+        @Named(MODULE_ID + "field")
         public BrowsablePdfOutputField destinationFileField() {
             return new BrowsablePdfOutputField();
         }
 
-        @Bean(name = MODULE_ID + "pane")
+        @Provides
+        @Named(MODULE_ID + "pane")
         public PdfDestinationPane destinationPane(@Named(MODULE_ID + "field") BrowsablePdfOutputField outputField,
                 UserContext userContext) {
             return new PdfDestinationPane(outputField, MODULE_ID, userContext);
         }
 
-        @Bean(name = MODULE_ID + "footer")
+        @Provides
+        @Named(MODULE_ID + "footer")
         public Footer footer(RunButton runButton, @Named(MODULE_ID + "openButton") OpenButton openButton) {
             return new Footer(runButton, openButton, MODULE_ID);
         }
 
-        @Bean(name = MODULE_ID + "openButton")
+        @Provides
+        @Named(MODULE_ID + "openButton")
         public OpenButton openButton() {
             return new OpenButton(MODULE_ID, ModuleInputOutputType.SINGLE_PDF);
         }

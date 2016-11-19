@@ -29,13 +29,12 @@ import org.pdfsam.task.PdfRotationInput;
 import org.sejda.common.collection.NullSafeSet;
 import org.sejda.model.input.PdfSource;
 import org.sejda.model.output.DirectoryTaskOutput;
-import org.sejda.model.parameter.RotateParameters;
 import org.sejda.model.pdf.page.PageRange;
 import org.sejda.model.pdf.page.PredefinedSetOfPages;
 import org.sejda.model.rotation.Rotation;
 
 /**
- * Builder for {@link RotateParameters}
+ * Builder for {@link BulkRotateParameters}
  * 
  * @author Andrea Vacondio
  *
@@ -61,10 +60,12 @@ class RotateParametersBuilder extends AbstractPdfOutputParametersBuilder<BulkRot
         return !inputs.isEmpty();
     }
 
+    @Override
     public void output(DirectoryTaskOutput output) {
         this.output = output;
     }
 
+    @Override
     public void prefix(String prefix) {
         this.prefix = prefix;
     }
@@ -86,6 +87,7 @@ class RotateParametersBuilder extends AbstractPdfOutputParametersBuilder<BulkRot
 
     }
 
+    @Override
     public BulkRotateParameters build() {
         BulkRotateParameters params = new BulkRotateParameters();
         params.setCompress(isCompress());

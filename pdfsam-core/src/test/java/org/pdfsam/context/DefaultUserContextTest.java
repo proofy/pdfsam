@@ -57,6 +57,14 @@ public class DefaultUserContextTest {
     }
 
     @Test
+    public void isCheckForNews() {
+        victim.setBooleanPreference(BooleanUserPreference.CHECK_FOR_NEWS, false);
+        assertFalse(victim.isCheckForNews());
+        victim.setBooleanPreference(BooleanUserPreference.CHECK_FOR_NEWS, true);
+        assertTrue(victim.isCheckForNews());
+    }
+
+    @Test
     public void isSaveWokspaceOnExit() {
         victim.setBooleanPreference(BooleanUserPreference.SAVE_WORKSPACE_ON_EXIT, false);
         assertFalse(victim.isSaveWorkspaceOnExit());
@@ -79,7 +87,6 @@ public class DefaultUserContextTest {
         victim.setBooleanPreference(BooleanUserPreference.CHECK_UPDATES, true);
         assertTrue(victim.isCheckForUpdates());
         System.clearProperty(DefaultUserContext.CHECK_FOR_UPDATES_PROP);
-
     }
 
     @Test
@@ -104,6 +111,15 @@ public class DefaultUserContextTest {
         assertFalse(victim.isDonationNotification());
         victim.setBooleanPreference(BooleanUserPreference.DONATION_NOTIFICATION, true);
         assertTrue(victim.isDonationNotification());
+    }
+
+    @Test
+    public void isDonationNotificationSystemDefault() {
+        System.setProperty(DefaultUserContext.DONATE_NOTIFICATION_PROP, "false");
+        assertFalse(victim.isDonationNotification());
+        victim.setBooleanPreference(BooleanUserPreference.DONATION_NOTIFICATION, true);
+        assertTrue(victim.isDonationNotification());
+        System.clearProperty(DefaultUserContext.DONATE_NOTIFICATION_PROP);
     }
 
     @Test

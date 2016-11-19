@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<description>PDFsam App</description>
 	<url>http://www.pdfsam.org</url>
 	<parent>
 		<groupId>org.pdfsam</groupId>
 		<artifactId>pdfsam-parent</artifactId>
-		<version>3.1.1.RELEASE-SNAPSHOT</version>
+		<version>3.2.5.RELEASE-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -45,7 +46,8 @@
 								<configuration>
 									<createDependencyReducedPom>false</createDependencyReducedPom>
 									<transformers>
-										<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 											<mainClass>org.pdfsam.community.App</mainClass>
 											<manifestEntries>
 												<Class-Path>etc/</Class-Path>
@@ -90,7 +92,7 @@
 					<plugin>
 						<groupId>com.akathist.maven.plugins.launch4j</groupId>
 						<artifactId>launch4j-maven-plugin</artifactId>
-						<version>1.7.8</version>
+						<version>1.7.12</version>
 						<executions>
 							<execution>
 								<id>exe-creation</id>
@@ -103,7 +105,7 @@
 									<outfile>${project.build.directory}/pdfsam.exe</outfile>
 									<jar>${project.build.finalName}.jar</jar>
 									<dontWrapJar>true</dontWrapJar>
-									<icon>src/assembly/resources/PDFsam_basic.ico</icon>
+									<icon>src/assembly/resources/pdfsam.ico</icon>
 									<errTitle>Cannot find Java Runtime Environment</errTitle>
 									<jre>
 										<minVersion>1.8.0</minVersion>
@@ -111,13 +113,16 @@
 									<versionInfo>
 										<fileVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</fileVersion>
 										<txtFileVersion>${project.version}</txtFileVersion>
-										<fileDescription>Starter for PDFsam Basic</fileDescription>
+										<fileDescription>PDFsam Basic</fileDescription>
 										<copyright>Andrea Vacondio 2015</copyright>
 										<productVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</productVersion>
 										<txtProductVersion>${project.version}</txtProductVersion>
 										<productName>PDF Split And Merge Basic Edition</productName>
 										<internalName>PDFsam</internalName>
 										<originalFilename>pdfsam.exe</originalFilename>
+										<language>
+											ENGLISH_US
+										</language>
 									</versionInfo>
 								</configuration>
 							</execution>
@@ -223,7 +228,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>					
+					</plugin>
 					<plugin>
 						<artifactId>jdeb</artifactId>
 						<groupId>org.vafer</groupId>
@@ -266,7 +271,7 @@
 												<type>perm</type>
 												<filemode>755</filemode>
 											</mapper>
-										</data>										
+										</data>
 										<data>
 											<src>${project.basedir}/src/deb/doc/changelog.Debian.gz</src>
 											<dst>/usr/share/doc/pdfsam-basic/changelog.Debian.gz</dst>
@@ -286,7 +291,7 @@
 											<src>${project.basedir}/src/deb/icon.svg</src>
 											<dst>/opt/pdfsam-basic/icon.svg</dst>
 											<type>file</type>
-										</data>						
+										</data>
 									</dataSet>
 								</configuration>
 							</execution>
@@ -366,7 +371,14 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-injector</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>jdepend</groupId>

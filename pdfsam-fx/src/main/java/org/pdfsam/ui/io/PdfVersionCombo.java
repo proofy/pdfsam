@@ -18,6 +18,7 @@
  */
 package org.pdfsam.ui.io;
 
+import static java.util.Objects.nonNull;
 import static org.pdfsam.support.RequireUtils.requireNotNull;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
@@ -57,17 +58,23 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
                 .map(DefaultPdfVersionComboItem::new).forEach(unfilteredItems::add);
 
         versionsFilter.requiredProperty().addListener((observable, oldVal, newVal) -> {
+            setFilteredItems(newVal);
+        });
+        initializeState();
+        eventStudio().addAnnotatedListeners(this);
+    }
+
+    private void setFilteredItems(PdfVersion required) {
+        if (nonNull(required)) {
             PdfVersionComboItem selected = getSelectionModel().getSelectedItem();
-            setItems(unfilteredItems.filtered(t -> t.isHigherOrEqual(newVal)));
+            setItems(unfilteredItems.filtered(t -> t.isHigherOrEqual(required)));
             int selecedIndex = getItems().indexOf(selected);
             if (selecedIndex != -1) {
                 getSelectionModel().select(selecedIndex);
             } else {
                 getSelectionModel().selectFirst();
             }
-        });
-        initializeState();
-        eventStudio().addAnnotatedListeners(this);
+        }
     }
 
     @EventListener
@@ -83,8 +90,10 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
     @EventListener
     public void onChangedSelectedPdfVersion(final ChangedSelectedPdfVersionEvent event) {
         sameAsSource.setVersion(event.getPdfVersion());
+        setFilteredItems(versionsFilter.requiredProperty().get());
     }
 
+    @Override
     @EventStation
     public String getOwnerModule() {
         return this.ownerModule;
@@ -127,10 +136,12 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
             this.version = version;
         }
 
+        @Override
         public PdfVersion getVersion() {
             return this.version;
         }
 
+        @Override
         public boolean isHigherOrEqual(PdfVersion version) {
             return this.version.getVersion() >= version.getVersion();
         }
@@ -172,10 +183,12 @@ class PdfVersionCombo extends ComboBox<PdfVersionComboItem> implements ModuleOwn
             this.version = version;
         }
 
+        @Override
         public PdfVersion getVersion() {
             return version;
         }
 
+        @Override
         public boolean isHigherOrEqual(PdfVersion other) {
             return this.version.getVersion() >= other.getVersion();
         }

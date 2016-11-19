@@ -35,7 +35,6 @@ import org.pdfsam.module.ModuleCategory;
 import org.pdfsam.module.ModuleDescriptor;
 import org.pdfsam.module.ModuleInputOutputType;
 import org.pdfsam.module.ModulePriority;
-import org.pdfsam.module.PdfsamModule;
 import org.pdfsam.support.params.SinglePdfSourceMultipleOutputParametersBuilder;
 import org.pdfsam.ui.io.BrowsableOutputDirectoryField;
 import org.pdfsam.ui.io.PdfDestinationPane;
@@ -47,10 +46,11 @@ import org.pdfsam.ui.prefix.PrefixPane;
 import org.pdfsam.ui.selection.single.TaskParametersBuilderSingleSelectionPane;
 import org.pdfsam.ui.support.Views;
 import org.sejda.eventstudio.annotation.EventStation;
+import org.sejda.injector.Auto;
+import org.sejda.injector.Components;
+import org.sejda.injector.Provides;
 import org.sejda.model.parameter.AbstractSplitByPageParameters;
 import org.sejda.model.prefix.Prefix;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -64,7 +64,7 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-@PdfsamModule
+@Auto
 public class SplitModule extends BaseTaskExecutionModule {
 
     private static final String MODULE_ID = "split.simple";
@@ -74,8 +74,8 @@ public class SplitModule extends BaseTaskExecutionModule {
     private PdfDestinationPane destinationPane;
     private SplitOptionsPane splitOptions = new SplitOptionsPane();
     private PrefixPane prefix = new PrefixPane();
-    private ModuleDescriptor descriptor = builder().category(ModuleCategory.SPLIT).inputTypes(ModuleInputOutputType.SINGLE_PDF)
-            .name(DefaultI18nContext.getInstance().i18n("Split"))
+    private ModuleDescriptor descriptor = builder().category(ModuleCategory.SPLIT)
+            .inputTypes(ModuleInputOutputType.SINGLE_PDF).name(DefaultI18nContext.getInstance().i18n("Split"))
             .description(DefaultI18nContext.getInstance().i18n("Split a PDF document at the given page numbers."))
             .priority(ModulePriority.HIGH.getPriority()).supportURL("http://www.pdfsam.org/pdf-split").build();
 
@@ -89,6 +89,7 @@ public class SplitModule extends BaseTaskExecutionModule {
         this.selectionPane.setPromptText(
                 DefaultI18nContext.getInstance().i18n("Select or drag and drop the PDF you want to split"));
         this.selectionPane.addOnLoaded(d -> splitOptions.setMaxPages(d.pages().getValue()));
+        initModuleSettingsPanel(settingPanel());
     }
 
     @Override
@@ -96,6 +97,7 @@ public class SplitModule extends BaseTaskExecutionModule {
         return descriptor;
     }
 
+    @Override
     public void onSaveWorkspace(Map<String, String> data) {
         selectionPane.saveStateTo(data);
         splitOptions.saveStateTo(data);
@@ -104,6 +106,7 @@ public class SplitModule extends BaseTaskExecutionModule {
         prefix.saveStateTo(data);
     }
 
+    @Override
     public void onLoadWorkspace(Map<String, String> data) {
         selectionPane.restoreStateFrom(data);
         splitOptions.restoreStateFrom(data);
@@ -125,8 +128,7 @@ public class SplitModule extends BaseTaskExecutionModule {
         return builder.orElse(null);
     }
 
-    @Override
-    protected VBox getInnerPanel() {
+    private VBox settingPanel() {
         VBox pane = new VBox();
         pane.setAlignment(Pos.TOP_CENTER);
 
@@ -148,18 +150,21 @@ public class SplitModule extends BaseTaskExecutionModule {
         return MODULE_ID;
     }
 
+    @Override
     public Node graphic() {
         return new ImageView("split.png");
     }
 
-    @Configuration
+    @Components({ SplitModule.class })
     public static class ModuleConfig {
-        @Bean(name = MODULE_ID + "field")
+        @Provides
+        @Named(MODULE_ID + "field")
         public BrowsableOutputDirectoryField destinationDirectoryField() {
             return new BrowsableOutputDirectoryField();
         }
 
-        @Bean(name = MODULE_ID + "pane")
+        @Provides
+        @Named(MODULE_ID + "pane")
         public PdfDestinationPane destinationPane(@Named(MODULE_ID + "field") BrowsableOutputDirectoryField outputField,
                 UserContext userContext) {
             PdfDestinationPane panel = new PdfDestinationPane(outputField, MODULE_ID, userContext, DISCARD_BOOKMARKS);
@@ -167,12 +172,14 @@ public class SplitModule extends BaseTaskExecutionModule {
             return panel;
         }
 
-        @Bean(name = MODULE_ID + "footer")
+        @Provides
+        @Named(MODULE_ID + "footer")
         public Footer footer(RunButton runButton, @Named(MODULE_ID + "openButton") OpenButton openButton) {
             return new Footer(runButton, openButton, MODULE_ID);
         }
 
-        @Bean(name = MODULE_ID + "openButton")
+        @Provides
+        @Named(MODULE_ID + "openButton")
         public OpenButton openButton() {
             return new OpenButton(MODULE_ID, ModuleInputOutputType.MULTIPLE_PDF);
         }

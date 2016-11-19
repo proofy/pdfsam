@@ -23,9 +23,9 @@ import static org.pdfsam.support.RequireUtils.requireNotNull;
 import java.util.Map;
 import java.util.Optional;
 
-import javafx.scene.control.RadioButton;
-
 import org.pdfsam.ui.workspace.RestorableView;
+
+import javafx.scene.control.RadioButton;
 
 /**
  * Radio button for {@link SizeUnit}
@@ -43,12 +43,14 @@ class SizeUnitRadio extends RadioButton implements RestorableView {
         this.setId("unit" + unit.symbol());
     }
 
+    @Override
     public void saveStateTo(Map<String, String> data) {
         if (isSelected()) {
             data.put(unit.toString(), Boolean.TRUE.toString());
         }
     }
 
+    @Override
     public void restoreStateFrom(Map<String, String> data) {
         Optional.ofNullable(data.get(unit.toString())).map(Boolean::valueOf).ifPresent(this::setSelected);
     }

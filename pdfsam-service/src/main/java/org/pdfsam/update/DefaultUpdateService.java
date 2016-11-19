@@ -37,7 +37,6 @@ import com.fasterxml.jackson.jr.ob.JSON;
  * @author Andrea Vacondio
  *
  */
-@Named
 class DefaultUpdateService implements UpdateService {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUpdateService.class);
     private static final String CURRENT_VERSION_KEY = "currentVersion";
@@ -49,6 +48,7 @@ class DefaultUpdateService implements UpdateService {
         this.jsonSource = jsonSource;
     }
 
+    @Override
     public String getLatestVersion() {
         try {
             return JSON.std.mapFrom(jsonSource).getOrDefault(CURRENT_VERSION_KEY, "").toString();

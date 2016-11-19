@@ -21,8 +21,6 @@ package org.pdfsam.pdf;
 import java.text.DateFormat;
 import java.util.Optional;
 
-import javax.inject.Named;
-
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.pdfsam.module.RequiredPdfData;
 import org.sejda.model.pdf.PdfMetadataKey;
@@ -36,11 +34,11 @@ import org.sejda.sambox.pdmodel.PDDocumentInformation;
  * @author Andrea Vacondio
  *
  */
-@Named
 class DefaultSAMBoxLoader implements PdfLoader<PDDocument> {
 
     private static FastDateFormat FORMATTER = FastDateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM);
 
+    @Override
     public void accept(PDDocument document, PdfDocumentDescriptor descriptor) {
         descriptor.pages(document.getNumberOfPages());
         descriptor.setVersion(getVersion(document.getVersion()));
@@ -55,6 +53,7 @@ class DefaultSAMBoxLoader implements PdfLoader<PDDocument> {
                 .ifPresent(c -> descriptor.putInformation("FormattedCreationDate", c));
     }
 
+    @Override
     public RequiredPdfData key() {
         return RequiredPdfData.DEFAULT;
     }

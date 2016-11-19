@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 18/ago/2014
+ * Created on 30 ago 2016
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam;
+package org.pdfsam.ui.selection.multiple;
 
-import org.sejda.core.service.DefaultTaskExecutionService;
-import org.sejda.core.service.TaskExecutionService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import javafx.scene.control.TableColumn;
 
 /**
- * Configuration for the service module
+ * Provides a table column
  * 
  * @author Andrea Vacondio
  *
  */
-@Configuration
-public class ServiceConfig {
+public interface TableColumnProvider<T> {
 
-    @Bean
-    public TaskExecutionService service() {
-        return new DefaultTaskExecutionService();
-    }
+    TableColumn<SelectionTableRowData, T> getTableColumn();
 }

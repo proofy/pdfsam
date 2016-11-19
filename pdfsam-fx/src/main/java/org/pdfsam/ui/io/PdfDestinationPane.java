@@ -75,6 +75,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         version = new PdfVersionCombo(ownerModule);
         compress = new PdfVersionConstrainedCheckBox(PdfVersion.VERSION_1_5, ownerModule);
         compress.setText(DefaultI18nContext.getInstance().i18n("Compress output file/files"));
+        compress.setSelected(true);
         if (asList(optionalFields).contains(DestinationPanelFields.DISCARD_BOOKMARKS)) {
             CheckBox discardBookmarksField = new CheckBox(DefaultI18nContext.getInstance().i18n("Discard bookmarks"));
             discardBookmarksField.setGraphic(helpIcon(DefaultI18nContext.getInstance()
@@ -96,6 +97,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         version.enableSameAsSourceItem();
     }
 
+    @Override
     @EventStation
     public String getOwnerModule() {
         return ownerModule;
@@ -109,6 +111,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         }
     }
 
+    @Override
     public void apply(AbstractPdfOutputParametersBuilder<? extends AbstractPdfOutputParameters> builder,
             Consumer<String> onError) {
         builder.compress(compress.isSelected());
@@ -121,6 +124,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         });
     }
 
+    @Override
     public void saveStateTo(Map<String, String> data) {
         data.put("compress", Boolean.toString(compress.isSelected()));
         data.put("overwrite", Boolean.toString(overwrite().isSelected()));
@@ -130,6 +134,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
         data.put("version", version.getSelectionModel().getSelectedItem().getVersion().toString());
     }
 
+    @Override
     public void restoreStateFrom(Map<String, String> data) {
         version.initializeState();
         compress.setSelected(Boolean.valueOf(data.get("compress")));

@@ -18,6 +18,8 @@
  */
 package org.pdfsam.news;
 
+import static org.pdfsam.support.RequireUtils.requireNotNull;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -26,7 +28,6 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.pdfsam.ConfigurableProperty;
 import org.pdfsam.Pdfsam;
@@ -42,19 +43,21 @@ import com.fasterxml.jackson.jr.ob.JSON.Feature;
  * 
  * @author Andrea Vacondio
  */
-@Named
-class DefaultNewsService implements NewsService {
+public class DefaultNewsService implements NewsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultNewsService.class);
     private static final String NEWS_PATH = "/org/pdfsam/user/news";
     private static final String LATEST_NEWS_ID = "latest.news.id";
+    private static final String LATEST_IMPORTANT_NEWS_ID = "latest.important.news.id";
     private Pdfsam pdfsam;
 
     @Inject
     DefaultNewsService(Pdfsam pdfsam) {
+        requireNotNull(pdfsam, "Application info cannot be null");
         this.pdfsam = pdfsam;
     }
 
+    @Override
     public List<NewsData> getLatestNews() {
         try {
             return JSON.std.with(Feature.READ_ONLY, true).listOfFrom(NewsData.class,
@@ -65,15 +68,29 @@ class DefaultNewsService implements NewsService {
         return Collections.emptyList();
     }
 
+    @Override
+    public int getLatestNewsSeen() {
+        return Preferences.userRoot().node(NEWS_PATH).getInt(LATEST_NEWS_ID, -1);
+    }
+
+    @Override
     public void setLatestNewsSeen(int id) {
         Preferences.userRoot().node(NEWS_PATH).putInt(LATEST_NEWS_ID, id);
         LOG.trace("Latest news id stored");
     }
 
-    public int getLatestNewsSeen() {
-        return Preferences.userRoot().node(NEWS_PATH).getInt(LATEST_NEWS_ID, -1);
+    @Override
+    public int getLatestImportantNewsSeen() {
+        return Preferences.userRoot().node(NEWS_PATH).getInt(LATEST_IMPORTANT_NEWS_ID, -1);
     }
 
+    @Override
+    public void setLatestImportantNewsSeen(int id) {
+        Preferences.userRoot().node(NEWS_PATH).putInt(LATEST_IMPORTANT_NEWS_ID, id);
+        LOG.trace("Latest important news id stored");
+    }
+
+    @Override
     public void clear() {
         Preferences prefs = Preferences.userRoot().node(NEWS_PATH);
         try {

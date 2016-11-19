@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.Module;
@@ -42,17 +40,11 @@ import javafx.scene.control.MenuItem;
  * @author Andrea Vacondio
  * 
  */
-@Named
 class ModulesMenu extends Menu {
+
     @Inject
-    private List<Module> modules;
-
-    ModulesMenu() {
+    public ModulesMenu(List<Module> modules) {
         super(DefaultI18nContext.getInstance().i18n("_Modules"));
-    }
-
-    @PostConstruct
-    void initModulesMenu() {
         setId("modulesMenu");
         Map<ModuleCategory, Menu> moduleSubmenus = new HashMap<>();
         for (final Module currentModule : modules) {

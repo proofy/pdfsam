@@ -22,12 +22,13 @@ import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.Provider;
 
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.TaskExecutionRequestEvent;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.exception.BroadcastInterruptionException;
+import org.sejda.injector.Auto;
 import org.sejda.model.exception.TaskOutputVisitException;
 import org.sejda.model.output.DirectoryTaskOutput;
 import org.sejda.model.output.ExistingOutputPolicy;
@@ -44,14 +45,14 @@ import org.slf4j.LoggerFactory;
  * @author Andrea Vacondio
  *
  */
-@Named
+@Auto
 public class OverwriteDialogController {
     private static final Logger LOG = LoggerFactory.getLogger(OverwriteDialogController.class);
 
-    private OverwriteConfirmationDialog dialog;
+    private Provider<OverwriteConfirmationDialog> dialog;
 
     @Inject
-    public OverwriteDialogController(OverwriteConfirmationDialog dialog) {
+    public OverwriteDialogController(Provider<OverwriteConfirmationDialog> dialog) {
         this.dialog = dialog;
         eventStudio().addAnnotatedListeners(this);
     }
@@ -63,13 +64,15 @@ public class OverwriteDialogController {
             if (params.getExistingOutputPolicy() != ExistingOutputPolicy.OVERWRITE) {
                 event.getParameters().getOutput().accept(new TaskOutputDispatcher() {
 
+                    @Override
                     public void dispatch(StreamTaskOutput output) {
                         // nothing to do
                     }
 
+                    @Override
                     public void dispatch(DirectoryTaskOutput output) {
                         if (isNotEmpty(output.getDestination().listFiles())) {
-                            if (!dialog.title(DefaultI18nContext.getInstance().i18n("Directory not empty"))
+                            if (!dialog.get().title(DefaultI18nContext.getInstance().i18n("Directory not empty"))
                                     .messageTitle(DefaultI18nContext.getInstance()
                                             .i18n("The selected directory is not empty"))
                                     .messageContent(DefaultI18nContext.getInstance()
@@ -83,9 +86,10 @@ public class OverwriteDialogController {
                         }
                     }
 
+                    @Override
                     public void dispatch(FileTaskOutput output) {
                         if (output.getDestination().exists()) {
-                            if (!dialog.title(DefaultI18nContext.getInstance().i18n("Overwrite confirmation"))
+                            if (!dialog.get().title(DefaultI18nContext.getInstance().i18n("Overwrite confirmation"))
                                     .messageTitle(DefaultI18nContext.getInstance()
                                             .i18n("A file with the given name already exists"))
                                     .messageContent(
