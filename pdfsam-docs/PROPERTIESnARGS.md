@@ -26,6 +26,18 @@ A list of system properties that users can configure to alter PDFsam behavior.
 *description:* if not already set in the application preferences, tells PDFsam if it should check for updates at startup. 
 
 
+**org.pdfsam.default.checkfornews**  
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should check for news at startup. 
+
+
+**org.pdfsam.default.play.sounds**  
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should play alter sounds. 
+
+
 **org.pdfsam.disable.split.optimization**  
 *values:* true|false  
 *default:* false   
@@ -35,7 +47,13 @@ A list of system properties that users can configure to alter PDFsam behavior.
 **org.pdfsam.default.donate.notification**  
 *values:* true|false  
 *default:* true   
-*description:* if not already set in the application preferences, tells PDFsam if it should show the notification to kindly ask for a donation. 
+*description:* if not already set in the application preferences, tells PDFsam if it should show the notification to kindly ask for a donation.
+
+
+**org.pdfsam.default.fetch.premium.modules**  
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should fetch and show premium modules description in the modules dashboard  
 
 Runtime arguments
 =============
@@ -60,6 +78,20 @@ A list of properties that can be set during the silent installation of the PDFsa
 *description:* if not already set in the application preferences, tells PDFsam if it should check for updates at startup. 
 
 
+**CHECK_FOR_NEWS**   
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should check for news at startup.  
+*since:* 3.2.5  
+
+
+**PLAY_SOUNDS**   
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should play alert sounds.  
+*since:* 3.2.5  
+
+
 **DONATE_NOTIFICATION**   
 *values:* true|false  
 *default:* true   
@@ -67,14 +99,21 @@ A list of properties that can be set during the silent installation of the PDFsa
 *since:* 3.2.1  
 
 
-**LOCALE_CODE**
+**LOCALE_CODE**   
 *values:* a supported locale  
 *default:* default locale  
 *description:* if no locale is set in the application preferences, tells PDFsam to use this locale.  
 
 
-**SKIPTHANKSPAGE**
+**SKIPTHANKSPAGE**   
 *values:* Yes|No  
 *default:* No  
-*description:* Tells the MSI installer to skip or not the thanks page that is usually opened once the installation completes successfully .  
+*description:* Tells the MSI installer to skip or not the thanks page that is usually opened once the installation completes successfully.  
+
+
+**PREMIUM_MODULES**   
+*values:* true|false  
+*default:* true   
+*description:* if not already set in the application preferences, tells PDFsam if it should fetch and show premium modules description in the modules dashboard.  
+*since:* 3.2.5  
 

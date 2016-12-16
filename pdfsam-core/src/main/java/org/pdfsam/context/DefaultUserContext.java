@@ -39,7 +39,10 @@ public final class DefaultUserContext implements UserContext {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUserContext.class);
 
     static final String CHECK_FOR_UPDATES_PROP = "org.pdfsam.default.checkforupdate";
+    static final String CHECK_FOR_NEWS_PROP = "org.pdfsam.default.checkfornews";
     static final String DONATE_NOTIFICATION_PROP = "org.pdfsam.default.donate.notification";
+    static final String PLAY_SOUNDS_PROP = "org.pdfsam.default.play.sounds";
+    static final String FETCH_PREMIUM_MODULES_PROP = "org.pdfsam.default.fetch.premium.modules";    
     static final String LOCALE_PROP = "org.pdfsam.default.locale";
 
     private Preferences prefs;
@@ -64,13 +67,20 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public boolean isPlaySounds() {
-        return prefs.getBoolean(BooleanUserPreference.PLAY_SOUNDS.toString(), Boolean.TRUE);
+        return prefs.getBoolean(BooleanUserPreference.PLAY_SOUNDS.toString(),
+                Boolean.valueOf(System.getProperty(PLAY_SOUNDS_PROP, Boolean.TRUE.toString())));
     }
 
     @Override
     public boolean isDonationNotification() {
         return prefs.getBoolean(BooleanUserPreference.DONATION_NOTIFICATION.toString(),
                 Boolean.valueOf(System.getProperty(DONATE_NOTIFICATION_PROP, Boolean.TRUE.toString())));
+    }
+
+    @Override
+    public boolean isFetchPremiumModules() {
+        return prefs.getBoolean(BooleanUserPreference.PREMIUM_MODULES.toString(),
+                Boolean.valueOf(System.getProperty(FETCH_PREMIUM_MODULES_PROP, Boolean.TRUE.toString())));
     }
 
     @Override
@@ -107,7 +117,8 @@ public final class DefaultUserContext implements UserContext {
 
     @Override
     public boolean isCheckForNews() {
-        return prefs.getBoolean(BooleanUserPreference.CHECK_FOR_NEWS.toString(), Boolean.TRUE);
+        return prefs.getBoolean(BooleanUserPreference.CHECK_FOR_NEWS.toString(),
+                Boolean.valueOf(System.getProperty(CHECK_FOR_NEWS_PROP, Boolean.TRUE.toString())));
     }
 
     @Override

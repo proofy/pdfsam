@@ -21,6 +21,7 @@ package org.pdfsam;
 import org.pdfsam.module.ModuleServiceConfig;
 import org.pdfsam.news.NewsServiceConfig;
 import org.pdfsam.pdf.PdfServiceConfig;
+import org.pdfsam.premium.PremiumServiceConfig;
 import org.pdfsam.task.TaskExecutionServiceConfig;
 import org.pdfsam.ui.UIServiceConfig;
 import org.pdfsam.update.UpdateServiceConfig;
@@ -36,6 +37,6 @@ public class Services {
      */
     public static void initServices() {
         Injector.addConfig(new UpdateServiceConfig(), new UIServiceConfig(), new TaskExecutionServiceConfig(),
-                new PdfServiceConfig(), new NewsServiceConfig(), new ModuleServiceConfig());
+                new PdfServiceConfig(), new NewsServiceConfig(), new ModuleServiceConfig(), new PremiumServiceConfig());
     }
 }
