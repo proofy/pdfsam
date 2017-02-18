@@ -80,6 +80,7 @@ public class MergeOptionsPaneTest extends GuiTest {
         verify(builder).outlinePolicy(eq(OutlinePolicy.RETAIN));
         verify(builder).blankPageIfOdd(true);
         verify(builder).footer(false);
+        verify(builder).normalize(false);
         verify(builder).acroFormsPolicy(AcroFormPolicy.MERGE);
         verify(builder).tocPolicy(ToCPolicy.NONE);
         verify(onError, never()).accept(anyString());
@@ -94,6 +95,7 @@ public class MergeOptionsPaneTest extends GuiTest {
         assertEquals(OutlinePolicy.RETAIN.toString(), data.get("outline"));
         assertEquals(Boolean.TRUE.toString(), data.get("blankIfOdd"));
         assertEquals(Boolean.FALSE.toString(), data.get("footer"));
+        assertEquals(Boolean.FALSE.toString(), data.get("normalize"));
         assertEquals(AcroFormPolicy.MERGE.toString(), data.get("acroForms"));
         assertEquals(ToCPolicy.NONE.toString(), data.get("toc"));
     }
@@ -105,11 +107,13 @@ public class MergeOptionsPaneTest extends GuiTest {
         ComboBox<KeyStringValueItem<AcroFormPolicy>> toc = find("#tocCombo");
         CheckBox blankIfOdd = find("#blankIfOddCheck");
         CheckBox footer = find("#footerCheck");
+        CheckBox normalize = find("#normalizeCheck");
         Map<String, String> data = new HashMap<>();
         data.put("outline", OutlinePolicy.ONE_ENTRY_EACH_DOC.toString());
         data.put("acroForms", AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS.toString());
         data.put("blankIfOdd", Boolean.FALSE.toString());
         data.put("footer", Boolean.TRUE.toString());
+        data.put("normalize", Boolean.TRUE.toString());
         data.put("toc", ToCPolicy.DOC_TITLES.toString());
         MergeOptionsPane victim = find(".pdfsam-container");
         FXTestUtils.invokeAndWait(() -> victim.restoreStateFrom(data), 2);
@@ -119,5 +123,39 @@ public class MergeOptionsPaneTest extends GuiTest {
         assertEquals(ToCPolicy.DOC_TITLES, toc.getSelectionModel().getSelectedItem().getKey());
         assertFalse(blankIfOdd.isSelected());
         assertTrue(footer.isSelected());
+        assertTrue(normalize.isSelected());
+    }
+
+    @Test
+    public void reset() throws Exception {
+        ComboBox<KeyStringValueItem<OutlinePolicy>> outline = find("#outlineCombo");
+        ComboBox<KeyStringValueItem<AcroFormPolicy>> forms = find("#acroFormsCombo");
+        ComboBox<KeyStringValueItem<AcroFormPolicy>> toc = find("#tocCombo");
+        CheckBox blankIfOdd = find("#blankIfOddCheck");
+        CheckBox footer = find("#footerCheck");
+        CheckBox normalize = find("#normalizeCheck");
+        Map<String, String> data = new HashMap<>();
+        data.put("outline", OutlinePolicy.ONE_ENTRY_EACH_DOC.toString());
+        data.put("acroForms", AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS.toString());
+        data.put("blankIfOdd", Boolean.TRUE.toString());
+        data.put("footer", Boolean.TRUE.toString());
+        data.put("normalize", Boolean.TRUE.toString());
+        data.put("toc", ToCPolicy.DOC_TITLES.toString());
+        MergeOptionsPane victim = find(".pdfsam-container");
+        FXTestUtils.invokeAndWait(() -> victim.restoreStateFrom(data), 2);
+        assertEquals(OutlinePolicy.ONE_ENTRY_EACH_DOC, outline.getSelectionModel().getSelectedItem().getKey());
+        assertEquals(AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS,
+                forms.getSelectionModel().getSelectedItem().getKey());
+        assertEquals(ToCPolicy.DOC_TITLES, toc.getSelectionModel().getSelectedItem().getKey());
+        assertTrue(blankIfOdd.isSelected());
+        assertTrue(footer.isSelected());
+        assertTrue(normalize.isSelected());
+        FXTestUtils.invokeAndWait(() -> victim.resetView(), 2);
+        assertEquals(OutlinePolicy.RETAIN, outline.getSelectionModel().getSelectedItem().getKey());
+        assertEquals(AcroFormPolicy.MERGE, forms.getSelectionModel().getSelectedItem().getKey());
+        assertEquals(ToCPolicy.NONE, toc.getSelectionModel().getSelectedItem().getKey());
+        assertFalse(blankIfOdd.isSelected());
+        assertFalse(footer.isSelected());
+        assertFalse(normalize.isSelected());
     }
 }

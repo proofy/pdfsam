@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 01/ott/2014
+ * Created on 09 feb 2017
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,37 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui;
+package org.pdfsam.ui.dialog;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.inject.Inject;
 
+import org.pdfsam.configuration.StylesConfig;
 import org.pdfsam.i18n.DefaultI18nContext;
 
 /**
- * Themes available for the user to configure
+ * Dialog asking the user if he wants to execute the task leniently
  * 
  * @author Andrea Vacondio
  *
  */
-public enum Theme {
-
-    ROUNDISH {
-        @Override
-        public List<String> styleSheets() {
-            return Arrays.asList("/themes/defaults.css", "/themes/progress.css", "/themes/pdfsam.css",
-                    "/themes/news.css", "/themes/dialogs.css", "/themes/combo.css", "/themes/progress.css",
-                    "/themes/banner.css", "/themes/quickbar.css", "/themes/notifications.css", "/themes/dashboard.css",
-                    "/themes/menu.css", "/themes/defaults.last.css");
-        }
-
-        @Override
-        public String friendlyName() {
-            return DefaultI18nContext.getInstance().i18n("Roundish");
-        }
-    };
-
-    public abstract List<String> styleSheets();
-
-    public abstract String friendlyName();
+public class LenientExecutionConfirmationDialog extends ConfirmationDialog {
+    @Inject
+    public LenientExecutionConfirmationDialog(StylesConfig styles) {
+        super(styles, DialogStyle.QUESTION, DefaultI18nContext.getInstance().i18n("Yes"),
+                DefaultI18nContext.getInstance().i18n("No"));
+        this.title(DefaultI18nContext.getInstance().i18n("Task failed"))
+                .messageTitle(DefaultI18nContext.getInstance().i18n("PDFsam can try to overcome the failure"))
+                .messageContent(DefaultI18nContext.getInstance()
+                        .i18n("It may result in PDF files with partial or missing data, proceed anyway?"));
+    }
 }

@@ -18,13 +18,10 @@
  */
 package org.pdfsam.context;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pdfsam.ui.Theme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +39,7 @@ public final class DefaultUserContext implements UserContext {
     static final String CHECK_FOR_NEWS_PROP = "org.pdfsam.default.checkfornews";
     static final String DONATE_NOTIFICATION_PROP = "org.pdfsam.default.donate.notification";
     static final String PLAY_SOUNDS_PROP = "org.pdfsam.default.play.sounds";
-    static final String FETCH_PREMIUM_MODULES_PROP = "org.pdfsam.default.fetch.premium.modules";    
+    static final String FETCH_PREMIUM_MODULES_PROP = "org.pdfsam.default.fetch.premium.modules";
     static final String LOCALE_PROP = "org.pdfsam.default.locale";
 
     private Preferences prefs;
@@ -96,12 +93,6 @@ public final class DefaultUserContext implements UserContext {
     @Override
     public int getNumberOfLogRows() {
         return prefs.getInt(IntUserPreference.LOGVIEW_ROWS_NUMBER.toString(), 200);
-    }
-
-    @Override
-    public String getTheme() {
-        return defaultIfBlank(prefs.get(StringUserPreference.THEME.toString(), StringUtils.EMPTY),
-                Theme.ROUNDISH.toString());
     }
 
     @Override

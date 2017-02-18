@@ -37,9 +37,11 @@ import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.support.params.AbstractPdfOutputParametersBuilder;
 import org.pdfsam.support.params.TaskParametersBuildStep;
+import org.pdfsam.ui.ResettableView;
 import org.pdfsam.ui.commons.SetDestinationRequest;
 import org.pdfsam.ui.io.PdfVersionCombo.DefaultPdfVersionComboItem;
 import org.pdfsam.ui.support.Style;
+import org.pdfsam.ui.support.Views;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
@@ -49,14 +51,17 @@ import org.sejda.model.pdf.PdfVersion;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+
 /**
  * Panel letting the user select an output destination for generated Pdf document/s.
  * 
  * @author Andrea Vacondio
  * 
  */
-public class PdfDestinationPane extends DestinationPane implements ModuleOwned, RestorableView,
+public class PdfDestinationPane extends DestinationPane implements ModuleOwned, RestorableView, ResettableView,
         TaskParametersBuildStep<AbstractPdfOutputParametersBuilder<? extends AbstractPdfOutputParameters>> {
 
     private PdfVersionCombo version;
@@ -67,29 +72,52 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
 
     public PdfDestinationPane(BrowsableField destination, String ownerModule, UserContext userContext,
             DestinationPanelFields... optionalFields) {
+        this(destination, ownerModule, userContext, false, optionalFields);
+    }
+
+    public PdfDestinationPane(BrowsableField destination, String ownerModule, UserContext userContext,
+            boolean expandAdvanced, DestinationPanelFields... optionalFields) {
         super(destination);
         destination.setId(ownerModule + ".destination");
         requireNotNull(userContext, "UserContext cannot be null");
         this.userContext = userContext;
         this.ownerModule = defaultString(ownerModule);
+        VBox advancedPanel = new VBox();
+        advancedPanel.getStyleClass().addAll(Style.CONTAINER.css());
         version = new PdfVersionCombo(ownerModule);
         compress = new PdfVersionConstrainedCheckBox(PdfVersion.VERSION_1_5, ownerModule);
         compress.setText(DefaultI18nContext.getInstance().i18n("Compress output file/files"));
         compress.setSelected(true);
+        compress.setId("compressField");
+        compress.getStyleClass().addAll(Style.VITEM.css());
+
         if (asList(optionalFields).contains(DestinationPanelFields.DISCARD_BOOKMARKS)) {
             CheckBox discardBookmarksField = new CheckBox(DefaultI18nContext.getInstance().i18n("Discard bookmarks"));
             discardBookmarksField.setGraphic(helpIcon(DefaultI18nContext.getInstance()
                     .i18n("Tick the box if you don't want to retain any bookmark from the original PDF document")));
             discardBookmarksField.getStyleClass().addAll(Style.WITH_HELP.css());
+            discardBookmarksField.getStyleClass().addAll(Style.VITEM.css());
             discardBookmarksField.setId("discardBookmarksField");
             discardBookmarks = Optional.of(discardBookmarksField);
         }
         HBox versionPane = new HBox(new Label(DefaultI18nContext.getInstance().i18n("Output PDF version:")), version);
-        versionPane.getStyleClass().add("both-spaced-vitem");
+        versionPane.getStyleClass().addAll(Style.VITEM.css());
         versionPane.getStyleClass().addAll(Style.HCONTAINER.css());
-        getChildren().add(compress);
-        discardBookmarks.ifPresent(getChildren()::add);
-        getChildren().add(versionPane);
+        advancedPanel.getChildren().add(compress);
+        discardBookmarks.ifPresent(advancedPanel.getChildren()::add);
+        advancedPanel.getChildren().add(versionPane);
+        TitledPane titledAdvanced = Views.titledPane(DefaultI18nContext.getInstance().i18n("Show advanced settings"),
+                advancedPanel);
+        titledAdvanced.getStyleClass().add("advanced-destination-pane");
+        titledAdvanced.setExpanded(expandAdvanced);
+        titledAdvanced.expandedProperty().addListener((o, oldval, newVal) -> {
+            if (newVal) {
+                titledAdvanced.setText(DefaultI18nContext.getInstance().i18n("Hide advanced settings"));
+            } else {
+                titledAdvanced.setText(DefaultI18nContext.getInstance().i18n("Show advanced settings"));
+            }
+        });
+        getChildren().add(titledAdvanced);
         eventStudio().addAnnotatedListeners(this);
     }
 
@@ -109,6 +137,14 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
                 || (isBlank(destination().getTextField().getText()) && userContext.isUseSmartOutput())) {
             destination().setTextFromFile(event.getFootprint());
         }
+    }
+
+    @Override
+    public void resetView() {
+        super.resetView();
+        version.resetView();
+        compress.setSelected(true);
+        discardBookmarks.ifPresent(c -> c.setSelected(false));
     }
 
     @Override
@@ -136,7 +172,7 @@ public class PdfDestinationPane extends DestinationPane implements ModuleOwned, 
 
     @Override
     public void restoreStateFrom(Map<String, String> data) {
-        version.initializeState();
+        version.resetView();
         compress.setSelected(Boolean.valueOf(data.get("compress")));
         overwrite().setSelected(Boolean.valueOf(data.get("overwrite")));
         discardBookmarks.ifPresent(d -> {

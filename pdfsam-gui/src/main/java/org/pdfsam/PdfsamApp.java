@@ -27,6 +27,8 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.awt.SplashScreen;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -65,13 +67,15 @@ import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
 import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
 import org.pdfsam.update.UpdateCheckRequest;
 import org.sejda.core.Sejda;
-import org.sejda.eventstudio.EventStudio;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.impl.sambox.component.PDDocumentHandler;
 import org.sejda.injector.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.javafx.scene.control.skin.TitledPaneSkin;
+
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -83,6 +87,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * PDFsam application
@@ -99,11 +104,12 @@ public class PdfsamApp extends Application {
     private List<String> rawParameters;
     private boolean clean;
     private Injector injector;
+    private LogMessageBroadcaster broadcaster;
 
     @Override
     public void init() {
         STOPWATCH.start();
-        System.setProperty(EventStudio.MAX_QUEUE_SIZE_PROP, Integer.toString(userContext.getNumberOfLogRows()));
+        startLogAppender();
         System.setProperty(PDDocumentHandler.SAMBOX_USE_ASYNC_WRITER, Boolean.TRUE.toString());
         System.setProperty(Sejda.UNETHICAL_READ_PROPERTY_NAME, Boolean.TRUE.toString());
         LOG.info("Starting PDFsam");
@@ -137,7 +143,6 @@ public class PdfsamApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         injector = initInjector();
-        startLogAppender();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionLogger());
         initSejda();
         cleanIfRequired();
@@ -151,6 +156,7 @@ public class PdfsamApp extends Application {
         initActiveModule();
         loadWorkspaceIfRequired();
         initOpenButtons();
+        setTitledPaneDuration(new Duration(150.0));
         primaryStage.show();
 
         requestCheckForUpdateIfRequired();
@@ -175,7 +181,9 @@ public class PdfsamApp extends Application {
     }
 
     private void startLogAppender() {
-        LogMessageBroadcaster broadcaster = injector.instance(LogMessageBroadcaster.class);
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setPattern("%-5level %nopex [%d{HH:mm:ss}]: %msg%n%xThrowable{50}");
+        broadcaster = new LogMessageBroadcaster(encoder);
         broadcaster.start();
     }
 
@@ -300,6 +308,21 @@ public class PdfsamApp extends Application {
             if (isNotBlank(workspace) && Files.exists(Paths.get(workspace))) {
                 eventStudio().broadcast(new SaveWorkspaceEvent(new File(workspace), true));
             }
+        }
+    }
+
+    private void setTitledPaneDuration(Duration duration) {
+        // yes, this sucks but I guess it's better then copy paste the whole skin just to change the duration
+        try {
+            Field durationField = TitledPaneSkin.class.getField("TRANSITION_DURATION");
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(durationField, durationField.getModifiers() & ~Modifier.FINAL);
+
+            durationField.setAccessible(true);
+            durationField.set(TitledPaneSkin.class, duration);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            LOG.info("Unable to set custom duration for titled pane animation.");
         }
     }
 

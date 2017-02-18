@@ -31,6 +31,7 @@ import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.i18n.I18nContext;
 import org.pdfsam.support.KeyStringValueItem;
 import org.pdfsam.support.params.TaskParametersBuildStep;
+import org.pdfsam.ui.ResettableView;
 import org.pdfsam.ui.support.Style;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.model.outline.OutlinePolicy;
@@ -49,11 +50,12 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  *
  */
-class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergeParametersBuilder>, RestorableView {
-
+class MergeOptionsPane extends VBox
+        implements TaskParametersBuildStep<MergeParametersBuilder>, RestorableView, ResettableView {
     private ComboBox<KeyStringValueItem<AcroFormPolicy>> acroForms = new ComboBox<>();
     private CheckBox blankIfOdd;
     private CheckBox footer;
+    private CheckBox normalize;
     private ComboBox<KeyStringValueItem<OutlinePolicy>> outline = new ComboBox<>();
     private ComboBox<KeyStringValueItem<ToCPolicy>> toc = new ComboBox<>();
 
@@ -71,13 +73,17 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
         footer.getStyleClass().addAll(Style.WITH_HELP.css());
         footer.setId("footerCheck");
 
+        normalize = new CheckBox(i18n.i18n("Normalize pages size"));
+        normalize.setGraphic(helpIcon(i18n.i18n("Resizes all pages to have the same width as the first page.")));
+        normalize.getStyleClass().addAll(Style.WITH_HELP.css());
+        normalize.setId("normalizeCheck");
+
         GridPane options = new GridPane();
 
         acroForms.getItems().add(keyValue(AcroFormPolicy.MERGE, i18n.i18n("Merge fields")));
         acroForms.getItems().add(
                 keyValue(AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS, i18n.i18n("Merge renaming existing fields")));
         acroForms.getItems().add(keyValue(AcroFormPolicy.DISCARD, i18n.i18n("Discard forms")));
-        acroForms.getSelectionModel().selectFirst();
         acroForms.setId("acroFormsCombo");
         options.add(new Label(i18n.i18n("Interactive forms (AcroForms):")), 0, 0);
         acroForms.setMaxWidth(Double.POSITIVE_INFINITY);
@@ -90,7 +96,7 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
                 keyValue(OutlinePolicy.ONE_ENTRY_EACH_DOC, i18n.i18n("Create one entry for each merged document")));
         outline.getItems().add(keyValue(OutlinePolicy.RETAIN_AS_ONE_ENTRY,
                 i18n.i18n("Retain bookmarks as one entry for each merged document")));
-        outline.getSelectionModel().selectFirst();
+
         outline.setId("outlineCombo");
         options.add(new Label(i18n.i18n("Bookmarks handling:")), 0, 1);
         outline.setMaxWidth(Double.POSITIVE_INFINITY);
@@ -100,7 +106,7 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
         toc.getItems().add(keyValue(ToCPolicy.NONE, i18n.i18n("Don't generate")));
         toc.getItems().add(keyValue(ToCPolicy.FILE_NAMES, i18n.i18n("Generate from file names")));
         toc.getItems().add(keyValue(ToCPolicy.DOC_TITLES, i18n.i18n("Generate from documents titles")));
-        toc.getSelectionModel().selectFirst();
+
         toc.setId("tocCombo");
         options.add(new Label(i18n.i18n("Table of contents:")), 0, 2);
         toc.setMaxWidth(Double.POSITIVE_INFINITY);
@@ -110,7 +116,18 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
         options.getStyleClass().addAll(Style.GRID.css());
 
         getStyleClass().addAll(Style.CONTAINER.css());
-        getChildren().addAll(blankIfOdd, footer, options);
+        resetView();
+        getChildren().addAll(blankIfOdd, footer, normalize, options);
+    }
+
+    @Override
+    public void resetView() {
+        blankIfOdd.setSelected(false);
+        footer.setSelected(false);
+        normalize.setSelected(false);
+        acroForms.getSelectionModel().selectFirst();
+        outline.getSelectionModel().selectFirst();
+        toc.getSelectionModel().selectFirst();
     }
 
     @Override
@@ -120,6 +137,7 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
         builder.tocPolicy(toc.getSelectionModel().getSelectedItem().getKey());
         builder.blankPageIfOdd(blankIfOdd.isSelected());
         builder.footer(footer.isSelected());
+        builder.normalize(normalize.isSelected());
     }
 
     @Override
@@ -132,6 +150,7 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
                 .orElse(EMPTY));
         data.put("blankIfOdd", Boolean.toString(blankIfOdd.isSelected()));
         data.put("footer", Boolean.toString(footer.isSelected()));
+        data.put("normalize", Boolean.toString(normalize.isSelected()));
     }
 
     @Override
@@ -144,5 +163,6 @@ class MergeOptionsPane extends VBox implements TaskParametersBuildStep<MergePara
                 .ifPresent(r -> this.toc.getSelectionModel().select(r));
         blankIfOdd.setSelected(Boolean.valueOf(data.get("blankIfOdd")));
         footer.setSelected(Boolean.valueOf(data.get("footer")));
+        normalize.setSelected(Boolean.valueOf(data.get("normalize")));
     }
 }

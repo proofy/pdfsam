@@ -22,6 +22,7 @@ import static org.pdfsam.support.RequireUtils.requireNotNull;
 import static org.pdfsam.ui.help.HelpUtils.helpIcon;
 
 import org.pdfsam.i18n.DefaultI18nContext;
+import org.pdfsam.ui.ResettableView;
 import org.pdfsam.ui.support.Style;
 
 import javafx.scene.control.CheckBox;
@@ -33,13 +34,13 @@ import javafx.scene.layout.VBox;
  * @author Andrea Vacondio
  * 
  */
-class DestinationPane extends VBox {
+class DestinationPane extends VBox implements ResettableView {
 
     private CheckBox overwrite = new CheckBox(DefaultI18nContext.getInstance().i18n("Overwrite if already exists"));
     private BrowsableField destination;
 
     public DestinationPane(BrowsableField destination) {
-        super(5);
+        super(Style.DEFAULT_SPACING);
         requireNotNull(destination, "Destination field cannot be null");
         this.destination = destination;
         overwrite.setSelected(false);
@@ -58,5 +59,11 @@ class DestinationPane extends VBox {
 
     protected BrowsableField destination() {
         return destination;
+    }
+
+    @Override
+    public void resetView() {
+        overwrite.setSelected(false);
+        destination.getTextField().setText("");
     }
 }

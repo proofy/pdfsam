@@ -1,6 +1,6 @@
 /* 
  * This file is part of the PDF Split And Merge source code
- * Created on 09 nov 2016
+ * Created on 16 feb 2017
  * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,15 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.log;
-
-import org.sejda.injector.Components;
+package org.pdfsam.ui;
 
 /**
+ * A view that can be reset to its initial state
+ * 
  * @author Andrea Vacondio
  *
  */
-@Components({ LogStage.class })
-public class LoggerConfig {
-    // nothing
+public interface ResettableView {
+
+    /**
+     * resets the view to its initial state
+     */
+    void resetView();
 }
