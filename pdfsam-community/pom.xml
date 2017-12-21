@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.pdfsam</groupId>
 		<artifactId>pdfsam-parent</artifactId>
-		<version>3.3.3-SNAPSHOT</version>
+		<version>3.3.6-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -90,7 +90,7 @@
 					<plugin>
 						<groupId>com.akathist.maven.plugins.launch4j</groupId>
 						<artifactId>launch4j-maven-plugin</artifactId>
-						<version>1.7.15</version>
+						<version>1.7.21</version>
 						<executions>
 							<execution>
 								<id>exe-creation</id>
@@ -113,7 +113,7 @@
 										<fileVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</fileVersion>
 										<txtFileVersion>${project.version}</txtFileVersion>
 										<fileDescription>PDFsam Basic</fileDescription>
-										<copyright>Andrea Vacondio 2015</copyright>
+										<copyright>Sober Lemur S.a.s di Vacondio Andrea</copyright>
 										<productVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</productVersion>
 										<txtProductVersion>${project.version}</txtProductVersion>
 										<productName>PDF Split And Merge Basic Edition</productName>

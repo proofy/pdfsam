@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
  * Created on 11/ago/2014
- * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.loadui.testfx.Assertions.verifyThat;
+import static org.loadui.testfx.controls.Commons.hasText;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
@@ -46,6 +47,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 import org.loadui.testfx.GuiTest;
 import org.loadui.testfx.categories.TestFX;
+import org.loadui.testfx.exceptions.NoNodesFoundException;
 import org.loadui.testfx.utils.FXTestUtils;
 import org.mockito.ArgumentCaptor;
 import org.pdfsam.context.BooleanUserPreference;
@@ -257,6 +259,21 @@ public class SelectionTableTest extends GuiTest {
     }
 
     @Test
+    public void indexColumn() throws Exception {
+        populate();
+        assertTrue(exists("1"));
+        assertTrue(exists("2"));
+        assertTrue(exists("3"));
+        assertTrue(exists("4"));
+    }
+
+    @Test(expected = NoNodesFoundException.class)
+    public void indexColumnNotExisting() throws Exception {
+        populate();
+        find(hasText("5"));
+    }
+
+    @Test
     public void clear() throws Exception {
         populate();
         click("temp.pdf");
@@ -266,6 +283,21 @@ public class SelectionTableTest extends GuiTest {
             eventStudio().broadcast(new ClearModuleEvent(), MODULE);
         }, 2);
         assertTrue(victim.getSelectionModel().getSelectedIndices().isEmpty());
+    }
+
+    @Test
+    public void encryptedThrowsRequest() throws Exception {
+        PdfDocumentDescriptor firstItem = populate();
+        FXTestUtils.invokeAndWait(() -> {
+            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
+            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
+            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.ENCRYPTED);
+        }, 2);
+        Listener<PdfLoadRequestEvent> listener = mock(Listener.class);
+        eventStudio().add(PdfLoadRequestEvent.class, listener);
+        click(".glyph-icon");
+        type("pwd").click(DefaultI18nContext.getInstance().i18n("Unlock"));
+        verify(listener, times(2)).onEvent(any());
     }
 
     @Test
@@ -397,6 +429,21 @@ public class SelectionTableTest extends GuiTest {
     }
 
     @Test
+    public void pageRangesForAllByContextMenu() throws Exception {
+        populate();
+        SelectionTable victim = find("#victim");
+        Optional<SelectionTableRowData> item = victim.getItems().stream()
+                .filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).findFirst();
+        assertTrue(item.isPresent());
+        item.get().pageSelection.set("2-4");
+        rightClick("temp.pdf");
+        click(DefaultI18nContext.getInstance().i18n("Set as range for all"));
+        victim.getItems().stream().forEach(i -> {
+            assertEquals("2-4", i.pageSelection.get());
+        });
+    }
+
+    @Test
     public void setDestinationByContextMenu() throws Exception {
         HitTestListener<SetDestinationRequest> listener = new HitTestListener<>();
         eventStudio().add(SetDestinationRequest.class, listener, MODULE);
@@ -468,21 +515,6 @@ public class SelectionTableTest extends GuiTest {
         eventStudio().add(ShowStageRequest.class, listener, "LogStage");
         click(".glyph-icon");
         verify(listener).onEvent(any());
-    }
-
-    @Test
-    public void clickEncryptedThrowsRequest() throws Exception {
-        PdfDocumentDescriptor firstItem = populate();
-        FXTestUtils.invokeAndWait(() -> {
-            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.REQUESTED);
-            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.LOADING);
-            firstItem.moveStatusTo(PdfDescriptorLoadingStatus.ENCRYPTED);
-        }, 2);
-        Listener<PdfLoadRequestEvent> listener = mock(Listener.class);
-        eventStudio().add(PdfLoadRequestEvent.class, listener);
-        click(".glyph-icon");
-        type("pwd").click(DefaultI18nContext.getInstance().i18n("Unlock"));
-        verify(listener, times(2)).onEvent(any());
     }
 
     @Test

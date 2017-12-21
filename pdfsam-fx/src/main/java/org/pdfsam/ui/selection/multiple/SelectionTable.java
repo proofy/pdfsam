@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
  * Created on 27/nov/2013
- * Copyright 2013 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -53,6 +53,7 @@ import org.pdfsam.support.io.FileType;
 import org.pdfsam.ui.commons.ClearModuleEvent;
 import org.pdfsam.ui.commons.OpenFileRequest;
 import org.pdfsam.ui.commons.RemoveSelectedEvent;
+import org.pdfsam.ui.commons.SetPageRangesRequest;
 import org.pdfsam.ui.commons.ShowPdfDescriptorRequest;
 import org.pdfsam.ui.notification.AddNotificationRequestEvent;
 import org.pdfsam.ui.notification.NotificationType;
@@ -116,6 +117,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         this.ownerModule = defaultString(ownerModule);
         setEditable(true);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        getColumns().add(new IndexColumn());
         Arrays.stream(columns).forEach(c -> getColumns().add(c.getTableColumn()));
         setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
         getStyleClass().add("selection-table");
@@ -137,19 +139,39 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         placeHolder.setDisable(true);
         setPlaceholder(placeHolder);
         passwordPopup = new PasswordFieldPopup(this.ownerModule);
+
+        ContextMenu contextMenu = new ContextMenu();
+        initTopSectionContextMenu(contextMenu, Arrays.stream(columns).anyMatch(PageRangesColumn.class::isInstance));
+        initItemsSectionContextMenu(contextMenu, canDuplicateItems, canMove);
+        initBottomSectionContextMenu(contextMenu);
+        setContextMenu(contextMenu);
+        eventStudio().addAnnotatedListeners(this);
+        eventStudio().add(SelectionChangedEvent.class, e -> selectionChangedConsumer.accept(e), ownerModule);
+    }
+
+    private void initTopSectionContextMenu(ContextMenu contextMenu, boolean hasRanges) {
         MenuItem setDestinationItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set destination"),
                 MaterialIcon.FLIGHT_LAND);
         setDestinationItem.setOnAction(e -> eventStudio().broadcast(
                 requestDestination(getSelectionModel().getSelectedItem().descriptor().getFile(), getOwnerModule()),
                 getOwnerModule()));
         setDestinationItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.ALT_DOWN));
+
         selectionChangedConsumer = e -> setDestinationItem.setDisable(!e.isSingleSelection());
-        ContextMenu contextMenu = new ContextMenu(setDestinationItem, new SeparatorMenuItem());
-        initItemsSectionContextMenu(contextMenu, canDuplicateItems, canMove);
-        initBottomSectionContextMenu(contextMenu);
-        setContextMenu(contextMenu);
-        eventStudio().addAnnotatedListeners(this);
-        eventStudio().add(SelectionChangedEvent.class, e -> selectionChangedConsumer.accept(e), ownerModule);
+        contextMenu.getItems().add(setDestinationItem);
+
+        if (hasRanges) {
+            MenuItem setPageRangesItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set as range for all"),
+                    MaterialIcon.TOC);
+            setPageRangesItem.setOnAction(e -> eventStudio().broadcast(
+                    new SetPageRangesRequest(getSelectionModel().getSelectedItem().pageSelection.get()),
+                    getOwnerModule()));
+            setPageRangesItem.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
+            selectionChangedConsumer = selectionChangedConsumer
+                    .andThen(e -> setPageRangesItem.setDisable(!e.isSingleSelection()));
+            contextMenu.getItems().add(setPageRangesItem);
+        }
+        contextMenu.getItems().add(new SeparatorMenuItem());
     }
 
     private void initItemsSectionContextMenu(ContextMenu contextMenu, boolean canDuplicate, boolean canMove) {
@@ -430,6 +452,11 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             getFocusModel().focus(newSelection.getFocus());
             scrollTo(newSelection.getFocus());
         }
+    }
+
+    @EventListener
+    public void onSetPageRanges(SetPageRangesRequest event) {
+        getItems().stream().forEach(i -> i.pageSelection.set(event.range));
     }
 
     @EventListener

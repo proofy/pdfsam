@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
  * Created on 18/ott/2013
- * Copyright 2013 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -19,9 +19,10 @@
 package org.pdfsam.support.io;
 
 import static org.apache.commons.io.FilenameUtils.wildcardMatch;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 import org.apache.commons.io.IOCase;
+
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * Types of file handled by PDFsam
@@ -39,43 +40,43 @@ public enum FileType {
     CSV {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.csv)", "*.csv");
+            return new ExtensionFilter("(*.csv)", "*.csv", "*.CSV");
         }
     },
     PDF {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.pdf)", "*.pdf");
+            return new ExtensionFilter("(*.pdf)", "*.pdf", "*.PDF");
         }
     },
     TXT {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.txt)", "*.txt");
+            return new ExtensionFilter("(*.txt)", "*.txt", "*.TXT");
         }
     },
     LOG {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.log, *.txt)", "*.log", "*.txt");
+            return new ExtensionFilter("(*.log, *.txt)", "*.log", "*.txt", "*.LOG", "*.TXT");
         }
     },
     XML {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.xml)", "*.xml");
+            return new ExtensionFilter("(*.xml)", "*.xml", "*.XML");
         }
     },
     JSON {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.json)", "*.json");
+            return new ExtensionFilter("(*.json)", "*.json", "*.JSON");
         }
     },
     HTML {
         @Override
         public ExtensionFilter getFilter() {
-            return new ExtensionFilter("(*.html, *.htm)", "*.htm", "*.html");
+            return new ExtensionFilter("(*.html, *.htm)", "*.htm", "*.html", "*.HTM", "*.HTML");
         }
     };
     public abstract ExtensionFilter getFilter();

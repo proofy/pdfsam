@@ -42,13 +42,28 @@
         <Property Id="JRE64_CURRENT_VERSION" Secure="yes">
             <RegistrySearch Id="JRE64_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Runtime Environment" Name="CurrentVersion" Type="raw" Win64="yes" />
         </Property>
+        <Property Id="JRE_9_CURRENT_VERSION" Secure="yes">
+            <RegistrySearch Id="JRE_9_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JRE" Name="CurrentVersion" Type="raw" Win64="no" />
+        </Property>
+        <Property Id="JRE64_9_CURRENT_VERSION" Secure="yes">
+            <RegistrySearch Id="JRE64_9_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JRE" Name="CurrentVersion" Type="raw" Win64="yes" />
+        </Property>
         <Property Id="JDK_CURRENT_VERSION" Secure="yes">
             <RegistrySearch Id="JDK_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Development Kit" Name="CurrentVersion" Type="raw" Win64="no" />
         </Property>
         <Property Id="JDK64_CURRENT_VERSION" Secure="yes">
             <RegistrySearch Id="JDK64_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Development Kit" Name="CurrentVersion" Type="raw" Win64="yes" />
         </Property>
-
+		<Property Id="JDK_9_CURRENT_VERSION" Secure="yes">
+            <RegistrySearch Id="JDK_9_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK" Name="CurrentVersion" Type="raw" Win64="no" />
+        </Property>
+        <Property Id="JDK64_9_CURRENT_VERSION" Secure="yes">
+            <RegistrySearch Id="JDK64_9_CURRENT_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK" Name="CurrentVersion" Type="raw" Win64="yes" />
+        </Property>
+        <Property Id="J9">
+            JRE_9_CURRENT_VERSION OR JDK_9_CURRENT_VERSION OR JRE64_9_CURRENT_VERSION OR JDK64_9_CURRENT_VERSION
+        </Property>
+        
         <!-- RemoveFolderEx requires that we "remember" the path for uninstall. This workaround is only required for the uninstall. -->
         <Property Id="APPLICATIONFOLDER" Secure="yes">
             <RegistrySearch Id="APPLICATIONFOLDER_REGSEARCH" Root="HKLM" Key="SOFTWARE\$(var.ProductName)" Name="Path" Type="raw" Win64="no" />
@@ -66,7 +81,7 @@
 	        <Directory Id="SendToFolder">
 				<Component Id="SendToShortcut" Guid="*">
 					<Shortcut Id="pdfsamSendTo" Name="$(var.ProductName)" Target="[APPLICATIONFOLDER]pdfsam.exe" Advertise="no" Icon="pdfsam.ico" IconIndex="0" />
-					<RegistryValue Root="HKCU" Key="Software/$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+					<RegistryValue Root="HKCU" Key="Software\$(var.ProductName)" Name="SendToInstalled" Type="integer" Value="1" KeyPath="yes"/>
 				</Component>
 	  		</Directory>
             <Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles" ComponentGuidGenerationSeed="{d0d99ae7-c01f-41d6-83d5-a1b7ee8b39bf}">

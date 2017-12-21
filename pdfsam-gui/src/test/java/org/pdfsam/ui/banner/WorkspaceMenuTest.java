@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
  * Created on 20/ago/2014
- * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -27,7 +27,6 @@ import static org.sejda.eventstudio.StaticStudio.eventStudio;
 import java.io.File;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -36,7 +35,6 @@ import org.loadui.testfx.categories.TestFX;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.ui.RecentWorkspacesService;
 import org.pdfsam.ui.workspace.LoadWorkspaceEvent;
-import org.pdfsam.ui.workspace.SaveWorkspaceEvent;
 import org.pdfsam.ui.workspace.WorkspaceLoadedEvent;
 import org.sejda.eventstudio.Listener;
 import org.sejda.injector.Injector;
@@ -57,25 +55,6 @@ public class WorkspaceMenuTest extends GuiTest {
     protected Parent getRootNode() {
         injector = Injector.start(new MenuConfig());
         return injector.instance(MenuButton.class);
-    }
-
-    @Test
-    @Ignore("need to find a way to test file chooser")
-    public void onSaveClick() {
-        Listener<SaveWorkspaceEvent> listener = mock(Listener.class);
-        eventStudio().add(SaveWorkspaceEvent.class, listener);
-        click(".button").click("#workspaceMenu").move("#loadWorkspace")
-                .click("#saveWorkspace");
-        verify(listener).onEvent(any());
-    }
-
-    @Test
-    @Ignore("need to find a way to test file chooser")
-    public void onLoadClick() {
-        Listener<LoadWorkspaceEvent> listener = mock(Listener.class);
-        eventStudio().add(LoadWorkspaceEvent.class, listener);
-        click(".button").click("#workspaceMenu").click("#loadWorkspace");
-        verify(listener).onEvent(any());
     }
 
     @Test

@@ -1,7 +1,7 @@
 /* 
  * This file is part of the PDF Split And Merge source code
  * Created on 21/mar/2014
- * Copyright 2013-2014 by Andrea Vacondio (andrea.vacondio@gmail.com).
+ * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as 
@@ -83,9 +83,10 @@ public class OpenButton extends SplitMenuButton implements TaskOutputDispatcher 
         setPrefHeight(Double.MAX_VALUE);
         setVisible(false);
         setOnAction(e -> {
-            if (destination != null && destination.exists()) {
-                eventStudio().broadcast(new OpenFileRequest(destination));
+            if (latestOutput.size() != 1 || !openFile(latestOutput.get(0))) {
+                openFile(destination);
             }
+
         });
         eventStudio().add(TaskExecutionRequestEvent.class, e -> {
             if (e.getModuleId().equals(ownerModule)) {
@@ -100,6 +101,14 @@ public class OpenButton extends SplitMenuButton implements TaskOutputDispatcher 
             }
         }, -10, ReferenceStrength.STRONG);
         eventStudio().addAnnotatedListeners(this);
+    }
+
+    private boolean openFile(File file) {
+        if (file != null && file.exists()) {
+            eventStudio().broadcast(new OpenFileRequest(file));
+            return true;
+        }
+        return false;
     }
 
     public void initModules(Collection<Module> modules) {
