@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2017-10-12 12:35+0200\n"
+"POT-Creation-Date: 2018-07-19 18:31+0200\n"
 "PO-Revision-Date: 2016-09-30 08:22+0000\n"
 "Last-Translator: Andrea Vacondio <andrea.vacondio@gmail.com>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-11-21 15:32+0000\n"
-"X-Generator: Launchpad (build 18505)\n"
+"X-Launchpad-Export-Date: 2018-08-10 09:20+0000\n"
+"X-Generator: Launchpad (build 18747)\n"
 "Language: da\n"
 
 msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
@@ -90,6 +90,9 @@ msgstr "Flet felter"
 
 msgid "Merge renaming existing fields"
 msgstr "Flet og omdøb eksisterende felter"
+
+msgid "Flatten"
+msgstr ""
 
 msgid "Discard forms"
 msgstr "Slet udfyldnings felter"
@@ -314,6 +317,9 @@ msgstr "Flyt til bunden"
 
 msgid "Duplicate"
 msgstr "Dupliker"
+
+msgid "Copy to clipboard"
+msgstr "Kopier til udklipsholder"
 
 msgid "Document properties"
 msgstr "Dokumentegenskaber"
@@ -654,17 +660,14 @@ msgstr "Miljø"
 msgid "Max memory {0}"
 msgstr "Maksimal hukommelse {0}"
 
-msgid "Copy to clipboard"
-msgstr "Kopier til udklipsholder"
-
 msgid "Support"
 msgstr "Hjælp"
 
 msgid "Bug and feature requests"
 msgstr "Fejl og ønsker til funktioner"
 
-msgid "Play the \"get started\" video"
-msgstr "Afspil \"Kom i gang\"-videoen"
+msgid "Documentation"
+msgstr ""
 
 msgid "Contribute"
 msgstr "Bidrag"
@@ -858,6 +861,15 @@ msgid ""
 msgstr ""
 "De angivne parametre er ugyldige - åbn programmets meddelelser for "
 "yderligere detaljer."
+
+msgid "Access denied"
+msgstr ""
+
+#, java-format
+msgid ""
+"Unable to access \"{0}\", please make sure you have write permissions or "
+"open the application messages for details."
+msgstr ""
 
 #, java-format
 msgid "You performed {0} tasks with PDFsam, did it help?"
