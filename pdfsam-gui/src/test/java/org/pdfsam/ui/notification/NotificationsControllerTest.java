@@ -41,6 +41,7 @@ import org.pdfsam.news.NewImportantNewsEvent;
 import org.pdfsam.news.NewsData;
 import org.pdfsam.test.ClearEventStudioRule;
 import org.pdfsam.test.InitializeAndApplyJavaFxThreadRule;
+import org.pdfsam.update.NoUpdateAvailable;
 import org.pdfsam.update.UpdateAvailableEvent;
 import org.sejda.model.exception.InvalidTaskParametersException;
 import org.sejda.model.exception.TaskIOException;
@@ -72,7 +73,6 @@ public class NotificationsControllerTest {
         when(pdfsam.property(ConfigurableProperty.DONATE_URL)).thenReturn("http://www.pdfsam.org");
         when(pdfsam.property(ConfigurableProperty.TWEETER_SHARE_URL)).thenReturn("http://www.pdfsam.org");
         when(pdfsam.property(ConfigurableProperty.FACEBOOK_SHARE_URL)).thenReturn("http://www.pdfsam.org");
-        when(pdfsam.property(ConfigurableProperty.GPLUS_SHARE_URL)).thenReturn("http://www.pdfsam.org");
         when(context.isDonationNotification()).thenReturn(true);
         victim = new NotificationsController(container, service, pdfsam, context);
     }
@@ -96,6 +96,13 @@ public class NotificationsControllerTest {
         UpdateAvailableEvent event = new UpdateAvailableEvent("new version");
         victim.onUpdateAvailable(event);
         verify(container).addStickyNotification(anyString(), any());
+    }
+
+    @Test
+    public void onNoUpdateAvailable() {
+        NoUpdateAvailable event = new NoUpdateAvailable();
+        victim.onNoUpdateAvailable(event);
+        verify(container).addNotification(anyString(), any());
     }
 
     @Test

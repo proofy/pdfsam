@@ -39,6 +39,6 @@ class CheckForUpdatesButton extends Button {
     CheckForUpdatesButton() {
         super(DefaultI18nContext.getInstance().i18n("Check for updates now"));
         getStyleClass().addAll(Style.BUTTON.css());
-        setOnAction(e -> eventStudio().broadcast(UpdateCheckRequest.INSTANCE));
+        setOnAction(e -> eventStudio().broadcast(new UpdateCheckRequest(true)));
     }
 }

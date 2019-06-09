@@ -22,6 +22,7 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.pdfsam.support.EncryptionUtils.encrypt;
 import static org.pdfsam.support.io.ObjectCollectionWriter.writeContent;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestDestination;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestFallbackDestination;
@@ -49,7 +50,9 @@ import org.pdfsam.context.DefaultUserContext;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.ModuleOwned;
 import org.pdfsam.pdf.PdfDocumentDescriptor;
+import org.pdfsam.pdf.PdfFilesListLoadRequest;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
+import org.pdfsam.support.EncryptionUtils;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.ui.commons.ClearModuleEvent;
 import org.pdfsam.ui.commons.OpenFileRequest;
@@ -69,10 +72,8 @@ import org.sejda.eventstudio.annotation.EventStation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jensd.fx.glyphs.GlyphIcons;
-import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialdesignicons.utils.MaterialDesignIconFactory;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
@@ -153,7 +154,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
     private void initTopSectionContextMenu(ContextMenu contextMenu, boolean hasRanges) {
         MenuItem setDestinationItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set destination"),
-                MaterialIcon.FLIGHT_LAND);
+                MaterialDesignIcon.AIRPLANE_LANDING);
         setDestinationItem.setOnAction(e -> eventStudio().broadcast(
                 requestDestination(getSelectionModel().getSelectedItem().descriptor().getFile(), getOwnerModule()),
                 getOwnerModule()));
@@ -164,7 +165,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
         if (hasRanges) {
             MenuItem setPageRangesItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set as range for all"),
-                    MaterialIcon.TOC);
+                    MaterialDesignIcon.FORMAT_INDENT_INCREASE);
             setPageRangesItem.setOnAction(e -> eventStudio().broadcast(
                     new SetPageRangesRequest(getSelectionModel().getSelectedItem().pageSelection.get()),
                     getOwnerModule()));
@@ -222,7 +223,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         }
         if (canDuplicate) {
             MenuItem duplicateItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Duplicate"),
-                    MaterialIcon.WRAP_TEXT);
+                    MaterialDesignIcon.CONTENT_DUPLICATE);
             duplicateItem.setOnAction(e -> eventStudio().broadcast(new DuplicateSelectedEvent(), getOwnerModule()));
             duplicateItem.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.ALT_DOWN));
 
@@ -270,9 +271,9 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         });
     }
 
-    private MenuItem createMenuItem(String text, GlyphIcons icon) {
+    private MenuItem createMenuItem(String text, MaterialDesignIcon icon) {
         MenuItem item = new MenuItem(text);
-        GlyphsDude.setIcon(item, icon, "1.1em");
+        MaterialDesignIconFactory.get().setIcon(item, icon, "1.1em");
         item.setDisable(true);
         return item;
     }
@@ -386,23 +387,29 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
     private Consumer<DragEvent> onDragDropped() {
         return (DragEvent e) -> {
-            final PdfLoadRequestEvent loadEvent = new PdfLoadRequestEvent(getOwnerModule());
-            getFilesFromDragboard(e.getDragboard()).filter(f -> FileType.PDF.matches(f.getName()))
-                    .map(PdfDocumentDescriptor::newDescriptorNoPassword).forEach(loadEvent::add);
-            if (!loadEvent.getDocuments().isEmpty()) {
-                eventStudio().broadcast(loadEvent, getOwnerModule());
+            List<File> files = e.getDragboard().getFiles();
+            // not a PDF maybe a csv or txt containing the list
+            if (files.size() == 1 && !files.get(0).isDirectory()
+                    && (FileType.TXT.matches(files.get(0).getName()) || FileType.CSV.matches(files.get(0).getName()))) {
+                eventStudio().broadcast(new PdfFilesListLoadRequest(getOwnerModule(), files.get(0).toPath()));
             } else {
-                eventStudio().broadcast(new AddNotificationRequestEvent(NotificationType.WARN,
-                        DefaultI18nContext.getInstance()
-                                .i18n("Drag and drop PDF files or directories containing PDF files"),
-                        DefaultI18nContext.getInstance().i18n("No PDF found")));
+                final PdfLoadRequestEvent loadEvent = new PdfLoadRequestEvent(getOwnerModule());
+                getFiles(files).filter(f -> FileType.PDF.matches(f.getName()))
+                        .map(PdfDocumentDescriptor::newDescriptorNoPassword).forEach(loadEvent::add);
+                if (!loadEvent.getDocuments().isEmpty()) {
+                    eventStudio().broadcast(loadEvent, getOwnerModule());
+                } else {
+                    eventStudio().broadcast(new AddNotificationRequestEvent(NotificationType.WARN,
+                            DefaultI18nContext.getInstance()
+                                    .i18n("Drag and drop PDF files or directories containing PDF files"),
+                            DefaultI18nContext.getInstance().i18n("No PDF found")));
+                }
             }
             e.setDropCompleted(true);
         };
     }
 
-    private Stream<File> getFilesFromDragboard(Dragboard board) {
-        List<File> files = board.getFiles();
+    private Stream<File> getFiles(List<File> files) {
         if (files.size() == 1 && files.get(0).isDirectory()) {
             return stream(files.get(0).listFiles()).sorted();
         }
@@ -499,7 +506,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             String id = defaultString(getId());
             data.put(id + "input." + i, current.descriptor().getFile().getAbsolutePath());
             if (new DefaultUserContext().isSavePwdInWorkspaceFile()) {
-                data.put(id + "input.password." + i, current.descriptor().getPassword());
+                data.put(id + "input.password.enc" + i, encrypt(current.descriptor().getPassword()));
             }
             data.put(id + "input.range." + i, defaultString(current.pageSelection.get()));
             data.put(id + "input.step." + i, defaultString(current.pace.get()));
@@ -518,7 +525,8 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
                 String id = defaultString(getId());
                 Optional.ofNullable(data.get(id + "input." + i)).ifPresent(f -> {
                     PdfDocumentDescriptor descriptor = PdfDocumentDescriptor.newDescriptor(new File(f),
-                            data.get(id + "input.password." + i));
+                            ofNullable(data.get(id + "input.password.enc" + i)).map(EncryptionUtils::decrypt)
+                                    .orElseGet(() -> data.get(defaultString(getId()) + "input.password." + i)));
                     loadEvent.add(descriptor);
                     SelectionTableRowData row = new SelectionTableRowData(descriptor);
                     row.pageSelection.set(data.get(id + "input.range." + i));

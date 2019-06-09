@@ -19,6 +19,7 @@
 package org.pdfsam.ui.selection.single;
 
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -26,6 +27,7 @@ import static org.pdfsam.pdf.PdfDescriptorLoadingStatus.ENCRYPTED;
 import static org.pdfsam.pdf.PdfDescriptorLoadingStatus.WITH_ERRORS;
 import static org.pdfsam.pdf.PdfDocumentDescriptor.newDescriptor;
 import static org.pdfsam.pdf.PdfDocumentDescriptor.newDescriptorNoPassword;
+import static org.pdfsam.support.EncryptionUtils.encrypt;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestDestination;
 import static org.pdfsam.ui.commons.SetDestinationRequest.requestFallbackDestination;
 import static org.sejda.eventstudio.StaticStudio.eventStudio;
@@ -43,6 +45,7 @@ import org.pdfsam.pdf.PdfDescriptorLoadingStatus;
 import org.pdfsam.pdf.PdfDocumentDescriptor;
 import org.pdfsam.pdf.PdfDocumentDescriptorProvider;
 import org.pdfsam.pdf.PdfLoadRequestEvent;
+import org.pdfsam.support.EncryptionUtils;
 import org.pdfsam.support.io.FileType;
 import org.pdfsam.ui.commons.ClearModuleEvent;
 import org.pdfsam.ui.commons.OpenFileRequest;
@@ -54,15 +57,14 @@ import org.pdfsam.ui.io.ChangedSelectedPdfVersionEvent;
 import org.pdfsam.ui.io.RememberingLatestFileChooserWrapper.OpenType;
 import org.pdfsam.ui.selection.LoadingStatusIndicatorUpdater;
 import org.pdfsam.ui.selection.PasswordFieldPopup;
+import org.pdfsam.ui.selection.single.SingleSelectionPaneToolbar.SelectButton;
 import org.pdfsam.ui.support.FXValidationSupport.ValidationState;
 import org.pdfsam.ui.workspace.RestorableView;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.eventstudio.annotation.EventStation;
 
-import de.jensd.fx.glyphs.GlyphIcons;
-import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialdesignicons.utils.MaterialDesignIconFactory;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -92,7 +94,7 @@ import javafx.stage.Window;
 public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumentDescriptorProvider, RestorableView {
 
     private String ownerModule = StringUtils.EMPTY;
-    private BrowsableFileField field = new BrowsableFileField(FileType.PDF, OpenType.OPEN);
+    private BrowsableFileField field;
     private Label details = new Label();
     private PdfDocumentDescriptor descriptor;
     private PasswordFieldPopup passwordPopup;
@@ -117,7 +119,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         }
     };
 
-    private Consumer<PdfDocumentDescriptor> encryptionIndicatorUpdate = new Consumer<PdfDocumentDescriptor>() {
+    private Consumer<PdfDocumentDescriptor> encryptionIndicatorUpdate = new Consumer<>() {
         private LoadingStatusIndicatorUpdater updater = new LoadingStatusIndicatorUpdater(encryptionIndicator);
 
         @Override
@@ -138,7 +140,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         }
     };
 
-    private ToggleChangeListener<? super ValidationState> onValidState = new ToggleChangeListener<ValidationState>() {
+    private ToggleChangeListener<? super ValidationState> onValidState = new ToggleChangeListener<>() {
 
         @Override
         public void onChanged(ObservableValue<? extends ValidationState> observable, ValidationState oldValue,
@@ -155,6 +157,8 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         this.getStyleClass().add("single-selection-pane");
         this.ownerModule = defaultString(ownerModule);
         this.details.getStyleClass().add("-pdfsam-selection-details");
+        SelectButton selectButton = new SelectButton(getOwnerModule());
+        field = new BrowsableFileField(FileType.PDF, OpenType.OPEN, selectButton);
         field.enforceValidation(true, false);
         passwordPopup = new PasswordFieldPopup(this.ownerModule);
         encryptionIndicator.getStyleClass().addAll("encryption-status");
@@ -169,7 +173,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         field.setGraphic(encryptionIndicator);
         field.getStyleClass().add("single-selection-top");
         HBox.setHgrow(field, Priority.ALWAYS);
-        getChildren().addAll(field, details);
+        getChildren().addAll(new SingleSelectionPaneToolbar(selectButton, getOwnerModule()), field, details);
         field.getTextField().validProperty().addListener(onValidState);
         initContextMenu();
         eventStudio().addAnnotatedListeners(this);
@@ -235,7 +239,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         if (descriptor != null) {
             data.put(defaultString(getId()) + "input", descriptor.getFile().getAbsolutePath());
             if (new DefaultUserContext().isSavePwdInWorkspaceFile()) {
-                data.put(defaultString(getId()) + "input.password", descriptor.getPassword());
+                data.put(defaultString(getId()) + "input.password.enc", encrypt(descriptor.getPassword()));
             }
         }
     }
@@ -247,7 +251,9 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
             onValidState.disabled(true);
             getField().getTextField().setText(f);
             onValidState.disabled(false);
-            initializeFor(newDescriptor(new File(f), data.get(defaultString(getId()) + "input.password")));
+            initializeFor(newDescriptor(new File(f),
+                    ofNullable(data.get(defaultString(getId()) + "input.password.enc")).map(EncryptionUtils::decrypt)
+                            .orElseGet(() -> data.get(defaultString(getId()) + "input.password"))));
         });
     }
 
@@ -271,7 +277,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
         removeSelected.setOnAction(e -> eventStudio().broadcast(new ClearModuleEvent(), getOwnerModule()));
 
         MenuItem setDestinationItem = createMenuItem(DefaultI18nContext.getInstance().i18n("Set destination"),
-                MaterialIcon.FLIGHT_LAND);
+                MaterialDesignIcon.AIRPLANE_LANDING);
         setDestinationItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.ALT_DOWN));
         setDestinationItem.setOnAction(e -> eventStudio()
                 .broadcast(requestDestination(descriptor.getFile(), getOwnerModule()), getOwnerModule()));
@@ -291,7 +297,7 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
 
     @EventListener
     public void onClearSelected(ClearModuleEvent event) {
-        field.getTextField().setText("");
+        field.getTextField().clear();
         disableRemoveMenuItemIfNeeded();
     }
 
@@ -301,9 +307,9 @@ public class SingleSelectionPane extends VBox implements ModuleOwned, PdfDocumen
                 .ifPresent(field::setTextFromFile);
     }
 
-    private MenuItem createMenuItem(String text, GlyphIcons icon) {
+    private MenuItem createMenuItem(String text, MaterialDesignIcon icon) {
         MenuItem item = new MenuItem(text);
-        GlyphsDude.setIcon(item, icon, "1.1em");
+        MaterialDesignIconFactory.get().setIcon(item, icon, "1.1em");
         item.setDisable(true);
         return item;
     }
