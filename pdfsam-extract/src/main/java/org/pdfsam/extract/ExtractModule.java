@@ -137,6 +137,7 @@ public class ExtractModule extends BaseTaskExecutionModule {
         TitledPane prefixTitled = Views.titledPane(DefaultI18nContext.getInstance().i18n("File names settings"),
                 prefix);
         prefix.addMenuItemFor(Prefix.FILENUMBER);
+        prefix.addMenuItemFor("[TOTAL_FILESNUMBER]");
 
         pane.getChildren().addAll(selectionPane,
                 titledPane(DefaultI18nContext.getInstance().i18n("Extract settings"), extractOptions),
@@ -158,6 +159,7 @@ public class ExtractModule extends BaseTaskExecutionModule {
             destinationPane.resetView();
         }
     }
+
     @Override
     public Node graphic() {
         return new ImageView("extract.png");

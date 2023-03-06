@@ -33,6 +33,7 @@ import org.pdfsam.context.UserContext;
 import org.pdfsam.i18n.DefaultI18nContext;
 import org.pdfsam.module.UsageService;
 import org.pdfsam.news.NewImportantNewsEvent;
+import org.pdfsam.update.NoUpdateAvailable;
 import org.pdfsam.update.UpdateAvailableEvent;
 import org.sejda.eventstudio.annotation.EventListener;
 import org.sejda.injector.Auto;
@@ -138,8 +139,6 @@ public class NotificationsController {
                 buildLabel(DefaultI18nContext.getInstance().i18n("You performed {0} tasks with PDFsam, did it help?",
                         Long.toString(usages)), NotificationType.SHARE),
                 new HBox(3, spacer,
-                        styledUrlButton(null, pdfsam.property(ConfigurableProperty.GPLUS_SHARE_URL),
-                                FontAwesomeIcon.GOOGLE_PLUS),
                         styledUrlButton(null, pdfsam.property(ConfigurableProperty.FACEBOOK_SHARE_URL),
                                 FontAwesomeIcon.FACEBOOK),
                         styledUrlButton(DefaultI18nContext.getInstance().i18n("Spread the word!"),
@@ -164,6 +163,16 @@ public class NotificationsController {
         content.setAlignment(Pos.TOP_RIGHT);
 
         container.addStickyNotification(DefaultI18nContext.getInstance().i18n("New version available"), content);
+    }
+
+    @EventListener
+    public void onNoUpdateAvailable(NoUpdateAvailable event) {
+        VBox content = new VBox(3, buildLabel(
+                DefaultI18nContext.getInstance().i18n("You are running the latest version of PDFsam Basic"),
+                NotificationType.INFO));
+        content.setAlignment(Pos.TOP_RIGHT);
+
+        container.addNotification(DefaultI18nContext.getInstance().i18n("No update"), content);
     }
 
     @EventListener

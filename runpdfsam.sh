@@ -5,19 +5,19 @@ git checkout master
 git merge upstream/master
 
 # running PdfSam 
-RUNJAR=pdfsam-community-3.3.8-SNAPSHOT.jar
-if [ -f ./pdfsam-community/target/$RUNJAR ] 
+RUNJAR=pdfsam-community-4.0.8-SNAPSHOT.jar
+if [ -f ./pdfsam-basic/target/$RUNJAR ] 
 then
-        cd ./pdfsam-community/
-        mvn exec:java
+        cd ./pdfsam-basic/
+        mvn exec:java -Dexec.mainClass="org.pdfsam.basic.App"
 	#java -jar ./pdfsam-community/target/$RUNJAR
 else
 	#mvn clean install -Dmaven.test.skip=true -Prelease
 	mvn clean install -Dmaven.test.skip=true
-	if [ -f ./pdfsam-community/target/$RUNJAR ] 
+	if [ -f ./pdfsam-basic/target/$RUNJAR ] 
 	then
-		cd ./pdfsam-community/ 
-		mvn exec:java
+		cd ./pdfsam-basic/ 
+		mvn exec:java -Dexec.mainClass="org.pdfsam.basic.App"
 		#java -jar ./pdfsam-community/target/$RUNJAR
 	else
 		echo "Can't start PdfSam"
