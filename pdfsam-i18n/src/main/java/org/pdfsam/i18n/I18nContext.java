@@ -1,11 +1,11 @@
-/* 
+/*
  * This file is part of the PDF Split And Merge source code
  * Created on 13/dic/2011
- * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,50 +18,133 @@
  */
 package org.pdfsam.i18n;
 
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.ReplaySubject;
+import org.pdfsam.eventstudio.annotation.EventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
+
 /**
- * Context related to the i18n of the application.
- * 
+ * Context to deal with translations. It contains information about the mutable current locale and allow to translate strings to the current locale through static methods.
+ *
  * @author Andrea Vacondio
- * 
  */
-public interface I18nContext {
+public final class I18nContext {
+
+    private static final Logger LOG = LoggerFactory.getLogger(I18nContext.class);
+
+    private final Set<Locale> supported = Set.of(Locale.of("af"), Locale.of("eu"), Locale.of("bs"),
+            Locale.of("pt", "BR"), Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE, Locale.of("co"),
+            Locale.of("hr"), Locale.of("cs"), Locale.of("da"), Locale.of("nl"), Locale.UK, Locale.FRENCH, Locale.GERMAN,
+            Locale.of("he"), Locale.of("hu"), Locale.of("el"), Locale.JAPANESE, Locale.ITALIAN, Locale.of("pl"),
+            Locale.of("pt"), Locale.of("ro"), Locale.of("ru"), Locale.of("sk"), Locale.of("sl"), Locale.of("sr"),
+            Locale.of("sv"), Locale.of("es"), Locale.of("tr"), Locale.of("uk"), Locale.of("fi"), Locale.of("ko"));
+
+    private final ReplaySubject<Locale> locale = ReplaySubject.createWithSize(1);
+
+    private Optional<ResourceBundle> bundle = empty();
+
+    I18nContext() {
+        eventStudio().addAnnotatedListeners(this);
+        locale.filter(Objects::nonNull)
+                .subscribe(this::loadBundle, e -> LOG.error("Unable to load translations bundle", e));
+    }
+
+    @EventListener
+    public void setLocale(SetLocaleRequest e) {
+        if (nonNull(e.languageTag()) && !e.languageTag().isBlank()) {
+            LOG.trace("Setting locale to {}", e.languageTag());
+            ofNullable(Locale.forLanguageTag(e.languageTag())).filter(supported::contains).ifPresent(locale::onNext);
+        }
+    }
+
+    private void loadBundle(Locale l) {
+        if (nonNull(l)) {
+            Locale.setDefault(l);
+            LOG.trace("Loading i18n bundle for {}", Locale.getDefault());
+            this.bundle = ofNullable(ResourceBundle.getBundle("org.pdfsam.i18n.Messages", Locale.getDefault(),
+                    I18nContext.class.getModule()));
+            LOG.debug("Locale set to {}", Locale.getDefault());
+        }
+    }
+
+    Locale getBestLocale() {
+        if (supported.contains(Locale.getDefault())) {
+            LOG.trace("Using best matching locale: {}", Locale.getDefault());
+            return Locale.getDefault();
+        }
+        var onlyLanguage = Locale.of(Locale.getDefault().getLanguage());
+        if (supported.contains(onlyLanguage)) {
+            LOG.trace("Using supported locale closest to default {}", onlyLanguage);
+            return onlyLanguage;
+        }
+        LOG.trace("Using fallback locale");
+        return Locale.ENGLISH;
+    }
 
     /**
-     * @param input
-     *            input string
-     * @return the internationalized message.
+     * @return the default {@link I18nContext} instance
      */
-    String i18n(String input);
+    public static I18nContext i18n() {
+        return I18nContextHolder.CONTEXT;
+    }
 
     /**
-     * @param input
-     *            input string
-     * @param value
-     *            value for a string {0} placeholder
-     * @return the internationalized message.
+     * @return an {@link Observable} {@link Locale} representing the current locale
      */
-    String i18n(String input, String value);
+    public Observable<Locale> locale() {
+        return this.locale.hide();
+
+    }
+
+    public String tr(String text) {
+        initBundleIfRequired();
+        return bundle.filter(r -> r.containsKey(text)).map(r -> r.getString(text)).orElse(text);
+    }
 
     /**
-     * @param input
-     *            input string
-     * @param value0
-     *            value for a string {0} placeholder
-     * @param value1
-     *            value for a string {1} placeholder
-     * @return the internationalized message.
+     * @param text    text to be translated
+     * @param replace replacements for the placeholders
+     * @return the translated string where {0} and {1} (etc) placeholders are replaced by the replace[0], replace[1] etc
      */
-    String i18n(String input, String value0, String value1);
+    public String tr(String text, String... replace) {
+        initBundleIfRequired();
+        return MessageFormat.format(tr(text), (Object[]) replace);
+    }
+
+    private void initBundleIfRequired() {
+        if (bundle.isEmpty()) {
+            locale.onNext(getBestLocale());
+        }
+    }
+
+    public Set<Locale> getSupported() {
+        return supported;
+    }
 
     /**
-     * @param singular
-     *            input string for singular
-     * @param plural
-     *            input string for plural
-     * @param n
-     *            discriminating
-     * @return the internationalized message.
+     * Lazy initialization holder class idiom (Joshua Bloch, Effective Java second edition, item 71).
+     *
+     * @author Andrea Vacondio
      */
-    // String i18npl(String singular, String plural, long n);
+    private static final class I18nContextHolder {
 
+        private I18nContextHolder() {
+            // hide constructor
+        }
+
+        static final I18nContext CONTEXT = new I18nContext();
+    }
 }

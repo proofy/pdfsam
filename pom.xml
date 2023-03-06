@@ -4,13 +4,13 @@
 	<groupId>org.pdfsam</groupId>
 	<artifactId>pdfsam-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>4.0.4-SNAPSHOT</version>
+	<version>5.0.4-SNAPSHOT</version>
 	<name>PDFsam</name>
 	<description>A free open source desktop application to split and merge pdf documents</description>
 	<url>https://pdfsam.org</url>
 
 	<organization>
-		<name>Sober Lemur S.a.s. di Vacondio Andrea</name>
+		<name>Sober Lemur S.r.l.</name>
 	</organization>
 
 	<scm>
@@ -24,7 +24,7 @@
 		<profile>
 			<activation>
 				<property>
-					<name>env.TRAVIS</name>
+					<name>env.CI</name>
 					<value>true</value>
 				</property>
 			</activation>
@@ -34,11 +34,18 @@
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
-							<excludedGroups>org.pdfsam.NoHeadless</excludedGroups>
+							<excludedGroups>NoHeadless</excludedGroups>
 						</configuration>
 					</plugin>
 				</plugins>
 			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.testfx</groupId>
+					<artifactId>openjfx-monocle</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
 		</profile>
 		<profile>
 			<activation>
@@ -61,14 +68,13 @@
 		<profile>
 			<id>toolchain</id>
 			<activation>
-				<jdk>(,11)</jdk>
+				<jdk>(,19)</jdk>
 			</activation>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-toolchains-plugin</artifactId>
-						<version>1.1</version>
 						<executions>
 							<execution>
 								<goals>
@@ -79,7 +85,7 @@
 						<configuration>
 							<toolchains>
 								<jdk>
-									<version>11</version>
+									<version>19</version>
 								</jdk>
 							</toolchains>
 						</configuration>
@@ -99,7 +105,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>
-						<version>2.5.3</version>
 						<configuration>
 							<tagNameFormat>v@{project.version}</tagNameFormat>
 							<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
@@ -113,7 +118,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -132,18 +136,23 @@
 
 	<modules>
 		<module>pdfsam-basic</module>
+		<module>pdfsam-model</module>
 		<module>pdfsam-gui</module>
 		<module>pdfsam-i18n</module>
 		<module>pdfsam-core</module>
 		<module>pdfsam-service</module>
-		<module>pdfsam-fx</module>
-		<module>pdfsam-merge</module>
-		<module>pdfsam-simple-split</module>
-		<module>pdfsam-split-by-size</module>
-		<module>pdfsam-split-by-bookmarks</module>
-		<module>pdfsam-alternate-mix</module>
-		<module>pdfsam-rotate</module>
-		<module>pdfsam-extract</module>
+		<module>pdfsam-ui-components</module>
+		<module>pdfsam-persistence</module>
+		<module>pdfsam-themes</module>
+		<module>pdfsam-tools/pdfsam-merge</module>
+		<module>pdfsam-tools/pdfsam-simple-split</module>
+		<module>pdfsam-tools/pdfsam-split-by-size</module>
+		<module>pdfsam-tools/pdfsam-split-by-bookmarks</module>
+		<module>pdfsam-tools/pdfsam-alternate-mix</module>
+		<module>pdfsam-tools/pdfsam-rotate</module>
+		<module>pdfsam-tools/pdfsam-extract</module>
+		<module>pdfsam-tools/pdfsam-backpages</module>
+		<module>pdfsam-test</module>
 		<module>pdfsam-docs</module>
 	</modules>
 
@@ -155,70 +164,15 @@
 		</developer>
 	</developers>
 
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>https://repository.jboss.org/nexus/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>springsource-repo</id>
-			<name>SpringSource Repository</name>
-			<url>http://repo.spring.io/release</url>
-		</repository>
-		<repository>
-			<id>pdfbox-snapshot</id>
-			<url>http://repository.apache.org/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>sonatype-snapshot</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>jcentral</id>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-		<repository>
-			<id>sejda</id>
-			<url>https://dl.bintray.com/sejdapdf/maven/</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>central</id>
-			<name>bintray-plugins</name>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<url>http://jcenter.bintray.com</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<release>11</release>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -228,74 +182,127 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M1</version>
-			</plugin>
 		</plugins>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.10.1</version>
+					<configuration>
+						<release>19</release>
+						<!-- remove this once Foreign Function & Memory API is out of preview-->
+						<compilerArgs>--enable-preview</compilerArgs>
+					</configuration>
+					<dependencies>
+						<!-- remove this once mvn compiler includes it -->
+						<dependency>
+							<groupId>org.ow2.asm</groupId>
+							<artifactId>asm</artifactId>
+							<version>9.4</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.3.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>3.1.1</version>
+					<version>3.3.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.4.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.2.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.5.0</version>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.2.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.8</version>
+					<version>3.1.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-toolchains-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M7</version>
+					<configuration>
+						<!-- remove this once Foreign Function & Memory API is out of preview-->
+						<argLine>--enable-preview</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.0.0-M6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>3.0.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 
 	<properties>
-		<junit.version>4.12</junit.version>
-		<slf4j.version>1.7.25</slf4j.version>
-		<commons.lang.version>3.9</commons.lang.version>
-		<commons.io.version>2.6</commons.io.version>
-		<mockito.version>1.10.19</mockito.version>
-		<logback.version>1.2.3</logback.version>
-		<jdepend.version>2.9.1</jdepend.version>
-		<hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
-		<sejda.version>3.2.75</sejda.version>
-		<eventstudio.version>1.0.6</eventstudio.version>
-		<injector.version>1.0.2</injector.version>
-		<fontawesomefx.fontawesome.version>4.7.0-9.1.2</fontawesomefx.fontawesome.version>
-		<fontawesomefx.materialicons.version>2.2.0-9.1.2</fontawesomefx.materialicons.version>
-		<fontawesomefx.materialdesignfont.version>2.0.26-9.1.2</fontawesomefx.materialdesignfont.version>
-		<testfx.version>4.0.15-alpha</testfx.version>
-		<jackson-jr.version>2.9.7</jackson-jr.version>
-		<tempus.fugit.version>1.1</tempus.fugit.version>
-		<bouncycastle.version>1.60</bouncycastle.version>
-		<hamcrest.version>1.3</hamcrest.version>
-		<javafx.version>12.0.1</javafx.version>
+		<junit.version>5.9.2</junit.version>
+		<junit.pioneer.version>1.9.1</junit.pioneer.version>
+		<archunit.version>1.0.1</archunit.version>
+		<slf4j.version>2.0.3</slf4j.version>
+		<commons.lang.version>3.12.0</commons.lang.version>
+		<commons.io.version>2.11.0</commons.io.version>
+		<mockito.version>5.0.0</mockito.version>
+		<tinylog.version>2.6.0</tinylog.version>
+		<hibernate-validator.version>7.0.5.Final</hibernate-validator.version>
+		<sejda.version>5.0.0.M6</sejda.version>
+		<sejda.commons.version>2.0.0</sejda.commons.version>
+		<eventstudio.version>3.0.4</eventstudio.version>
+		<injector.version>4.0.0</injector.version>
+		<rxjava.version>3.1.6</rxjava.version>
+		<ikonli.version>12.3.1</ikonli.version>
+		<testfx.version>4.0.16-alpha</testfx.version>
+		<jackson.version>2.14.1</jackson.version>
+		<bouncycastle.version>1.72</bouncycastle.version>
+		<assertj.version>3.24.2</assertj.version>
+		<hamcrest.version>2.2</hamcrest.version>
+		<javafx.version>19.0.2.1</javafx.version>
+		<jakarta-el.version>4.0.2</jakarta-el.version>
+		<jakarta.inject.version>2.0.1</jakarta.inject.version>
+		<validation.api.version>3.0.2</validation.api.version>
+		<awaitility.version>4.2.0</awaitility.version>
 		<monocle.version>jdk-12.0.1+2</monocle.version>
 		<maven.build.timestamp.format>dd-MMM-yyyy</maven.build.timestamp.format>
 		<pdfsam.builddate>${maven.build.timestamp}</pdfsam.builddate>
@@ -305,6 +312,30 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.kordamp.ikonli</groupId>
+				<artifactId>ikonli-bom</artifactId>
+				<version>${ikonli.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.validation</groupId>
+				<artifactId>jakarta.validation-api</artifactId>
+				<version>${validation.api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish</groupId>
+				<artifactId>jakarta.el</artifactId>
+				<version>${jakarta-el.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
@@ -321,7 +352,7 @@
 				<version>${fontawesomefx.materialdesignfont.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.sejda</groupId>
+				<groupId>org.pdfsam</groupId>
 				<artifactId>eventstudio</artifactId>
 				<version>${eventstudio.version}</version>
 			</dependency>
@@ -356,19 +387,9 @@
 				<version>${sejda.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.sejda</groupId>
-				<artifactId>sejda-injector</artifactId>
+				<groupId>org.pdfsam</groupId>
+				<artifactId>pdfsam-injector</artifactId>
 				<version>${injector.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>1</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.jr</groupId>
-				<artifactId>jackson-jr-objects</artifactId>
-				<version>${jackson-jr.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openjfx</groupId>
@@ -376,11 +397,53 @@
 				<version>${javafx.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>jdepend</groupId>
-				<artifactId>jdepend</artifactId>
-				<version>${jdepend.version}</version>
-				<scope>test</scope>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-graphics</artifactId>
+				<version>${javafx.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcmail-jdk18on</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.inject</groupId>
+				<artifactId>jakarta.inject-api</artifactId>
+				<version>${jakarta.inject.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.reactivex.rxjava3</groupId>
+				<artifactId>rxjava</artifactId>
+				<version>${rxjava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.tinylog</groupId>
+				<artifactId>slf4j-tinylog</artifactId>
+				<version>${tinylog.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.tinylog</groupId>
+				<artifactId>tinylog-impl</artifactId>
+				<version>${tinylog.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.tinylog</groupId>
+				<artifactId>tinylog-api</artifactId>
+				<version>${tinylog.version}</version>
+			</dependency>
+			<!-- TODO remove once released -->
+			<dependency>
+				<groupId>org.sejda</groupId>
+				<artifactId>sejda-io</artifactId>
+				<version>4.0.0.M1</version>
+			</dependency>
+			<!-- /TODO -->
+			<!-- test -->
 			<dependency>
 				<groupId>org.testfx</groupId>
 				<artifactId>testfx-core</artifactId>
@@ -389,8 +452,14 @@
 			</dependency>
 			<dependency>
 				<groupId>org.testfx</groupId>
-				<artifactId>testfx-junit</artifactId>
+				<artifactId>testfx-junit5</artifactId>
 				<version>${testfx.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testfx</groupId>
+				<artifactId>openjfx-monocle</artifactId>
+				<version>${monocle.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -400,49 +469,91 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.testfx</groupId>
-				<artifactId>openjfx-monocle</artifactId>
-				<version>${monocle.version}</version>
+				<groupId>org.awaitility</groupId>
+				<artifactId>awaitility</artifactId>
+				<version>${awaitility.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-commons</artifactId>
+			<version>${sejda.commons.version}</version>
+		</dependency>
+		<!-- test depts -->
+		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-tests</artifactId>
+			<version>${sejda.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
+			<artifactId>hamcrest-core</artifactId>
 			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.tempus-fugit</groupId>
-			<artifactId>tempus-fugit</artifactId>
-			<version>${tempus.fugit.version}</version>
+			<groupId>org.junit-pioneer</groupId>
+			<artifactId>junit-pioneer</artifactId>
+			<version>${junit.pioneer.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5</artifactId>
+			<version>${archunit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tinylog</groupId>
+			<artifactId>slf4j-tinylog</artifactId>
+			<version>${tinylog.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tinylog</groupId>
+			<artifactId>tinylog-impl</artifactId>
+			<version>${tinylog.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>animal-sniffer-annotations</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>

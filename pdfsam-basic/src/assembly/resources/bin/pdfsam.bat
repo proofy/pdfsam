@@ -1,5 +1,5 @@
 @REM This file is part of the PDF Split And Merge Basic source code
-@REM Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
+@REM Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
 @REM
 @REM This program is free software: you can redistribute it and/or modify
 @REM it under the terms of the GNU Affero General Public License as
@@ -59,10 +59,12 @@ set SAVE_DIR=
 goto repoSetup
 
 :WinNTGetScriptDir
-for %%i in ("%~dp0..") do set "BASEDIR=%%~fi"
+for %%i in ("%~dp0") do set "BASEDIR=%%~fi"
 
 :repoSetup
 set "RUNTIME=%BASEDIR%\runtime"
+set "MODULEPATH=%BASEDIR%\app\mods"
+set "PATH=%RUNTIME%;%BASEDIR%"
 
 if exist "%PDFSAM_JAVA_PATH%" (
 	set "JAVACMD=%PDFSAM_JAVA_PATH%\bin\java"
@@ -74,12 +76,10 @@ if exist "%PDFSAM_JAVA_PATH%" (
 
 if "%JAVACMD%"=="" set JAVACMD=java
 
-set "JAR_ARG=%BASEDIR%\${project.build.finalName}.${project.packaging}"
-
 @REM Reaching here means variables are defined and arguments have been captured
 :endInit
 
-"%JAVACMD%" -jar "%JAR_ARG%" %JAVA_OPTS% -Xmx512M -Dapp.name="pdfsam-basic" -Dprism.lcdtext=false -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" org.pdfsam.basic.App %CMD_LINE_ARGS%
+"%JAVACMD%" --enable-preview --module-path "%MODULEPATH%" --module org.pdfsam.basic/org.pdfsam.basic.App %JAVA_OPTS% -Xmx512M -splash:%BASEDIR%\pdfsam\splash.png -Dapp.name="pdfsam-basic" -Dprism.lcdtext=false -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" %CMD_LINE_ARGS%
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 

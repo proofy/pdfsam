@@ -12,7 +12,7 @@ del /Q harvestedFiles.wxs
 del /Q harvestedFiles.wixobj
 
 REM harvest the files
-"%WIX%bin\heat.exe" dir "${project.build.directory}/assembled" -ag -cg "AllFiles" -ke -sfrag -srd -sreg -dr APPLICATIONFOLDER -out harvestedFiles.wxs
+"%WIX%bin\heat.exe" dir "${project.build.directory}/image/pdfsam" -ag -cg "AllFiles" -ke -sfrag -srd -sreg -dr APPLICATIONFOLDER -out harvestedFiles.wxs
 if %ERRORLEVEL% NEQ 0 goto error
 ECHO "Files harvested"
 
@@ -22,7 +22,7 @@ if %ERRORLEVEL% NEQ 0 goto error
 ECHO "candle run ok"
 
 REM English
-IF EXIST pdfsam.wixobj "%WIX%bin\light.exe" pdfsam.wixobj verifyWithLanguageDlg.wixobj featuresTree.wixobj exitDlg.wixobj harvestedFiles.wixobj -b "${project.build.directory}/assembled" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -out "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi" -loc "culture.wxl" -cultures:en-us
+IF EXIST pdfsam.wixobj "%WIX%bin\light.exe" pdfsam.wixobj verifyWithLanguageDlg.wixobj featuresTree.wixobj exitDlg.wixobj harvestedFiles.wixobj -b "${project.build.directory}/image/pdfsam" -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -out "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi" -loc "culture.wxl" -cultures:en-us
 if %ERRORLEVEL% NEQ 0 goto error
 ECHO "MSI created"
 
@@ -33,7 +33,7 @@ del /Q verifyWithLanguageDlg.wixobj
 del /Q exitDlg.wixobj
 del /Q harvestedFiles.wixobj
 
-IF EXIST "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi" "signtool.exe" sign /fd sha256 /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /a /d "PDFsam Basic" "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi"
+IF EXIST "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi" "signtool.exe" sign /fd sha256 /tr http://sha256timestamp.ws.symantec.com/sha256/timestamp /sha1 "%SIGN_CERT_FINGERPRINT%" /d "PDFsam Basic" "${project.build.directory}/pdfsam-%PDFSAM_VERSION%.msi"
 if %ERRORLEVEL% NEQ 0 goto error
 ECHO "MSI signed"
 POPD

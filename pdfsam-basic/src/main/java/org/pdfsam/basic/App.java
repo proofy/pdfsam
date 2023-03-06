@@ -1,11 +1,11 @@
-/* 
+/*
  * This file is part of the PDF Split And Merge source code
  * Created on 22/ott/2014
- * Copyright 2017 by Sober Lemur S.a.s. di Vacondio Andrea (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,24 +18,38 @@
  */
 package org.pdfsam.basic;
 
-import org.pdfsam.PdfsamApp;
-import org.sejda.injector.Injector;
-
 import javafx.application.Application;
+import org.pdfsam.gui.PdfsamApp;
+import org.pdfsam.injector.Injector;
+import org.pdfsam.tools.alternatemix.AlternateMixTool;
+import org.pdfsam.tools.backpages.AddBackpagesTool;
+import org.pdfsam.tools.extract.ExtractTool;
+import org.pdfsam.tools.merge.MergeTool;
+import org.pdfsam.tools.rotate.RotateTool;
+import org.pdfsam.tools.split.SplitTool;
+import org.pdfsam.tools.splitbybookmarks.SplitByBookmarksTool;
+import org.pdfsam.tools.splitbysize.SplitBySizeTool;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * PDFsam Basic Edition App
- * 
- * @author Andrea Vacondio
  *
+ * @author Andrea Vacondio
  */
 public class App {
+
     public static void main(String[] args) {
-        Injector.addConfig(new PdfsamBasicConfig(), new org.pdfsam.alternatemix.AlternateMixModule.ModuleConfig(),
-                new org.pdfsam.extract.ExtractModule.ModuleConfig(), new org.pdfsam.merge.MergeModule.ModuleConfig(),
-                new org.pdfsam.rotate.RotateModule.ModuleConfig(), new org.pdfsam.split.SplitModule.ModuleConfig(),
-                new org.pdfsam.splitbybookmarks.SplitByBookmarksModule.ModuleConfig(),
-                new org.pdfsam.splitbysize.SplitBySizeModule.ModuleConfig());
+        if (Arrays.stream(args).filter(Objects::nonNull).map(String::toLowerCase)
+                .anyMatch(s -> "--verbose".equals(s) || "-verbose".equals(s) || "-v".equals(s))) {
+            System.setProperty("tinylog.configuration", "tinylog-verbose.properties");
+        }
+
+        Injector.addConfig(new PdfsamBasicConfig(), new AlternateMixTool.ModuleConfig(), new ExtractTool.ModuleConfig(),
+                new MergeTool.ModuleConfig(), new RotateTool.ModuleConfig(), new SplitTool.ModuleConfig(),
+                new SplitByBookmarksTool.ModuleConfig(), new SplitBySizeTool.ModuleConfig(),
+                new AddBackpagesTool.ModuleConfig());
         Application.launch(PdfsamApp.class, args);
     }
 

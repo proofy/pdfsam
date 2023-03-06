@@ -5,13 +5,40 @@
 	<parent>
 		<groupId>org.pdfsam</groupId>
 		<artifactId>pdfsam-parent</artifactId>
-		<version>4.0.4-SNAPSHOT</version>
+		<version>5.0.4-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>pdfsam-service</artifactId>
 	<packaging>jar</packaging>
 	<name>PDFsam service</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>org.pdfsam.service</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						--add-exports javafx.base/com.sun.javafx.logging=ALL-UNNAMED
+						--add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+						--add-exports javafx.graphics/com.sun.javafx.embed=ALL-UNNAMED
+					</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
@@ -29,90 +56,60 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sejda</groupId>
-			<artifactId>sejda-core</artifactId>
-			<version>${sejda.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.sejda</groupId>
-			<artifactId>sejda-model</artifactId>
-			<version>${sejda.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.sejda</groupId>
 			<artifactId>sejda-sambox</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.bouncycastle</groupId>
-					<artifactId>bcprov-jdk15</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.bouncycastle</groupId>
-					<artifactId>bcmail-jdk15</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.poi</groupId>
-					<artifactId>poi-ooxml</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-csv</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>sejda-image-writers</artifactId>
-					<groupId>org.sejda</groupId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<!-- TODO remove once sejda-io 4.x is part of sejda -->
+		<dependency>
+			<groupId>org.sejda</groupId>
+			<artifactId>sejda-io</artifactId>
+		</dependency>
+		<!-- /TODO -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>${bouncycastle.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcmail-jdk15on</artifactId>
-			<version>${bouncycastle.version}</version>
+			<artifactId>bcmail-jdk18on</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.sejda</groupId>
+			<groupId>org.pdfsam</groupId>
 			<artifactId>eventstudio</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.sejda</groupId>
-			<artifactId>sejda-injector</artifactId>
+			<groupId>org.pdfsam</groupId>
+			<artifactId>pdfsam-injector</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.jr</groupId>
-			<artifactId>jackson-jr-objects</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
 		</dependency>
 		<!-- test dependencies -->
 		<dependency>
-			<groupId>jdepend</groupId>
-			<artifactId>jdepend</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.pdfsam</groupId>
-			<artifactId>pdfsam-core</artifactId>
+			<artifactId>pdfsam-test</artifactId>
 			<version>${project.version}</version>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
