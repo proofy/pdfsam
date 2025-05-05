@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 26/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,14 +34,12 @@ import static org.pdfsam.i18n.I18nContext.i18n;
 
 /**
  * Definition of the {@link File} columns of the selection table
- * 
+ *
  * @author Andrea Vacondio
- * 
  */
 public enum FileColumn implements SelectionTableColumn<File> {
 
     NAME {
-
         @Override
         public String getColumnTitle() {
             return i18n().tr("Name");
@@ -79,8 +77,14 @@ public enum FileColumn implements SelectionTableColumn<File> {
         }
 
         @Override
+        public Float prefWidth() {
+            return 200F;
+        }
+
+        @Override
         public Comparator<File> comparator() {
-            return new NumericalSortFilenameComparator(Comparator.comparing(File::getName, Collator.getInstance()));
+            var collator = Collator.getInstance();
+            return new NumericalSortFilenameComparator(collator::compare);
         }
     }
 }

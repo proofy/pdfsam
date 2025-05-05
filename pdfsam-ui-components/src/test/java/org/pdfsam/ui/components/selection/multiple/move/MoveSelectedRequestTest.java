@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 06/ago/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Andrea Vacondio
  */
-public class MoveSelectedEventTest {
+public class MoveSelectedRequestTest {
 
     @Test
     public void nullType() {
-        assertThrows(IllegalArgumentException.class, () -> new MoveSelectedEvent(null));
+        assertThrows(IllegalArgumentException.class, () -> new MoveSelectedRequest(null));
     }
 }

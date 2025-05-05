@@ -1,15 +1,20 @@
 /*
- * This file is part of the PDF Black project
+ * This file is part of the PDF Split And Merge source code
  * Created on 12 feb 2021
- * Copyright 2021 by Sober Lemur S.a.s di Vacondio Andrea (info@soberlemur.com).
+ * Copyright 2021 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
- * You are not permitted to distribute it in any form unless explicit
- * consent is given by Sober Lemur S.a.s di Vacondio Andrea.
- * You are not permitted to modify it.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * PDF Black is distributed WITHOUT ANY WARRANTY;
- * without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pdfsam.core.context;
 
@@ -20,11 +25,14 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import org.pdfsam.core.ConfigurableSystemProperty;
 import org.pdfsam.persistence.PersistenceException;
 import org.pdfsam.persistence.PreferencesRepository;
+import org.pdfsam.test.ValuesRecorder;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,38 +62,42 @@ public class ApplicationPersistentSettingsTest {
     @Test
     @DisplayName("String value is set and notified")
     public void setString() throws PersistenceException {
-        var testListener = victim.settingsChanges(StringPersistentProperty.LOCALE).test();
+        var values = new ValuesRecorder<Optional<String>>();
+        victim.settingsChanges(StringPersistentProperty.LOCALE).subscribe(values);
         victim.set(StringPersistentProperty.LOCALE, "it");
         verify(repo).saveString(StringPersistentProperty.LOCALE.key(), "it");
-        testListener.assertValue(of("it"));
+        assertThat(values.values()).containsExactly(empty(), of("it"));
     }
 
     @Test
     @DisplayName("Null string value is set and notified")
     public void setNullString() throws PersistenceException {
-        var testListener = victim.settingsChanges(StringPersistentProperty.LOCALE).test();
+        var values = new ValuesRecorder<Optional<String>>();
+        victim.settingsChanges(StringPersistentProperty.LOCALE).subscribe(values);
         victim.set(StringPersistentProperty.LOCALE, null);
         verify(repo).saveString(StringPersistentProperty.LOCALE.key(), null);
-        testListener.assertValue(empty());
+        assertThat(values.values()).containsExactly(empty());
     }
 
     @Test
     @DisplayName("Blank string value is set and notified")
     public void setBlankString() throws PersistenceException {
-        var testListener = victim.settingsChanges(StringPersistentProperty.LOCALE).test();
+        var values = new ValuesRecorder<Optional<String>>();
+        victim.settingsChanges(StringPersistentProperty.LOCALE).subscribe(values);
         victim.set(StringPersistentProperty.LOCALE, "   ");
         verify(repo).saveString(StringPersistentProperty.LOCALE.key(), "   ");
-        testListener.assertValue(of("   "));
+        assertThat(values.values()).containsExactly(empty(), of("   "));
     }
 
     @Test
     @DisplayName("Failing repo string value is not notified")
     public void negativeSetString() throws PersistenceException {
         doThrow(PersistenceException.class).when(repo).saveString(StringPersistentProperty.LOCALE.key(), "it");
-        var testListener = victim.settingsChanges(StringPersistentProperty.LOCALE).test();
+        var values = new ValuesRecorder<Optional<String>>();
+        victim.settingsChanges(StringPersistentProperty.LOCALE).subscribe(values);
         victim.set(StringPersistentProperty.LOCALE, "it");
         verify(repo).saveString(StringPersistentProperty.LOCALE.key(), "it");
-        testListener.assertNoValues();
+        assertThat(values.values()).containsExactly(empty());
     }
 
     @Test
@@ -96,20 +109,22 @@ public class ApplicationPersistentSettingsTest {
     @Test
     @DisplayName("Integer value is set and notified")
     public void setInteger() throws PersistenceException {
-        var testListener = victim.settingsChanges(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER).test();
+        var values = new ValuesRecorder<Optional<Integer>>();
+        victim.settingsChanges(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER).subscribe(values);
         victim.set(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER, 14);
         verify(repo).saveInt(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER.key(), 14);
-        testListener.assertValue(of(14));
+        assertThat(values.values()).containsExactly(empty(), of(14));
     }
 
     @Test
     @DisplayName("Failing repo integer value is not notified")
     public void negativeSetInteger() throws PersistenceException {
         doThrow(PersistenceException.class).when(repo).saveInt(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER.key(), 14);
-        var testListener = victim.settingsChanges(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER).test();
+        var values = new ValuesRecorder<Optional<Integer>>();
+        victim.settingsChanges(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER).subscribe(values);
         victim.set(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER, 14);
         verify(repo).saveInt(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER.key(), 14);
-        testListener.assertNoValues();
+        assertThat(values.values()).containsExactly(empty());
     }
 
     @Test
@@ -121,10 +136,11 @@ public class ApplicationPersistentSettingsTest {
     @Test
     @DisplayName("Boolean value is set and notified")
     public void setBoolean() throws PersistenceException {
-        var testListener = victim.settingsChanges(BooleanPersistentProperty.OVERWRITE_OUTPUT).test();
+        var values = new ValuesRecorder<Optional<Boolean>>();
+        victim.settingsChanges(BooleanPersistentProperty.OVERWRITE_OUTPUT).subscribe(values);
         victim.set(BooleanPersistentProperty.OVERWRITE_OUTPUT, true);
         verify(repo).saveBoolean(BooleanPersistentProperty.OVERWRITE_OUTPUT.key(), true);
-        testListener.assertValue(of(true));
+        assertThat(values.values()).containsExactly(empty(), of(true));
     }
 
     @Test
@@ -132,10 +148,11 @@ public class ApplicationPersistentSettingsTest {
     public void negativeSetBoolean() throws PersistenceException {
         doThrow(PersistenceException.class).when(repo)
                 .saveBoolean(BooleanPersistentProperty.OVERWRITE_OUTPUT.key(), true);
-        var testListener = victim.settingsChanges(BooleanPersistentProperty.OVERWRITE_OUTPUT).test();
+        var values = new ValuesRecorder<Optional<Boolean>>();
+        victim.settingsChanges(BooleanPersistentProperty.OVERWRITE_OUTPUT).subscribe(values);
         victim.set(BooleanPersistentProperty.OVERWRITE_OUTPUT, true);
         verify(repo).saveBoolean(BooleanPersistentProperty.OVERWRITE_OUTPUT.key(), true);
-        testListener.assertNoValues();
+        assertThat(values.values()).containsExactly(empty());
     }
 
     @Test
@@ -219,14 +236,31 @@ public class ApplicationPersistentSettingsTest {
     }
 
     @Test
-    public void close() {
-        var intSettings = victim.settingsChanges(IntegerPersistentProperty.LOGVIEW_ROWS_NUMBER).test();
-        var stringSettings = victim.settingsChanges(StringPersistentProperty.LOCALE).test();
-        var booleanSettings = victim.settingsChanges(BooleanPersistentProperty.CHECK_FOR_NEWS).test();
-        victim.close();
-        intSettings.assertComplete();
-        stringSettings.assertComplete();
-        booleanSettings.assertComplete();
+    void hasValueFor() {
+        when(repo.keys()).thenReturn(new String[] {});
+        assertFalse(victim.hasValueFor(StringPersistentProperty.LOCALE));
+        when(repo.keys()).thenReturn(new String[] { "theme" });
+        assertFalse(victim.hasValueFor(StringPersistentProperty.LOCALE));
+        when(repo.keys()).thenReturn(new String[] { "theme", "locale" });
+        assertTrue(victim.hasValueFor(StringPersistentProperty.LOCALE));
+        when(repo.keys()).thenReturn(new String[] { "locale" });
+        assertTrue(victim.hasValueFor(StringPersistentProperty.LOCALE));
     }
 
+    @Test
+    void hasValueForNullProperty() {
+        assertFalse(victim.hasValueFor(null));
+    }
+
+    @Test
+    void delete() {
+        victim.delete(StringPersistentProperty.LOCALE);
+        verify(repo).delete(StringPersistentProperty.LOCALE.key());
+    }
+
+    @Test
+    void deleteNull() {
+        victim.delete(null);
+        verify(repo, never()).delete(StringPersistentProperty.LOCALE.key());
+    }
 }

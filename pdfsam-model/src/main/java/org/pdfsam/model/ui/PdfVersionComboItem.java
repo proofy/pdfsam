@@ -1,11 +1,12 @@
-/* 
+package org.pdfsam.model.ui;
+/*
  * This file is part of the PDF Split And Merge source code
- * Created on 10 dic 2018
- * Copyright 2017 by Sober Lemur S.a.s di Vacondio Andrea (info@pdfsam.org).
+ * Created on 16/10/23
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,12 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.test;
+
+import org.sejda.model.pdf.PdfVersion;
 
 /**
  * @author Andrea Vacondio
- *
  */
-public class NoWindows {
+public interface PdfVersionComboItem {
 
+    PdfVersion getVersion();
+
+    boolean isHigherOrEqual(PdfVersion version);
 }

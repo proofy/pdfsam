@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 25/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,13 +23,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.StringUtils;
 import org.pdfsam.core.context.BooleanPersistentProperty;
 import org.pdfsam.core.support.params.AbstractPdfOutputParametersBuilder;
 import org.pdfsam.core.support.params.TaskParametersBuildStep;
 import org.pdfsam.eventstudio.annotation.EventListener;
 import org.pdfsam.eventstudio.annotation.EventStation;
 import org.pdfsam.model.tool.ToolBound;
+import org.pdfsam.model.ui.DefaultPdfVersionComboItem;
 import org.pdfsam.model.ui.ResettableView;
 import org.pdfsam.model.ui.SetDestinationRequest;
 import org.pdfsam.model.ui.workspace.RestorableView;
@@ -64,7 +64,7 @@ public class PdfDestinationPane extends DestinationPane implements ToolBound, Re
     private final PdfVersionCombo version;
     private final PdfVersionConstrainedCheckBox compress;
     private Optional<CheckBox> discardBookmarks = empty();
-    private String toolBinding = StringUtils.EMPTY;
+    private final String toolBinding;
 
     public PdfDestinationPane(BrowsableField destination, String toolBinding,
             DestinationPanelFields... optionalFields) {
@@ -93,6 +93,8 @@ public class PdfDestinationPane extends DestinationPane implements ToolBound, Re
             discardBookmarksField.getStyleClass().addAll(Style.WITH_HELP.css());
             discardBookmarksField.getStyleClass().addAll(Style.VITEM.css());
             discardBookmarksField.setId("discardBookmarksField");
+            discardBookmarksField.setSelected(
+                    app().persistentSettings().get(BooleanPersistentProperty.DISCARD_BOOKMARKS));
             discardBookmarks = Optional.of(discardBookmarksField);
         }
         HBox versionPane = new HBox(new Label(i18n().tr("Output PDF version:")), version);
@@ -140,7 +142,8 @@ public class PdfDestinationPane extends DestinationPane implements ToolBound, Re
         compress.setSelected(false);
         compress.setSelected(app().persistentSettings().get(BooleanPersistentProperty.PDF_COMPRESSION_ENABLED));
         overwrite().setSelected(app().persistentSettings().get(BooleanPersistentProperty.OVERWRITE_OUTPUT));
-        discardBookmarks.ifPresent(c -> c.setSelected(false));
+        discardBookmarks.ifPresent(
+                c -> c.setSelected(app().persistentSettings().get(BooleanPersistentProperty.DISCARD_BOOKMARKS)));
     }
 
     @Override
@@ -168,7 +171,7 @@ public class PdfDestinationPane extends DestinationPane implements ToolBound, Re
         compress.setSelected(Boolean.parseBoolean(data.get("compress")));
         overwrite().setSelected(Boolean.parseBoolean(data.get("overwrite")));
         discardBookmarks.ifPresent(d -> d.setSelected(Boolean.parseBoolean(data.get("discardBookmarks"))));
-        ofNullable(data.get("version")).map(PdfVersion::valueOf).map(PdfVersionCombo.DefaultPdfVersionComboItem::new)
+        ofNullable(data.get("version")).map(PdfVersion::valueOf).map(DefaultPdfVersionComboItem::new)
                 .ifPresent(v -> this.version.getSelectionModel().select(v));
     }
 

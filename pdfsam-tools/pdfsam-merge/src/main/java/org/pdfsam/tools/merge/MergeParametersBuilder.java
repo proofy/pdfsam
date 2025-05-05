@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 26/giu/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ class MergeParametersBuilder extends AbstractPdfOutputParametersBuilder<MergePar
     private boolean blankIfOdd;
     private boolean footer;
     private PageNormalizationPolicy pageNormalizationPolicy = PageNormalizationPolicy.NONE;
-    private AcroFormPolicy formsPolicy = AcroFormPolicy.MERGE;
+    private AcroFormPolicy formsPolicy = AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS;
     private ToCPolicy tocPolicy = ToCPolicy.NONE;
     private FileTaskOutput output;
 

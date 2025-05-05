@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 26/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,8 @@ import static org.pdfsam.i18n.I18nContext.i18n;
 
 /**
  * Definition of the {@link Long} columns of the selection table
- * 
+ *
  * @author Andrea Vacondio
- * 
  */
 public enum LongColumn implements SelectionTableColumn<Number> {
 
@@ -56,9 +55,13 @@ public enum LongColumn implements SelectionTableColumn<Number> {
         public Comparator<Number> comparator() {
             return Comparator.comparingLong(Number::longValue);
         }
+
+        @Override
+        public Float prefWidth() {
+            return 50F;
+        }
     },
     LAST_MODIFIED {
-
         @Override
         public String getColumnTitle() {
             return i18n().tr("Modified");
@@ -77,6 +80,11 @@ public enum LongColumn implements SelectionTableColumn<Number> {
         @Override
         public Comparator<Number> comparator() {
             return Comparator.comparingLong(Number::longValue);
+        }
+
+        @Override
+        public Float prefWidth() {
+            return 110F;
         }
     };
 

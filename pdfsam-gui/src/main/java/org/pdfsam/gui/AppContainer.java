@@ -2,7 +2,7 @@ package org.pdfsam.gui;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 09/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,6 @@ import javafx.scene.layout.Pane;
 import org.pdfsam.gui.components.sidebar.VerticalSidebar;
 import org.pdfsam.ui.components.support.Style;
 
-import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
-
 /**
  * @author Andrea Vacondio
  */
@@ -44,7 +42,6 @@ public class AppContainer extends BorderPane {
         center.setFitToHeight(true);
         setCenter(center);
         setLeft(sidebar);
-        eventStudio().addAnnotatedListeners(this);
     }
 
     public void setContent(Pane panel) {

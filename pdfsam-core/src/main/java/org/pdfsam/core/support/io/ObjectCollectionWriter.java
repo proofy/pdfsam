@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 15/dic/2011
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.pdfsam.i18n.I18nContext.i18n;
 
@@ -61,9 +62,10 @@ public final class ObjectCollectionWriter implements OngoingWrite {
                 writer.append(defaultLineSeparator(item.toString()));
             }
         } catch (Exception e) {
-            LOG.error(i18n().tr("Error saving log file."), e);
+            LOG.error(i18n().tr("Error saving content to file {0}", ofNullable(file).map(Path::toString).orElse("")),
+                    e);
         }
-        LOG.info(i18n().tr("File {0} saved.", file.toString()));
+        LOG.info(i18n().tr("File {0} saved", file.toString()));
     }
 
     @Override
@@ -74,7 +76,7 @@ public final class ObjectCollectionWriter implements OngoingWrite {
             }
             clipboard.putString(writer.toString());
         } catch (Exception e) {
-            LOG.error(i18n().tr("Error saving log file."), e);
+            LOG.error(i18n().tr("Error saving content to clipboard"), e);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 14/ott/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import javafx.util.Callback;
 import org.pdfsam.model.pdf.PdfDescriptorLoadingStatus;
 import org.pdfsam.model.pdf.PdfDocumentDescriptor;
 import org.pdfsam.model.tool.BaseToolBound;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.ui.components.selection.LoadingStatusIndicatorUpdater;
 import org.pdfsam.ui.components.selection.ShowPasswordFieldPopupRequest;
 import org.slf4j.Logger;
@@ -107,7 +107,7 @@ public class LoadingColumn extends BaseToolBound implements SelectionTableColumn
                             eventStudio().broadcast(new ShowPasswordFieldPopupRequest(getPdfDocumentDescriptor(), this),
                                     toolBinding());
                         } else if (getItem() == WITH_ERRORS) {
-                            eventStudio().broadcast(new ShowErrorMessagesRequest());
+                            eventStudio().broadcast(new ShowLogMessagesRequest());
                         }
                     });
             updater = new LoadingStatusIndicatorUpdater(this);

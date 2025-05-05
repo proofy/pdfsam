@@ -1,13 +1,7 @@
-import org.pdfsam.theme.Dark;
-import org.pdfsam.theme.DarkTeal;
-import org.pdfsam.theme.Light;
-import org.pdfsam.theme.LightMaroon;
-import org.pdfsam.theme.Theme;
-
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +20,8 @@ module org.pdfsam.themes {
     exports org.pdfsam.theme;
 
     requires org.pdfsam.i18n;
-    provides Theme with Light, Dark, LightMaroon, DarkTeal;
+    provides org.pdfsam.theme.Theme with org.pdfsam.theme.Light, org.pdfsam.theme.Dark, org.pdfsam.theme.LightMaroon, org.pdfsam.theme.DarkTeal, org.pdfsam.theme.LightBlue, org.pdfsam.theme.DarkPurple;
 
     opens themes.light;
     opens themes.dark;
-    opens themes.lightmaroon;
-    opens themes.darkteal;
 }

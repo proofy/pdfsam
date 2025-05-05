@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/ott/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,8 +70,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.pdfsam.core.context.ApplicationContext.app;
 import static org.pdfsam.core.context.StringPersistentProperty.THEME;
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
@@ -105,10 +105,6 @@ public class PdfsamApp extends Application {
         }
         app().persistentSettings().get(StringPersistentProperty.LOCALE)
                 .ifPresent(l -> eventStudio().broadcast(new SetLocaleRequest(l)));
-
-        var workingPath = app().persistentSettings().get(StringPersistentProperty.WORKING_PATH)
-                .filter(StringUtils::isNotBlank).map(Paths::get).filter(Files::isDirectory).orElse(null);
-        app().runtimeState().workingPath(workingPath);
     }
 
     @Override
@@ -136,7 +132,8 @@ public class PdfsamApp extends Application {
         closeSplash();
         STOPWATCH.stop();
         eventStudio().broadcast(new StartupEvent());
-        LOG.info(i18n().tr("Started in {0}", DurationFormatUtils.formatDurationWords(STOPWATCH.getTime(), true, true)));
+        LOG.info(i18n().tr("Started in {0}",
+                DurationFormatUtils.formatDurationWords(STOPWATCH.getDuration().toMillis(), true, true)));
         new InputPdfArgumentsConsumer().accept(rawParameters);
     }
 
@@ -160,7 +157,7 @@ public class PdfsamApp extends Application {
     }
 
     private void closeSplash() {
-        Optional.ofNullable(SplashScreen.getSplashScreen()).ifPresent(SplashScreen::close);
+        ofNullable(SplashScreen.getSplashScreen()).ifPresent(SplashScreen::close);
     }
 
     private Scene initScene() {
@@ -229,9 +226,10 @@ public class PdfsamApp extends Application {
     }
 
     private void loadWorkspaceIfRequired() {
-        app().persistentSettings().get(StringPersistentProperty.WORKSPACE_PATH).filter(StringUtils::isNotBlank)
-                .map(Paths::get).filter(Files::exists).map(Path::toFile).map(LoadWorkspaceRequest::new)
-                .ifPresent(eventStudio()::broadcast);
+        ofNullable(getParameters().getNamed().get("workspace")).filter(StringUtils::isNotBlank)
+                .or(() -> app().persistentSettings().get(StringPersistentProperty.WORKSPACE_PATH)
+                        .filter(StringUtils::isNotBlank)).map(Paths::get).filter(Files::exists).map(Path::toFile)
+                .map(LoadWorkspaceRequest::new).ifPresent(eventStudio()::broadcast);
     }
 
     @Override

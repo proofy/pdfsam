@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 08/apr/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -83,9 +83,9 @@ class MergeOptionsPane extends VBox
                 helpIcon(i18n().tr("Set whether pages should be resized to all have the same width as the first one")),
                 2, 0);
 
-        acroForms.getItems().add(new ComboItem<>(AcroFormPolicy.MERGE, i18n().tr("Merge fields")));
         acroForms.getItems().add(new ComboItem<>(AcroFormPolicy.MERGE_RENAMING_EXISTING_FIELDS,
                 i18n().tr("Merge renaming existing fields")));
+        acroForms.getItems().add(new ComboItem<>(AcroFormPolicy.MERGE, i18n().tr("Merge fields")));
         acroForms.getItems().add(new ComboItem<>(AcroFormPolicy.FLATTEN, i18n().tr("Flatten")));
         acroForms.getItems().add(new ComboItem<>(AcroFormPolicy.DISCARD, i18n().tr("Discard forms")));
         acroForms.setId("acroFormsCombo");

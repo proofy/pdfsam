@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 04/feb/2015
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -85,7 +85,7 @@ public class DefaultPdfLoadService implements PdfLoadService {
                     fxMoveStatusTo(current, ENCRYPTED);
                     LOG.warn("User password required for '{}'", current.getFileName(), twpe);
                 } catch (Exception e) {
-                    LOG.error("An error occured loading the document '{}'", current.getFileName(), e);
+                    LOG.error("An error occurred loading the document '{}'", current.getFileName(), e);
                     fxMoveStatusTo(current, WITH_ERRORS);
                 }
                 LOG.info("{} loaded", current.getFileName());

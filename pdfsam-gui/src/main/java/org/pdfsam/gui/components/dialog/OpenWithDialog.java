@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 10 ago 2016
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package org.pdfsam.gui.components.dialog;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -71,7 +72,6 @@ public class OpenWithDialog extends Stage {
     OpenWithDialog(Collection<Tool> tools, @Named("primaryStage") Stage stage) {
         initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.UTILITY);
-        setResizable(false);
         setTitle(i18n().tr("Open with"));
         initOwner(stage);
 
@@ -127,6 +127,10 @@ public class OpenWithDialog extends Stage {
                 });
                 buttons.getChildren().add(current);
             }
+        });
+        Platform.runLater(() -> {
+            getScene().getWindow().sizeToScene();
+            setResizable(false);
         });
         return this;
     }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 29/ott/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import static org.sejda.commons.util.RequireUtils.requireNotNullArg;
  * @param <T> the type of the elements in the combo
  * @author Andrea Vacondio
  */
-public class PreferenceComboBox<T extends ComboItem<String>> extends ComboBox<T> {
+public class PreferenceComboBox<T extends ComboItem<?>> extends ComboBox<T> {
     private static final Logger LOG = LoggerFactory.getLogger(PreferenceComboBox.class);
 
     PreferenceComboBox(StringPersistentProperty property) {
@@ -44,7 +44,7 @@ public class PreferenceComboBox<T extends ComboItem<String>> extends ComboBox<T>
     PreferenceComboBox(StringPersistentProperty property, ApplicationContext context) {
         requireNotNullArg(property, "Preference cannot be null");
         valueProperty().addListener((observable, oldValue, newValue) -> {
-            context.persistentSettings().set(property, newValue.key());
+            context.persistentSettings().set(property, newValue.key().toString());
             LOG.trace("Preference {} set to {}", property, newValue.key());
         });
     }

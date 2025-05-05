@@ -2,7 +2,7 @@ package org.pdfsam.gui.components.sidebar;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 09/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package org.pdfsam.gui.components.sidebar;
 
 import jakarta.inject.Inject;
 import javafx.geometry.Orientation;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -34,7 +35,7 @@ import org.pdfsam.gui.components.content.log.LogContentItem;
 import org.pdfsam.gui.components.content.preference.PreferenceContentItem;
 import org.pdfsam.model.ui.ContentItem;
 import org.pdfsam.model.ui.SetActiveContentItemRequest;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 
 import static javafx.scene.layout.VBox.setVgrow;
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
@@ -64,6 +65,8 @@ public class VerticalSidebar extends BorderPane {
         addButton(homeItem, expandButton);
         var toolsLabel = new Label(i18n().tr("Tools").toUpperCase());
         toolsLabel.getStyleClass().add("sidebar-title");
+        toolsLabel.contentDisplayProperty()
+                .bind(expandButton.selectedProperty().map(b -> b ? ContentDisplay.LEFT : ContentDisplay.GRAPHIC_ONLY));
         buttons.getChildren().addAll(new Separator(Orientation.HORIZONTAL), toolsLabel);
         tools.getChildren().forEach(b -> {
             if (b instanceof SidebarButton button) {
@@ -122,7 +125,7 @@ public class VerticalSidebar extends BorderPane {
     }
 
     @EventListener
-    public void onShowErrorMessagesRequest(ShowErrorMessagesRequest request) {
+    public void onShowErrorMessagesRequest(ShowLogMessagesRequest request) {
         onSetCurrentContentItem(new SetActiveContentItemRequest(LogContentItem.ID));
     }
 }

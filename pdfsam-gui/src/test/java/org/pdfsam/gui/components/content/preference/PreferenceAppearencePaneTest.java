@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 02/set/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -58,11 +59,12 @@ public class PreferenceAppearencePaneTest {
     public void start(Stage stage) {
         Locale.setDefault(Locale.ENGLISH);
         when(appContext.persistentSettings()).thenReturn(persistentSettings);
-        var localeCombo = new PreferenceComboBox<>(StringPersistentProperty.LOCALE, appContext);
+        var localeCombo = new PreferenceComboBox<ComboItem<String>>(StringPersistentProperty.LOCALE, appContext);
         localeCombo.setId("localeCombo");
-        var startupModuleCombo = new PreferenceComboBox<>(StringPersistentProperty.STARTUP_MODULE, appContext);
-        var themeCombo = new PreferenceComboBox<>(StringPersistentProperty.THEME, appContext);
-        var fontSizeCombo = new PreferenceComboBox<>(StringPersistentProperty.FONT_SIZE, appContext);
+        var startupModuleCombo = new PreferenceComboBox<ComboItem<String>>(StringPersistentProperty.STARTUP_MODULE,
+                appContext);
+        var themeCombo = new PreferenceComboBox<ComboItem<String>>(StringPersistentProperty.THEME, appContext);
+        var fontSizeCombo = new PreferenceComboBox<ComboItem<String>>(StringPersistentProperty.FONT_SIZE, appContext);
         PreferenceAppearencePane victim = new PreferenceAppearencePane(localeCombo, startupModuleCombo, themeCombo,
                 fontSizeCombo);
         victim.setId("victim");
@@ -72,6 +74,7 @@ public class PreferenceAppearencePaneTest {
     }
 
     @Test
+    @Tag("NoHeadless")
     public void eventSentOnLocaleChange() {
         Listener<SetLocaleRequest> listener = mock(Listener.class);
         eventStudio().add(SetLocaleRequest.class, listener);

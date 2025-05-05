@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 27/nov/2012
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
+import static org.pdfsam.i18n.I18nContext.i18n;
 
 /**
  * Component listening for {@link TaskExecutionRequest} and triggering the actual execution
@@ -61,12 +62,17 @@ public class TaskExecutionController {
         this.executionService = executionService;
         this.usageService = usageService;
         eventStudio().addAnnotatedListeners(this);
-        GlobalNotificationContext.getContext().addListener(TaskExecutionFailedEvent.class, new TaskEventBroadcaster<>());
-        GlobalNotificationContext.getContext().addListener(TaskExecutionStartedEvent.class, new TaskEventBroadcaster<>());
-        GlobalNotificationContext.getContext().addListener(TaskExecutionCompletedEvent.class,
-                new TaskEventBroadcaster<>());
-        GlobalNotificationContext.getContext().addListener(PercentageOfWorkDoneChangedEvent.class,
-                new TaskEventBroadcaster<>());
+        GlobalNotificationContext.getContext()
+                .addListener(TaskExecutionFailedEvent.class, new TaskEventBroadcaster<>());
+        GlobalNotificationContext.getContext()
+                .addListener(TaskExecutionStartedEvent.class, new TaskEventBroadcaster<>());
+        GlobalNotificationContext.getContext().addListener(TaskExecutionCompletedEvent.class, e -> {
+            e.getNotifiableTaskMetadata().skippedOutput().forEach(
+                    f -> LOG.warn(i18n().tr("The following file already existed and was skipped: {0}", f.getName())));
+            new TaskEventBroadcaster<>().onEvent(e);
+        });
+        GlobalNotificationContext.getContext()
+                .addListener(PercentageOfWorkDoneChangedEvent.class, new TaskEventBroadcaster<>());
     }
 
     /**
@@ -94,7 +100,7 @@ public class TaskExecutionController {
         @Override
         public void onEvent(T event) {
             Platform.runLater(() -> eventStudio().broadcast(event));
-            if (isNoneBlank(currentModule)) {
+            if (isNotBlank(currentModule)) {
                 Platform.runLater(() -> eventStudio().broadcast(event, currentModule));
             }
         }

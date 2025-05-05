@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 22 ott 2015
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ public enum BrandableProperty {
     HOME_LABEL("pdfsam.home.label"),
     VERSION("pdfsam.version"),
     COPYRIGHT("pdfsam.copyright"),
+    VENDOR_URL("pdfsam.vendor.url"),
     LICENSE_NAME("pdfsam.license.name"),
     LICENSE_URL("pdfsam.license.url"),
     FEED_URL("pdfsam.feed.url"),
@@ -37,13 +38,13 @@ public enum BrandableProperty {
     TRACKER_URL("pdfsam.tracker.url"),
     SUPPORT_URL("pdfsam.support.url"),
     DOCUMENTATION_URL("pdfsam.documentation.url"),
-    TWITTER_URL("pdfsam.twitter.url"),
+    BLUESKY_URL("pdfsam.bsky.url"),
     FACEBOOK_URL("pdfsam.facebook.url"),
     TRANSLATE_URL("pdfsam.translate.url"),
     SCM_URL("pdfsam.scm.url"),
     DONATE_URL("pdfsam.donate.url"),
-    TWEETER_SHARE_URL("pdfsam.tweeter.share.url"),
     FACEBOOK_SHARE_URL("pdfsam.facebook.share.url"),
+    BLUESKY_SHARE_URL("pdfsam.bsky.share.url"),
     NEWS_URL("pdfsam.news.url"),
     PREMIUM_TOOLS_URL("pdfsam.premium.tools.url"),
     DOWNLOAD_URL("pdfsam.download.url"),

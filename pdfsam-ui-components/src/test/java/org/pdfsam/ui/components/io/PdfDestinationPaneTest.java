@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 import org.pdfsam.core.context.BooleanPersistentProperty;
+import org.pdfsam.model.ui.PdfVersionComboItem;
 import org.pdfsam.model.ui.SetDestinationRequest;
 import org.pdfsam.test.ClearEventStudioExtension;
 import org.pdfsam.test.JavaFxThreadInitializeExtension;
-import org.pdfsam.ui.components.io.PdfVersionCombo.PdfVersionComboItem;
 import org.sejda.model.pdf.PdfVersion;
 
 import java.io.File;

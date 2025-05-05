@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 03 dic 2015
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package org.pdfsam.gui.components.dialog;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -42,7 +43,6 @@ public class ConfirmationDialog extends Stage {
     public ConfirmationDialog(DialogStyle style, Stage owner, String positiveButtonText, String negativeButtonText) {
         initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.UTILITY);
-        setResizable(false);
         initOwner(owner);
         this.dialogContent = new ConfirmationDialogContent(style.icon);
         VBox containerPane = new VBox();
@@ -55,7 +55,13 @@ public class ConfirmationDialog extends Stage {
         Scene scene = new Scene(containerPane);
         setScene(scene);
         app().registerScene(scene);
-        this.setOnShown(e -> requestFocus());
+        this.setOnShown(e -> {
+            Platform.runLater(() -> {
+                setResizable(false);
+                getScene().getWindow().sizeToScene();
+            });
+            requestFocus();
+        });
     }
 
     ConfirmationDialog title(String title) {

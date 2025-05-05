@@ -2,7 +2,7 @@ package org.pdfsam.gui.theme;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 06/10/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,8 @@ package org.pdfsam.gui.theme;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.apache.commons.lang3.SystemUtils;
+import javafx.application.ColorScheme;
+import javafx.application.Platform;
 import org.pdfsam.theme.Theme;
 
 import java.util.Collections;
@@ -60,32 +61,19 @@ public class Themes {
         return null;
     }
 
-    //TODO replace with some logic to at least detect light/dark theme and provide a sensible default
     private static Theme defaultTheme() {
         require(!THEMES.isEmpty(), () -> new IllegalStateException("No theme available"));
-        if (isDarkTheme()) {
-            for (Theme theme : THEMES.values()) {
-                if (theme.isDark()) {
-                    return theme;
-                }
-            }
-        }
+        ColorScheme colorScheme = Platform.getPreferences().getColorScheme();
         for (Theme theme : THEMES.values()) {
-            if (!theme.isDark()) {
+            if (theme.isDefault() && isSameScheme(theme, colorScheme)) {
                 return theme;
             }
         }
         return THEMES.get(THEMES.firstKey());
     }
 
-    private static boolean isDarkTheme() {
-        if (SystemUtils.IS_OS_WINDOWS) {
-
-        }
-        if (SystemUtils.IS_OS_MAC) {
-
-        }
-        return false;
+    private static boolean isSameScheme(Theme theme, ColorScheme colorScheme) {
+        return theme.isDark() == (ColorScheme.DARK == colorScheme);
     }
 
     /**

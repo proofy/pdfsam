@@ -2,20 +2,21 @@
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the pdfsam package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-01-27 11:09+0100\n"
-"PO-Revision-Date: 2023-01-10 18:50+0000\n"
-"Last-Translator: Roman Martinuk <Unknown>\n"
+"POT-Creation-Date: 2024-10-23 17:08+0200\n"
+"PO-Revision-Date: 2025-04-18 09:55+0200\n"
+"Last-Translator: Sergej <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-01-31 10:16+0000\n"
-"X-Generator: Launchpad (build 37f563e5839786fe8704ac9cf25657dfd53c73fd)\n"
+"X-Launchpad-Export-Date: 2025-04-17 17:36+0000\n"
+"X-Generator: Autopo v1.0.1\n"
+"Language: ru\n"
 
 msgid "No PDF document has been selected"
 msgstr "Не выбран файл PDF"
@@ -41,8 +42,9 @@ msgstr "Отдельный файл для каждого набора стра�
 msgid "Each continuous series of pages will generate a separate PDF file"
 msgstr "Каждая непрерывная серия страниц будет создавать отдельный файл PDF"
 
-msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
-msgstr "например: 2 или 5-23 или 2,5-7,12-"
+msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12- or 3,last)"
+msgstr ""
+"Страницы для извлечения (напр.: 2, или 5-23, или 2,5-7,12-, или 3,last)"
 
 msgid "Invalid page ranges"
 msgstr "Некорректный интервал страниц"
@@ -52,10 +54,10 @@ msgstr "Извлечь страницы:"
 
 msgid ""
 "Comma separated page numbers or ranges to extract (ex: 2 or 5-23 or 2,5-7,12-"
-")"
+" or 3,last)"
 msgstr ""
-"Номера страниц или диапазоны, разделенные запятыми, для извлечения "
-"(например: 2 или 5-23 или 2,5-7,12-)"
+"Номера страниц или диапазоны для извлечения через запятую (напр.: 2, или 5-"
+"23, или 2,5-7,12-, или 3,last)"
 
 msgid "Split by bookmarks"
 msgstr "Разбить по закладкам"
@@ -101,7 +103,7 @@ msgid "Split"
 msgstr "Разделение"
 
 msgid "Split a PDF document at the given page numbers."
-msgstr "Разделяет документ PDF на указанных страницах."
+msgstr "Разделить документ PDF на указанных страницах."
 
 msgid "Every page"
 msgstr "Каждая страница"
@@ -115,11 +117,10 @@ msgstr "Нечётные страницы"
 msgid "Split the document after the given page numbers"
 msgstr "Разбить документ после указанных номеров страниц"
 
-msgid ""
-"Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
+msgid "Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
 msgstr ""
-"Разделяет документ PDF на каждой n-ной странице, создавая документы с числом "
-"страниц n каждый"
+"Разделить документ PDF на каждой N-ной странице, создавая документы с числом "
+"страниц N в каждом"
 
 msgid "Split after the following page numbers"
 msgstr "Разбить после следующих номеров страниц"
@@ -158,7 +159,7 @@ msgid "Split by size"
 msgstr "Разбить по размеру"
 
 msgid "Split a PDF document in files of the given size (roughly)."
-msgstr "Разделяет документ PDF на файлы заданного размера (грубо)."
+msgstr "Разделить документ PDF на файлы заданного размера (грубо)."
 
 msgid "Set the size to split at"
 msgstr "Установить размер для разделения"
@@ -182,11 +183,10 @@ msgid ""
 "Merge two or more PDF documents taking pages alternately in natural or "
 "reverse order."
 msgstr ""
-"Объединение двух или более PDF документов, принимая страницы поочередно в "
+"Объединить два или более PDF документов, принимая страницы поочередно в "
 "исходном или обратном порядке."
 
-msgid ""
-"Double click to set pages you want to mix (ex: 2 or 5-23 or 2,5-7,12-)"
+msgid "Double click to set pages you want to mix (ex: 2 or 5-23 or 2,5-7,12-)"
 msgstr ""
 "Дважды щелкните мышью чтобы ввести номера страниц (например: 2 или 5-23 или "
 "2,5-7,12-)"
@@ -253,24 +253,25 @@ msgid "None"
 msgstr "Нет"
 
 msgid "Same width as first page"
-msgstr ""
+msgstr "Ширина как у первой страницы"
 
 msgid "Same width as first page (based on page orientation)"
 msgstr ""
+"Та же ширина, что у первой страницы (в зависимости от ориентации страницы)"
 
 msgid "Pages normalization:"
-msgstr ""
+msgstr "Нормализация страниц:"
 
 msgid ""
 "Set whether pages should be resized to all have the same width as the first "
 "one"
-msgstr ""
-
-msgid "Merge fields"
-msgstr "Объединить поля"
+msgstr "Привести размеры всех страниц к ширине первой страницы"
 
 msgid "Merge renaming existing fields"
 msgstr "Объединить и переименовать поля"
+
+msgid "Merge fields"
+msgstr "Объединить поля"
 
 msgid "Flatten"
 msgstr "Объединить слои"
@@ -327,12 +328,11 @@ msgstr ""
 msgid "Merge"
 msgstr "Объединение"
 
-msgid "Merge together multiple PDF documents or subsections of them."
-msgstr "Объединить несколько файлов PDF целиком или частично"
+msgid "Merge multiple PDF documents or subsections of them."
+msgstr "Объединить несколько PDF-документов или их подразделов."
 
 msgid "Select or drag and drop the PDF whose pages will be repeated"
-msgstr ""
-"Выберите или перетащите PDF-файл, страницы которого будут повторяться"
+msgstr "Выберите или перетащите PDF-файл, страницы которого будут повторяться"
 
 msgid "Repeat these pages:"
 msgstr "Повторите эти страницы:"
@@ -360,8 +360,8 @@ msgid "Repeat the selected pages every \"n\" pages of the original document"
 msgstr ""
 "Повторять выбранные страницы через каждые 'n' страниц исходного документа"
 
-msgid "The selected PDF file is invalid"
-msgstr "Выбранный PDF файл неисправен"
+msgid "A .pdf extension is required for the repeating file"
+msgstr ""
 
 msgid "The number of pages must be a positive number"
 msgstr "Количество страниц должно быть положительным числом"
@@ -370,17 +370,20 @@ msgid "Select or drag and drop the PDF you want to insert pages to"
 msgstr ""
 "Выберите или перетащите PDF-файл, в который вы хотите вставить страницы"
 
+msgid "A .pdf destination file extension is required"
+msgstr "Требуется разрешение файла .pdf"
+
 msgid "Insert and Repeat settings"
 msgstr "Вставить и повторить настройки"
 
 msgid "Insert pages multiple times"
-msgstr "Вставлять страницы несколько раз"
+msgstr "Вставить страницы несколько раз"
 
 msgid ""
 "Insert the pages of a PDF document A into another document B, repeating it "
 "after a certain number of pages, resulting in B1 A B2 A B3 A etc."
 msgstr ""
-"Вставьте страницы PDF-документа A в другой документ B, повторив это через "
+"Вставить страницы PDF-документа A в другой документ B, повторив это через "
 "определенное количество страниц, в результате чего получится B1 A B2 A B3 A "
 "и т. д."
 
@@ -401,7 +404,7 @@ msgid "Tools"
 msgstr "Инструменты"
 
 msgid "News"
-msgstr ""
+msgstr "Новости"
 
 msgid "What's new"
 msgstr "Что нового"
@@ -413,13 +416,13 @@ msgid "Exit"
 msgstr "Выйти"
 
 msgid "Exit the application"
-msgstr ""
+msgstr "Выйти из приложения"
 
 msgid "Workspace"
 msgstr "Рабочий профиль"
 
 msgid "Manage your workspaces"
-msgstr ""
+msgstr "Управление рабочими профилями"
 
 msgid "Yes"
 msgstr "Да"
@@ -504,11 +507,10 @@ msgstr "PDFsam пробует устранить ошибку"
 
 msgid ""
 "It may result in PDF files with partial or missing data, proceed anyway?"
-msgstr ""
-"Возможна частичная или полная потеря данных в файлах PDF. Продолжить?"
+msgstr "Возможна частичная или полная потеря данных в файлах PDF. Продолжить?"
 
 msgid "Removes all the log messages"
-msgstr ""
+msgstr "Удалить все сообщения журнала"
 
 msgid "_Clear"
 msgstr "_Очистить"
@@ -517,7 +519,7 @@ msgid "_Save"
 msgstr "_Сохранить"
 
 msgid "C_lose"
-msgstr ""
+msgstr "З_акрыть"
 
 msgid "Copy"
 msgstr "Копировать"
@@ -539,7 +541,7 @@ msgid "Select where to save the log file"
 msgstr "Выбрать место сохранения файла отчёта"
 
 msgid "Logs"
-msgstr ""
+msgstr "Журналы"
 
 msgid "Application messages"
 msgstr "Сообщения приложения"
@@ -622,7 +624,7 @@ msgid "About"
 msgstr "О программе"
 
 msgid "Home"
-msgstr ""
+msgstr "Панель модулей"
 
 msgid "Premium features"
 msgstr "Дополнительные возможности"
@@ -654,10 +656,16 @@ msgid "Set the application theme"
 msgstr "Установить тему приложения"
 
 msgid "Font size:"
-msgstr ""
+msgstr "Размер шрифта:"
 
 msgid "Set the application font size"
-msgstr ""
+msgstr "Выбрать размер шрифта приложения"
+
+msgid "Default PDF version:"
+msgstr "Версия PDF по умолчанию:"
+
+msgid "Default PDF version for generated PDF files"
+msgstr "Версия PDF по умолчанию для создаваемых PDF-файлов"
 
 msgid "Manually selected"
 msgstr "Выбран вручную"
@@ -668,6 +676,22 @@ msgid ""
 msgstr ""
 "Автоматически установить директорию назначения в выбранный каталог PDF "
 "документа"
+
+msgid "Default prefix:"
+msgstr "Префикс по умолчанию:"
+
+msgid ""
+"Default prefix for output file names, used in tools that generate multiple "
+"files"
+msgstr ""
+"Префикс имён выходных файлов по умолчанию для инструментов, создающих "
+"несколько файлов"
+
+msgid "Some special keywords are replaced with runtime values."
+msgstr "Некоторые ключевые слова заменены значениями переменных"
+
+msgid "Right click to add these keywords."
+msgstr "Щелкните правой кнопкой мыши для добавления этих ключевых слов"
 
 msgid "Settings"
 msgstr "Настройки"
@@ -684,8 +708,7 @@ msgstr "Каталог для вывода результатов"
 msgid "Check for updates now"
 msgstr "Проверить наличие обновлений"
 
-msgid ""
-"Select a directory where documents will be saved and loaded by default"
+msgid "Select a directory where documents will be saved and loaded by default"
 msgstr ""
 "Выберите каталог, куда документы будут сохранятся и загружатся по умолчанию"
 
@@ -707,7 +730,7 @@ msgid "Load default workspace at startup:"
 msgstr "Загрузить рабочий профиль при запуске:"
 
 msgid "System default"
-msgstr ""
+msgstr "Системные настройки"
 
 msgid "Check for updates at startup"
 msgstr "Проверить наличие обновлений при запуске"
@@ -724,7 +747,8 @@ msgid ""
 "Set whether the application should check for news availability on startup "
 "(restart needed)"
 msgstr ""
-"Установите нужно ли проверять наличие новостей при запуске (нужен перезапуск)"
+"Установите нужно ли проверять наличие новостей при запуске (нужен "
+"перезапуск)"
 
 msgid "Enabled PDF compression"
 msgstr "Сжатие файлов включено"
@@ -732,11 +756,13 @@ msgstr "Сжатие файлов включено"
 msgid "Set whether \"Compress output file\" should be enabled by default"
 msgstr "Должно ли \"Сжатие выходных файлов\" быть включено по умолчанию"
 
+msgid "Set whether \"Discard bookmarks\" should be enabled by default"
+msgstr "Должна ли настройка \"Отбросить закладки\" быть включена по умолчанию"
+
 msgid "Overwrite files"
 msgstr "Перезаписать файлы"
 
-msgid ""
-"Set whether \"Overwrite if already exists\" should be enabled by default"
+msgid "Set whether \"Overwrite if already exists\" should be enabled by default"
 msgstr ""
 "Установить включенным по умолчанию \"Перезаписать, если уже существует\"."
 
@@ -872,6 +898,10 @@ msgstr "Этот документ зашифрован, нажмите для в
 msgid "An error has occurred, click for more details."
 msgstr "Произошла ошибка, кликните для получения подробной информации."
 
+#, java-format
+msgid "Version {0}"
+msgstr "Версия {0}"
+
 msgid "Split tools"
 msgstr "Инструменты разделения"
 
@@ -943,12 +973,17 @@ msgstr "Невозможно сохранить рабочий профиль в
 msgid "Loading workspace from {0}"
 msgstr "Загрузка рабочего профиля из {0}"
 
-msgid "Workspace loaded"
-msgstr "Рабочий профиль загружен"
+#, java-format
+msgid "Workspace loaded: {0}"
+msgstr "Загружен рабочий профиль: {0}"
 
 #, java-format
 msgid "Unable to load workspace from {0}"
 msgstr "Невозможно загрузить рабочий профиль из {0}"
+
+#, java-format
+msgid "The following file already existed and was skipped: {0}"
+msgstr "Следующие файлы уже существуют, поэтому пропущены: {0}"
 
 msgid "Light with blue"
 msgstr "Светлый с синим"
@@ -960,7 +995,7 @@ msgid "Dark with teal"
 msgstr "Темный с бирюзовым"
 
 msgid "Light with maroon"
-msgstr ""
+msgstr "Светлый с бордовым"
 
 msgid "Close"
 msgstr "Закрыть"
@@ -974,8 +1009,8 @@ msgstr "Выберите файл PDF"
 msgid "_Select PDF"
 msgstr "Выберите PDF"
 
-msgid "Clear all settings"
-msgstr "Очистить все настройки"
+msgid "C_lear all settings"
+msgstr "С_тереть все настройки"
 
 #, java-format
 msgid "Pages: {0}, PDF Version: {1}"
@@ -1029,6 +1064,18 @@ msgstr "Переместить в конец"
 msgid "Duplicate"
 msgstr "Дублировать"
 
+msgid "Duplicate at Top"
+msgstr "Дублировать в самый верх"
+
+msgid "Duplicate Up"
+msgstr "Дублировать выше"
+
+msgid "Duplicate Down"
+msgstr "Дублировать ниже"
+
+msgid "Duplicate at Bottom"
+msgstr "Дублировать в самый низ"
+
 msgid "Selected pages"
 msgstr "Выбранные страницы"
 
@@ -1073,9 +1120,6 @@ msgstr "_Удалить"
 
 msgid "Removes every document"
 msgstr "Убирает каждый документ"
-
-msgid "C_lear all settings"
-msgstr "С_тереть все настройки"
 
 msgid "Moves up selected documents"
 msgstr "Сдвигает выше выделенные документы"
@@ -1132,7 +1176,8 @@ msgstr "Сжимать выходной файл(ы)."
 msgid ""
 "Tick the box if you don't want to retain any bookmark from the original PDF "
 "document"
-msgstr "Поставьте галочку если хотите сохранить закладки исходного файла PDF"
+msgstr ""
+"Поставьте галочку если не хотите сохранить закладки исходного файла PDF"
 
 msgid "Output PDF version:"
 msgstr "Версия PDF при сохранении:"
@@ -1148,11 +1193,11 @@ msgstr "Заменить, если уже существует"
 
 msgid ""
 "Tick the box if you want to overwrite the output files if they already exist."
+""
 msgstr "Поставьте флажок, если хотите перезаписать существующий файл"
 
-#, java-format
-msgid "Version {0}"
-msgstr "Версия {0}"
+msgid "The selected PDF file is invalid"
+msgstr "Выбранный PDF файл неисправен"
 
 msgid "Same as the input document"
 msgstr "Как в редактируемом документе"
@@ -1182,26 +1227,20 @@ msgstr "Префикс для имён сгенерированных файло
 msgid "Add prefix"
 msgstr "Добавить префикс"
 
-msgid "DEFAULT_PREFIX"
-msgstr ""
-
 msgid "Generated PDF documents name prefix:"
 msgstr "Префикс названия документа PDF:"
 
 msgid "Prefix for the output files name."
 msgstr "Префикс для имён выходных файлов"
 
-msgid "Some special keywords are replaced with runtime values."
-msgstr "Некоторые ключевые слова заменены значениями переменных"
-
-msgid "Right click to add these keywords."
-msgstr "Щелкните правой кнопкой мыши для добавления этих ключевых слов"
+msgid "DEFAULT_PREFIX"
+msgstr "DEFAULT_PREFIX"
 
 msgid "Run"
 msgstr "Выполнить"
 
 msgid "Run the task"
-msgstr ""
+msgstr "Запустить задание"
 
 msgid "Requested"
 msgstr "Проверка файлов"
@@ -1219,16 +1258,16 @@ msgstr "Выполнение"
 msgid "Running {0}%"
 msgstr "Выполнено {0}%"
 
-msgid "Error saving log file."
-msgstr "Ошибка записи файла отчёта."
+#, java-format
+msgid "Error saving content to file {0}"
+msgstr "Ошибка при сохранении содержимого в файл {0}"
 
 #, java-format
-msgid "File {0} saved."
-msgstr "Файл {0} сохранён."
+msgid "File {0} saved"
+msgstr "Файл {0} сохранён"
 
-#, java-format
-msgid "Invalid range: {0}."
-msgstr "Неверный диапазон: {0}."
+msgid "Error saving content to clipboard"
+msgstr "Ошибка при сохранении содержимого в буфер обмена"
 
 #, java-format
 msgid ""
@@ -1237,6 +1276,10 @@ msgid ""
 msgstr ""
 "Неоднозначное определение диапазона страниц: {0}. Используйте следующие "
 "форматы: [n] или [n1-n2] или [-n] или [n-]"
+
+#, java-format
+msgid "Invalid range: {0}."
+msgstr "Неверный диапазон: {0}."
 
 #, java-format
 msgid "Invalid number: {0}."

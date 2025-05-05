@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 29/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package org.pdfsam.ui.components.tool;
 import javafx.scene.control.Button;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.unicons.UniconsLine;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.ui.components.support.Style;
 
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
@@ -43,6 +43,6 @@ class TaskFailedButton extends Button {
         setGraphic(FontIcon.of(UniconsLine.TIMES_CIRCLE));
         setMaxHeight(Double.MAX_VALUE);
         setPrefHeight(Double.MAX_VALUE);
-        setOnAction(e -> eventStudio().broadcast(new ShowErrorMessagesRequest()));
+        setOnAction(e -> eventStudio().broadcast(new ShowLogMessagesRequest()));
     }
 }

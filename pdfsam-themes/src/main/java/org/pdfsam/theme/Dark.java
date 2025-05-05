@@ -2,7 +2,7 @@ package org.pdfsam.theme;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,19 +30,20 @@ public class Dark extends Light {
 
     @Override
     public String id() {
-        return "KDJ4FJ49D46H09JV1";
+        return "L38O0OAA1Q355HXZ";
     }
 
     @Override
     public List<String> stylesheets() {
         var styles = new ArrayList<>(super.stylesheets());
         styles.add("/themes/dark/colors.css");
+        styles.add("/themes/dark/theme.css");
         return styles;
     }
 
     @Override
     public String name() {
-        return i18n().tr("Dark with purple");
+        return i18n().tr("Dark");
     }
 
     @Override

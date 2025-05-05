@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 29/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,25 +42,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PrefixFieldTest {
 
     private PrefixField victim;
-    private PrefixField secondVictim;
 
     @Start
     public void start(Stage stage) {
-        victim = new PrefixField(null);
-        secondVictim = new PrefixField("ChuckNorris");
-        Scene scene = new Scene(new HBox(victim, secondVictim));
+        victim = new PrefixField();
+        Scene scene = new Scene(new HBox(victim));
         stage.setScene(scene);
         stage.show();
-    }
-
-    @Test
-    public void defaultValue() {
-        assertEquals("PDFsam_", victim.getText());
-    }
-
-    @Test
-    public void placeHolderValue() {
-        assertEquals("ChuckNorris", secondVictim.getText());
     }
 
     @Test

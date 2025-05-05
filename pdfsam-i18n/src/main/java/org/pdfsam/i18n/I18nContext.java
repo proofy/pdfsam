@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 13/dic/2011
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,14 @@
  */
 package org.pdfsam.i18n;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.ReplaySubject;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import org.pdfsam.eventstudio.annotation.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -45,38 +44,41 @@ public final class I18nContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(I18nContext.class);
 
-    private final Set<Locale> supported = Set.of(Locale.of("af"), Locale.of("eu"), Locale.of("bs"),
-            Locale.of("pt", "BR"), Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE, Locale.of("co"),
-            Locale.of("hr"), Locale.of("cs"), Locale.of("da"), Locale.of("nl"), Locale.UK, Locale.FRENCH, Locale.GERMAN,
-            Locale.of("he"), Locale.of("hu"), Locale.of("el"), Locale.JAPANESE, Locale.ITALIAN, Locale.of("pl"),
-            Locale.of("pt"), Locale.of("ro"), Locale.of("ru"), Locale.of("sk"), Locale.of("sl"), Locale.of("sr"),
-            Locale.of("sv"), Locale.of("es"), Locale.of("tr"), Locale.of("uk"), Locale.of("fi"), Locale.of("ko"));
+    private final Set<Locale> supported = Set.of(Locale.of("af"), Locale.of("bs"), Locale.of("bg"), Locale.of("el"),
+            Locale.of("eu"), Locale.of("pt", "BR"), Locale.SIMPLIFIED_CHINESE, Locale.TRADITIONAL_CHINESE,
+            Locale.of("co"), Locale.of("ca"), Locale.of("hr"), Locale.of("cs"), Locale.of("da"), Locale.of("nl"),
+            Locale.UK, Locale.FRENCH, Locale.GERMAN, Locale.of("he"), Locale.of("hi"), Locale.of("hu"), Locale.JAPANESE,
+            Locale.ITALIAN, Locale.of("pl"), Locale.of("pt"), Locale.of("ro"), Locale.of("ru"), Locale.of("sk"),
+            Locale.of("sl"), Locale.of("sr"), Locale.of("sv"), Locale.of("es"), Locale.of("tr"), Locale.of("uk"),
+            Locale.of("fi"), Locale.of("ko"), Locale.of("oc"));
 
-    private final ReplaySubject<Locale> locale = ReplaySubject.createWithSize(1);
-
+    private final SimpleObjectProperty<Locale> locale = new SimpleObjectProperty<>();
     private Optional<ResourceBundle> bundle = empty();
 
     I18nContext() {
         eventStudio().addAnnotatedListeners(this);
-        locale.filter(Objects::nonNull)
-                .subscribe(this::loadBundle, e -> LOG.error("Unable to load translations bundle", e));
+        locale.subscribe(this::loadBundles);
     }
 
     @EventListener
     public void setLocale(SetLocaleRequest e) {
         if (nonNull(e.languageTag()) && !e.languageTag().isBlank()) {
             LOG.trace("Setting locale to {}", e.languageTag());
-            ofNullable(Locale.forLanguageTag(e.languageTag())).filter(supported::contains).ifPresent(locale::onNext);
+            ofNullable(Locale.forLanguageTag(e.languageTag())).filter(supported::contains).ifPresent(locale::set);
         }
     }
 
-    private void loadBundle(Locale l) {
+    private void loadBundles(Locale l) {
         if (nonNull(l)) {
             Locale.setDefault(l);
             LOG.trace("Loading i18n bundle for {}", Locale.getDefault());
-            this.bundle = ofNullable(ResourceBundle.getBundle("org.pdfsam.i18n.Messages", Locale.getDefault(),
-                    I18nContext.class.getModule()));
-            LOG.debug("Locale set to {}", Locale.getDefault());
+            try {
+                this.bundle = ofNullable(ResourceBundle.getBundle("org.pdfsam.i18n.Messages", Locale.getDefault(),
+                        I18nContext.class.getModule()));
+                LOG.debug("Locale set to {}", Locale.getDefault());
+            } catch (Exception e) {
+                LOG.error("Unable to load translations bundle", e);
+            }
         }
     }
 
@@ -102,11 +104,10 @@ public final class I18nContext {
     }
 
     /**
-     * @return an {@link Observable} {@link Locale} representing the current locale
+     * @return an {@link ObservableValue} {@link Locale} representing the current locale
      */
-    public Observable<Locale> locale() {
-        return this.locale.hide();
-
+    public ObservableValue<Locale> locale() {
+        return this.locale;
     }
 
     public String tr(String text) {
@@ -126,7 +127,7 @@ public final class I18nContext {
 
     private void initBundleIfRequired() {
         if (bundle.isEmpty()) {
-            locale.onNext(getBestLocale());
+            locale.set(getBestLocale());
         }
     }
 

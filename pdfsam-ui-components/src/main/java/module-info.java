@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 02/10/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,9 @@ module org.pdfsam.ui.components {
     exports org.pdfsam.ui.components.io;
     exports org.pdfsam.ui.components.notification;
     exports org.pdfsam.ui.components.prefix;
+    exports org.pdfsam.ui.components.selection;
     exports org.pdfsam.ui.components.selection.multiple;
+    exports org.pdfsam.ui.components.selection.multiple.move;
     exports org.pdfsam.ui.components.selection.single;
     exports org.pdfsam.ui.components.support;
     exports org.pdfsam.ui.components.tool;

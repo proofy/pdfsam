@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 19/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package org.pdfsam.core.context;
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -28,11 +27,18 @@ import org.pdfsam.injector.Key;
 import org.pdfsam.persistence.PreferencesRepository;
 
 import java.io.Closeable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static org.pdfsam.core.context.StringPersistentProperty.FONT_SIZE;
+import static org.pdfsam.core.context.StringPersistentProperty.WORKING_PATH;
+import static org.pdfsam.core.support.params.ConversionUtils.toWeb;
 
 /**
  * @author Andrea Vacondio
@@ -44,7 +50,6 @@ public class ApplicationContext implements Closeable {
     private final ApplicationPersistentSettings persistentSettings;
     private ApplicationRuntimeState runtimeState;
     private Optional<Injector> injector = Optional.empty();
-    private CompositeDisposable disposable = new CompositeDisposable();
 
     private ApplicationContext() {
         this(new ApplicationPersistentSettings(new PreferencesRepository("/org/pdfsam/user/conf")), null);
@@ -80,6 +85,16 @@ public class ApplicationContext implements Closeable {
         synchronized (this) {
             if (Objects.isNull(this.runtimeState)) {
                 this.runtimeState = new ApplicationRuntimeState();
+                //listen for changes in the working path
+                this.persistentSettings().settingsChanges(WORKING_PATH).subscribe(path -> {
+                    this.runtimeState.defaultWorkingPath(
+                            path.filter(StringUtils::isNotBlank).map(Paths::get).filter(Files::isDirectory)
+                                    .orElse(null));
+                });
+
+                var workingPath = persistentSettings().get(WORKING_PATH).filter(StringUtils::isNotBlank).map(Paths::get)
+                        .filter(Files::isDirectory).orElse(null);
+                this.runtimeState.defaultWorkingPath(workingPath);
             }
         }
         return this.runtimeState;
@@ -91,26 +106,33 @@ public class ApplicationContext implements Closeable {
      * @param scene
      */
     public void registerScene(Scene scene) {
-        disposable.add(this.runtimeState().theme().subscribe(t -> {
-            scene.getStylesheets().setAll(t.stylesheets());
-            if (!Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)) {
-                scene.getStylesheets().addAll(t.transparentIncapableStylesheets());
+        this.runtimeState().theme().subscribe(t -> {
+            if (Objects.nonNull(t)) {
+                Platform.runLater(() -> {
+                    scene.getStylesheets().setAll(t.stylesheets());
+                    if (!Platform.isSupported(ConditionalFeature.TRANSPARENT_WINDOW)) {
+                        scene.getStylesheets().addAll(t.transparentIncapableStylesheets());
+                    }
+                    ofNullable(t.defaultPrimary()).or(() -> of(toWeb(Platform.getPreferences().getAccentColor())))
+                            .map(c -> String.format(".root{-default-primary: %s;}", c))
+                            .map(css -> "data:text/css;base64," + Base64.getEncoder().encodeToString(css.getBytes()))
+                            .ifPresent(scene.getStylesheets()::add);
+                    this.persistentSettings().get(FONT_SIZE).filter(not(String::isBlank))
+                            .ifPresent(size -> scene.getRoot().setStyle(String.format("-fx-font-size: %s;", size)));
+                });
             }
-        }));
-        disposable.add(this.persistentSettings().settingsChanges(FONT_SIZE).subscribe(size -> {
+        });
+        this.persistentSettings().settingsChanges(FONT_SIZE).subscribe(size -> {
             size.filter(StringUtils::isNotBlank).map(s -> String.format("-fx-font-size: %s;", s))
                     .ifPresentOrElse(scene.getRoot()::setStyle, () -> scene.getRoot().setStyle(""));
-        }));
-
-        this.persistentSettings().get(FONT_SIZE).filter(not(String::isBlank))
-                .ifPresent(size -> scene.getRoot().setStyle(String.format("-fx-font-size: %s;", size)));
+        });
     }
 
     /**
      * Sets the injector
      */
     public void injector(Injector injector) {
-        this.injector = Optional.ofNullable(injector);
+        this.injector = ofNullable(injector);
     }
 
     /**
@@ -133,9 +155,6 @@ public class ApplicationContext implements Closeable {
     @Override
     public void close() {
         injector.ifPresent(Injector::close);
-        runtimeState().close();
-        persistentSettings.close();
-        disposable.dispose();
     }
 
 }

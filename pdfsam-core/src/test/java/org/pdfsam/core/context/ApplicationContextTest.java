@@ -1,16 +1,26 @@
 package org.pdfsam.core.context;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.pdfsam.injector.Injector;
+import org.pdfsam.persistence.PreferencesRepository;
+import org.pdfsam.test.ValuesRecorder;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 19/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,14 +37,29 @@ import static org.mockito.Mockito.verify;
  */
 class ApplicationContextTest {
 
-    @Test
-    void persistentSettings() {
+    private PreferencesRepository repo;
+    private ApplicationPersistentSettings persistentSettings;
+
+    @BeforeEach
+    public void setUp() {
+        repo = mock(PreferencesRepository.class);
+        persistentSettings = new ApplicationPersistentSettings(repo);
     }
 
     @Test
-    void runtimeStateIsCreated() {
-        var victim = new ApplicationContext(mock(ApplicationPersistentSettings.class), null);
+    void runtimeStateIsCreated(@TempDir Path tempDir) {
+        var victim = new ApplicationContext(persistentSettings, null);
         Assertions.assertNotNull(victim.runtimeState());
+
+    }
+
+    @Test
+    void runtimeWorkingPathIsBoundToPersistentSetting(@TempDir Path tempDir) {
+        var victim = new ApplicationContext(persistentSettings, null);
+        var values = new ValuesRecorder<Optional<Path>>();
+        victim.runtimeState().workingPath().subscribe(values);
+        victim.persistentSettings().set(StringPersistentProperty.WORKING_PATH, tempDir.toString());
+        assertThat(values.values()).containsExactly(empty(), of(tempDir));
     }
 
     @Test
@@ -46,16 +71,6 @@ class ApplicationContextTest {
     }
 
     @Test
-    void close() {
-        var persistentState = mock(ApplicationPersistentSettings.class);
-        var runtimeState = mock(ApplicationRuntimeState.class);
-        var victim = new ApplicationContext(persistentState, runtimeState);
-        victim.close();
-        verify(persistentState).close();
-        verify(runtimeState).close();
-    }
-
-    @Test
     void closeWithInjector() {
         var persistentState = mock(ApplicationPersistentSettings.class);
         var runtimeState = mock(ApplicationRuntimeState.class);
@@ -63,8 +78,6 @@ class ApplicationContextTest {
         var victim = new ApplicationContext(persistentState, runtimeState);
         victim.injector(injector);
         victim.close();
-        verify(persistentState).close();
-        verify(runtimeState).close();
         verify(injector).close();
     }
 }

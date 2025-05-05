@@ -2,7 +2,7 @@ package org.pdfsam.tools.backpages;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 23/11/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -89,7 +89,7 @@ public class AddBackpagesToolPanel extends BaseToolPanel {
         if (destinationField.getValidationState() == FXValidationSupport.ValidationState.VALID) {
             builder.output(FileOrDirectoryTaskOutput.file(new File(destinationField.getText())));
         } else {
-            onError.accept(i18n().tr("The selected PDF file is invalid"));
+            onError.accept(i18n().tr("A .pdf destination file extension is required"));
         }
         destinationPane.apply(builder, onError);
         return builder;

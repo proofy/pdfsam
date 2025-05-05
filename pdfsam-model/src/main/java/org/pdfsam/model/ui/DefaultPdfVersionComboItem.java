@@ -1,7 +1,8 @@
+package org.pdfsam.model.ui;
 /*
  * This file is part of the PDF Split And Merge source code
- * Created on 28/giu/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Created on 17/10/23
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,19 +17,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pdfsam.ui.components.selection.multiple.move;
 
+import org.sejda.model.pdf.PdfVersion;
+
+import static org.pdfsam.i18n.I18nContext.i18n;
 import static org.sejda.commons.util.RequireUtils.requireNotNullArg;
 
 /**
- * Notifies that selected elements in the selection table should be moved
+ * Default implementation for a combo item representing a {@link PdfVersion}
  *
  * @author Andrea Vacondio
  */
-public record MoveSelectedEvent(MoveType type) {
+public class DefaultPdfVersionComboItem extends ComboItem<PdfVersion> implements PdfVersionComboItem {
 
-    public MoveSelectedEvent {
-        requireNotNullArg(type, "Type cannot be null");
+    public DefaultPdfVersionComboItem(PdfVersion version) {
+        super(version, i18n().tr("Version {0}", version.getVersionString()));
+        requireNotNullArg(version, "PDF version cannot be null");
     }
 
+    @Override
+    public PdfVersion getVersion() {
+        return this.key();
+    }
+
+    @Override
+    public boolean isHigherOrEqual(PdfVersion version) {
+        return this.key().getVersion() >= version.getVersion();
+    }
 }

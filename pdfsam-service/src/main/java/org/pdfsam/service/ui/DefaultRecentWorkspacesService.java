@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 11/dic/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@ public class DefaultRecentWorkspacesService implements RecentWorkspacesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRecentWorkspacesService.class);
 
-    static final int MAX_CAPACITY = 5;
+    static final int MAX_CAPACITY = 20;
     private final PreferencesRepository repo;
     private final Map<String, String> cache = new LRUMap<>(MAX_CAPACITY);
 

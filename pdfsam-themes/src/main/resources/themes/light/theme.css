@@ -12,6 +12,10 @@
     -fx-fill: -default-font-color;
 }
 
+.svg-icon {
+    -fx-fill: -default-font-color;
+}
+
 .default-container {
     -fx-background-color: -default-background-color;
     -fx-background-insets: 0.0;
@@ -49,7 +53,7 @@
 }
 
 .content-pane {
-    -fx-padding: 0.666667em 0.333333emem 0.666667em 0.333333emem;
+    -fx-padding: 0.666667em 0.333333emem 0.666667em 0.333333em;
 }
 
 .encryption-status {
@@ -181,7 +185,6 @@
     -fx-background-insets: 0.0;
     -fx-background-radius: 4.0
 }
-
 
 /**
 btn
@@ -474,6 +477,20 @@ btn
  */
 .selection-table {
     -fx-min-height: 15.0em;
+}
+
+.table-row-cell:drag-hovered-row-top,
+.table-row-cell:drag-hovered-row-bottom {
+    -fx-border-color: -drag-drop-mark-color;
+    -fx-border-radius: 0.0;
+}
+
+.table-row-cell:drag-hovered-row-top {
+    -fx-border-width: 0.11111em 0 0 0;
+}
+
+.table-row-cell:drag-hovered-row-bottom {
+    -fx-border-width: 0 0 0.11111em 0;
 }
 
 /**

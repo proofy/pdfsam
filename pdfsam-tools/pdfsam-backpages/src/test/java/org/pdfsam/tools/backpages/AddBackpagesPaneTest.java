@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -32,7 +33,7 @@ import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 23/11/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,6 +49,7 @@ import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 @ExtendWith({ ApplicationExtension.class })
+@Tag("NoHeadless")
 class AddBackpagesPaneTest {
 
     private static final String TOOL_ID = "AddBackpages";

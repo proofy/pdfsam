@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 19/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,8 @@
  */
 package org.pdfsam.core.context;
 
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import io.reactivex.rxjava3.subjects.ReplaySubject;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import org.apache.commons.lang3.StringUtils;
 import org.pdfsam.model.tool.Tool;
 import org.pdfsam.theme.Theme;
@@ -32,10 +31,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -47,32 +48,21 @@ import static java.util.stream.Collectors.toMap;
  *
  * @author Andrea Vacondio
  */
-public class ApplicationRuntimeState implements AutoCloseable {
+public class ApplicationRuntimeState {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationRuntimeState.class);
 
-    private final BehaviorSubject<Optional<Path>> workingPath = BehaviorSubject.createDefault(empty());
-    private final BehaviorSubject<Optional<Tool>> activeTool = BehaviorSubject.createDefault(empty());
-    private final ReplaySubject<Theme> theme = ReplaySubject.create(1);
-    private final CompletableFuture<Map<String, Tool>> tools;
+    private Path defaultWorkingPath;
+    private final SimpleObjectProperty<Optional<Path>> workingPath = new SimpleObjectProperty<>(empty());
+    private final SimpleObjectProperty<Optional<Tool>> activeTool = new SimpleObjectProperty<>(empty());
+    private final SimpleObjectProperty<Theme> theme = new SimpleObjectProperty<>();
+    private final Future<Map<String, Tool>> tools;
 
     ApplicationRuntimeState() {
-        this.tools = CompletableFuture.supplyAsync(
-                () -> ServiceLoader.load(Tool.class).stream().map(ServiceLoader.Provider::get)
-                        .collect(toMap(Tool::id, identity()))).exceptionally(e -> {
-            LOG.error("Unable to load tools list", e);
-            return null;
-        });
-    }
-
-    /**
-     * Sets the current working path for the application
-     *
-     * @param path a valid path string. A blank or null or non directory value clears the current working path
-     */
-    public void workingPath(String path) {
-        this.workingPath(ofNullable(path).filter(StringUtils::isNotBlank).map(Paths::get).orElse(null));
-
+        try (var executor = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("tools-loader-", 0).factory())) {
+            this.tools = executor.submit(() -> ServiceLoader.load(Tool.class).stream().map(ServiceLoader.Provider::get)
+                    .collect(toMap(Tool::id, identity())));
+        }
     }
 
     /**
@@ -80,8 +70,8 @@ public class ApplicationRuntimeState implements AutoCloseable {
      *
      * @param path the current working directory or the parent in case of regular file. A null value clears the current working path
      */
-    public void workingPath(Path path) {
-        workingPath.onNext(ofNullable(path).map(p -> {
+    void workingPath(Path path) {
+        workingPath.set(ofNullable(path).map(p -> {
             if (Files.isRegularFile(p)) {
                 return p.getParent();
             }
@@ -89,8 +79,38 @@ public class ApplicationRuntimeState implements AutoCloseable {
         }).filter(Files::isDirectory));
     }
 
-    public Observable<Optional<Path>> workingPath() {
-        return workingPath.hide();
+    /**
+     * Sets the current working path for the application unless there is a default one already set.
+     * This method does nothing in case there is a user defined default working path.
+     *
+     * @param path a valid path string. A blank or null or non directory value clears the current working path
+     */
+    public void maybeWorkingPath(String path) {
+        this.maybeWorkingPath(ofNullable(path).filter(StringUtils::isNotBlank).map(Paths::get).orElse(null));
+    }
+
+    /**
+     * Sets the current working path for the application unless there is a default one already set.
+     * This method does nothing in case there is a user defined default working path.
+     *
+     * @param path the current working directory or the parent in case of regular file. A null value clears the current working path
+     * @see #workingPath(Path)
+     */
+    public void maybeWorkingPath(Path path) {
+        if (Objects.isNull(defaultWorkingPath)) {
+            workingPath(path);
+        }
+    }
+
+    /**
+     * @return the current workingPath value
+     */
+    public Optional<Path> workingPathValue() {
+        return workingPath.getValue();
+    }
+
+    public ObservableValue<Optional<Path>> workingPath() {
+        return workingPath;
     }
 
     /**
@@ -109,7 +129,7 @@ public class ApplicationRuntimeState implements AutoCloseable {
      * @param activeTool the tool currently active
      */
     public void activeTool(Tool activeTool) {
-        this.activeTool.onNext(ofNullable(activeTool));
+        this.activeTool.set(ofNullable(activeTool));
     }
 
     /**
@@ -119,28 +139,27 @@ public class ApplicationRuntimeState implements AutoCloseable {
         return activeTool.getValue();
     }
 
-    public Observable<Optional<Tool>> activeTool() {
-        return activeTool.hide();
+    public ObservableValue<Optional<Tool>> activeTool() {
+        return activeTool;
     }
 
     /**
      * @return the current theme
      */
-    public Observable<Theme> theme() {
-        return this.theme.hide();
+    public ObservableValue<Theme> theme() {
+        return this.theme;
     }
 
     /**
      * Sets the application theme
      */
     public void theme(Theme theme) {
-        ofNullable(theme).ifPresent(this.theme::onNext);
+        ofNullable(theme).ifPresent(this.theme::set);
     }
 
-    @Override
-    public void close() {
-        workingPath.onComplete();
-        theme.onComplete();
-        activeTool.onComplete();
+    void defaultWorkingPath(Path defaultWorkingPath) {
+        this.defaultWorkingPath = defaultWorkingPath;
+        workingPath(defaultWorkingPath);
     }
+
 }

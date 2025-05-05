@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 21/ott/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import org.sejda.core.Sejda;
 
 import java.util.Arrays;
 
+import static org.pdfsam.core.BrandableProperty.BLUESKY_URL;
 import static org.pdfsam.core.BrandableProperty.COPYRIGHT;
 import static org.pdfsam.core.BrandableProperty.DOCUMENTATION_URL;
 import static org.pdfsam.core.BrandableProperty.DONATE_URL;
@@ -51,7 +52,7 @@ import static org.pdfsam.core.BrandableProperty.SCM_URL;
 import static org.pdfsam.core.BrandableProperty.SUPPORT_URL;
 import static org.pdfsam.core.BrandableProperty.TRACKER_URL;
 import static org.pdfsam.core.BrandableProperty.TRANSLATE_URL;
-import static org.pdfsam.core.BrandableProperty.TWITTER_URL;
+import static org.pdfsam.core.BrandableProperty.VENDOR_URL;
 import static org.pdfsam.core.BrandableProperty.VERSION;
 import static org.pdfsam.core.support.io.ObjectCollectionWriter.writeContent;
 import static org.pdfsam.i18n.I18nContext.i18n;
@@ -67,12 +68,11 @@ public class AboutPane extends HBox {
     public AboutPane(AppBrand appBrand) {
         getStyleClass().add("spaced-container");
         getStyleClass().add("about-panel");
-        VBox left = new VBox(6);
+        var left = new VBox(6);
         addSectionTitle(appBrand.property(BrandableProperty.NAME, "PDFsam Basic"), left);
-        Label copyright = new Label(appBrand.property(COPYRIGHT));
-        copyright.setGraphic(FontIcon.of(UniconsLine.COPYRIGHT));
-        left.getChildren().addAll(new Label(String.format("ver. %s", appBrand.property(VERSION))), copyright);
-        addHyperlink(null, appBrand.property(LICENSE_URL), appBrand.property(LICENSE_NAME), left);
+        left.getChildren().addAll(new Label(String.format("ver. %s", appBrand.property(VERSION))));
+        addHyperlink(UniconsLine.COPYRIGHT, appBrand.property(VENDOR_URL), appBrand.property(COPYRIGHT), left);
+        addHyperlink(UniconsLine.BALANCE_SCALE, appBrand.property(LICENSE_URL), appBrand.property(LICENSE_NAME), left);
         addHyperlink(UniconsLine.HOME, appBrand.property(HOME_URL), appBrand.property(HOME_LABEL), left);
         addHyperlink(UniconsLine.RSS, appBrand.property(FEED_URL), i18n().tr("Subscribe to the official news feed"),
                 left);
@@ -113,7 +113,7 @@ public class AboutPane extends HBox {
         addHyperlink(UniconsLine.DOLLAR_ALT, appBrand.property(DONATE_URL), i18n().tr("Donate"), right);
 
         addSectionTitle(i18n().tr("Social"), right);
-        addHyperlink(UniconsLine.TWITTER, appBrand.property(TWITTER_URL), i18n().tr("Follow us on Twitter"), right);
+        addHyperlink(null, appBrand.property(BLUESKY_URL), i18n().tr("Follow us on Bluesky"), right);
         addHyperlink(UniconsLine.FACEBOOK, appBrand.property(FACEBOOK_URL), i18n().tr("Like us on Facebook"), right);
         getChildren().addAll(left, right);
     }
@@ -124,9 +124,10 @@ public class AboutPane extends HBox {
         pane.getChildren().add(label);
     }
 
-    private void addHyperlink(Ikon icon, String url, String text, Pane pane) {
+    private UrlButton addHyperlink(Ikon icon, String url, String text, Pane pane) {
         UrlButton button = UrlButton.styledUrlButton(text, url, icon);
         button.getStyleClass().setAll("pdfsam-hyperlink");
         pane.getChildren().add(button);
+        return button;
     }
 }

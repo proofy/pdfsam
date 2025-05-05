@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 29/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.test.ClearEventStudioExtension;
 import org.pdfsam.test.HitTestListener;
 import org.testfx.api.FxRobot;
@@ -54,8 +54,8 @@ public class TaskFailedButtonTest {
 
     @Test
     public void failButtonVisibleOnFailure(FxRobot robot) {
-        HitTestListener<ShowErrorMessagesRequest> hit = new HitTestListener<>();
-        eventStudio().add(ShowErrorMessagesRequest.class, hit);
+        HitTestListener<ShowLogMessagesRequest> hit = new HitTestListener<>();
+        eventStudio().add(ShowLogMessagesRequest.class, hit);
         robot.clickOn(".footer-failed-button");
         assertTrue(hit.isHit());
     }

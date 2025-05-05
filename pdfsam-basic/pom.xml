@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.pdfsam</groupId>
         <artifactId>pdfsam-parent</artifactId>
-        <version>5.0.4-SNAPSHOT</version>
+        <version>5.3.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -86,7 +86,7 @@
                                         <argument>--output</argument>
                                         <argument>${project.build.directory}/assembled/runtime</argument>
                                         <argument>--compress</argument>
-                                        <argument>2</argument>
+                                        <argument>zip-6</argument>
                                         <argument>--no-header-files</argument>
                                         <argument>--no-man-pages</argument>
                                         <argument>--strip-debug</argument>
@@ -173,6 +173,18 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>pdfsam-ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -220,7 +232,7 @@
                                         <argument>"Open source desktop application to split, merge, rotate, extract pages and mix PDF files"
                                         </argument>
                                         <argument>--copyright</argument>
-                                        <argument>"Copyright 2023, Sober Lemur S.r.l."</argument>
+                                        <argument>"Copyright 2025, Sober Lemur S.r.l."</argument>
                                         <argument>--vendor</argument>
                                         <argument>"Sober Lemur S.r.l."</argument>
                                         <argument>--icon</argument>
@@ -283,7 +295,7 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>pdfsam-${project.version}-${os.detected.name}</finalName>
+                                    <finalName>pdfsam-basic-${project.version}-${os.detected.classifier}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <descriptors>
                                         <descriptor>src/assembly/portable-win.xml</descriptor>
@@ -360,7 +372,7 @@
                                     <artifacts>
                                         <artifact>
                                             <file>
-                                                ${project.build.directory}/pdfsam-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.msi
+                                                ${project.build.directory}/pdfsam-basic-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${os.detected.classifier}.msi
                                             </file>
                                             <type>msi</type>
                                         </artifact>
@@ -395,7 +407,7 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>pdfsam-${project.version}-${os.detected.name}</finalName>
+                                    <finalName>pdfsam-basic-${project.version}-${os.detected.classifier}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <descriptors>
                                         <descriptor>src/assembly/portable-linux.xml</descriptor>
@@ -407,7 +419,7 @@
                     <plugin>
                         <artifactId>jdeb</artifactId>
                         <groupId>org.vafer</groupId>
-                        <version>1.10</version>
+                        <version>1.12</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -415,7 +427,7 @@
                                     <goal>jdeb</goal>
                                 </goals>
                                 <configuration>
-                                    <deb>[[buildDir]]/pdfsam_[[version]]-1_amd64.[[extension]]</deb>
+                                    <deb>[[buildDir]]/pdfsam-basic_[[version]]-1_amd64.[[extension]]</deb>
                                     <dataSet>
                                         <data>
                                             <src>${project.build.directory}/assembled/bin/pdfsam.sh</src>
@@ -499,7 +511,7 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>pdfsam-${project.version}-${os.detected.name}</finalName>
+                                    <finalName>pdfsam-basic-${project.version}-${os.detected.classifier}</finalName>
                                     <appendAssemblyId>false</appendAssemblyId>
                                     <descriptors>
                                         <descriptor>src/assembly/portable.xml</descriptor>
@@ -567,7 +579,7 @@
                                         <argument>Open source desktop application to split, merge, rotate, extract pages and mix PDF files
                                         </argument>
                                         <argument>--copyright</argument>
-                                        <argument>Copyright 2023, Sober Lemur S.r.l.</argument>
+                                        <argument>Copyright 2025, Sober Lemur S.r.l.</argument>
                                         <argument>--vendor</argument>
                                         <argument>Sober Lemur S.r.l.</argument>
                                         <argument>--icon</argument>
@@ -642,7 +654,7 @@
                                 <configuration>
                                     <artifacts>
                                         <artifact>
-                                            <file>${project.build.directory}/pdfsam-${project.version}.dmg</file>
+                                            <file>${project.build.directory}/pdfsam-basic-${project.version}-${os.detected.classifier}.dmg</file>
                                             <type>dmg</type>
                                         </artifact>
                                     </artifacts>
@@ -658,9 +670,9 @@
     <build>
         <extensions>
             <extension>
-                <groupId>kr.motd.maven</groupId>
+                <groupId>org.pdfsam.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <version>2.0.0</version>
             </extension>
         </extensions>
         <resources>

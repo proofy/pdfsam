@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 09/ago/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitMenuButton;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -35,7 +36,7 @@ import org.pdfsam.ui.components.selection.multiple.SelectionTableToolbar.ClearBu
 import org.pdfsam.ui.components.selection.multiple.SelectionTableToolbar.MoveDownButton;
 import org.pdfsam.ui.components.selection.multiple.SelectionTableToolbar.MoveUpButton;
 import org.pdfsam.ui.components.selection.multiple.SelectionTableToolbar.RemoveButton;
-import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedEvent;
+import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedRequest;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -78,6 +79,7 @@ public class SelectionTableToolbarTest {
     }
 
     @Test
+    @Tag("NoHeadless")
     public void clearAllSettings(FxRobot robot) {
         Listener<ClearToolRequest> listener = mock(Listener.class);
         ArgumentCaptor<ClearToolRequest> captor = ArgumentCaptor.forClass(ClearToolRequest.class);
@@ -109,8 +111,8 @@ public class SelectionTableToolbarTest {
 
     @Test
     public void moveUp(FxRobot robot) {
-        HitTestListener<MoveSelectedEvent> listener = new HitTestListener<>();
-        eventStudio().add(MoveSelectedEvent.class, listener, MODULE);
+        HitTestListener<MoveSelectedRequest> listener = new HitTestListener<>();
+        eventStudio().add(MoveSelectedRequest.class, listener, MODULE);
         Node victim = robot.lookup(b -> b instanceof MoveUpButton).query();
         enableByFiringSelectionChange(victim);
         robot.clickOn(victim);
@@ -119,8 +121,8 @@ public class SelectionTableToolbarTest {
 
     @Test
     public void moveDown(FxRobot robot) {
-        HitTestListener<MoveSelectedEvent> listener = new HitTestListener<>();
-        eventStudio().add(MoveSelectedEvent.class, listener, MODULE);
+        HitTestListener<MoveSelectedRequest> listener = new HitTestListener<>();
+        eventStudio().add(MoveSelectedRequest.class, listener, MODULE);
         Node victim = robot.lookup(b -> b instanceof MoveDownButton).query();
         enableByFiringSelectionChange(victim);
         robot.clickOn(victim);

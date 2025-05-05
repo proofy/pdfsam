@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 26/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,12 +26,13 @@ import javafx.util.Callback;
 
 import java.util.Comparator;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Definition of a column in the selection table
- * 
+ *
+ * @param <T> type of the column data
  * @author Andrea Vacondio
- * @param <T>
- *            type of the column data
  */
 public interface SelectionTableColumn<T> extends TableColumnProvider<T> {
 
@@ -67,6 +68,10 @@ public interface SelectionTableColumn<T> extends TableColumnProvider<T> {
         };
     }
 
+    default Float prefWidth() {
+        return null;
+    }
+
     /**
      * @param item
      * @return the String representation of the given item
@@ -97,6 +102,7 @@ public interface SelectionTableColumn<T> extends TableColumnProvider<T> {
         tableColumn.setCellFactory(cellFactory());
         tableColumn.setCellValueFactory(cellValueFactory());
         tableColumn.setComparator(comparator());
+        ofNullable(prefWidth()).ifPresent(tableColumn::setPrefWidth);
         return tableColumn;
     }
 

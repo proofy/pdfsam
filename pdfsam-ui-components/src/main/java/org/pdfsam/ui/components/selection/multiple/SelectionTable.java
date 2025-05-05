@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 27/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,22 @@
  */
 package org.pdfsam.ui.components.selection.multiple;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableRow;
@@ -39,8 +47,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Region;
 import javafx.stage.Window;
-import org.apache.commons.lang3.StringUtils;
+import javafx.util.Duration;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.unicons.UniconsLine;
@@ -61,7 +70,7 @@ import org.pdfsam.ui.components.selection.PasswordFieldPopup;
 import org.pdfsam.ui.components.selection.RemoveSelectedEvent;
 import org.pdfsam.ui.components.selection.SetPageRangesRequest;
 import org.pdfsam.ui.components.selection.ShowPasswordFieldPopupRequest;
-import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedEvent;
+import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedRequest;
 import org.pdfsam.ui.components.selection.multiple.move.MoveType;
 import org.pdfsam.ui.components.selection.multiple.move.SelectionAndFocus;
 import org.slf4j.Logger;
@@ -81,6 +90,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.Objects.nonNull;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.defaultString;
@@ -100,14 +110,21 @@ import static org.pdfsam.model.ui.SetDestinationRequest.requestFallbackDestinati
 public class SelectionTable extends TableView<SelectionTableRowData> implements ToolBound, RestorableView {
 
     private static final Logger LOG = LoggerFactory.getLogger(SelectionTable.class);
-
+    private static final PseudoClass DRAG_HOVERED_TOP_ROW_PSEUDO_CLASS = PseudoClass.getPseudoClass(
+            "drag-hovered-row-top");
+    private static final PseudoClass DRAG_HOVERED_BOTTOM_ROW_PSEUDO_CLASS = PseudoClass.getPseudoClass(
+            "drag-hovered-row-bottom");
     private static final DataFormat DND_TABLE_SELECTION_MIME_TYPE = new DataFormat(
             "application/x-java-table-selection-list");
 
-    private String toolBinding = StringUtils.EMPTY;
+    private final String toolBinding;
     private final Label placeHolder = new Label(i18n().tr("Drag and drop PDF files here"));
     private final PasswordFieldPopup passwordPopup;
+    private final IntegerProperty hoverIndex = new SimpleIntegerProperty(-1);
     private Consumer<SelectionChangedEvent> selectionChangedConsumer;
+
+    private final Timeline scrollTimeline = new Timeline();
+    private double scrollDirection = 0;
 
     public SelectionTable(String toolBinding, boolean canDuplicateItems, boolean canMove,
             TableColumnProvider<?>... columns) {
@@ -116,7 +133,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getColumns().add(new IndexColumn());
         Arrays.stream(columns).forEach(c -> getColumns().add(c.getTableColumn()));
-        setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
+        setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         getStyleClass().add("selection-table");
         initDragAndDrop(canMove);
         getSelectionModel().getSelectedIndices().addListener((Change<? extends Integer> c) -> {
@@ -163,7 +180,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             setPageRangesItem.setOnAction(e -> eventStudio().broadcast(
                     new SetPageRangesRequest(getSelectionModel().getSelectedItem().pageSelection.get()),
                     toolBinding()));
-            setPageRangesItem.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN));
+            setPageRangesItem.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN));
             selectionChangedConsumer = selectionChangedConsumer.andThen(
                     e -> setPageRangesItem.setDisable(!e.isSingleSelection()));
             contextMenu.getItems().add(setPageRangesItem);
@@ -182,18 +199,19 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         if (canMove) {
             MenuItem moveTopSelected = createMenuItem(i18n().tr("Move to Top"), UniconsLine.ANGLE_DOUBLE_UP);
             moveTopSelected.setOnAction(
-                    e -> eventStudio().broadcast(new MoveSelectedEvent(MoveType.TOP), toolBinding()));
+                    e -> eventStudio().broadcast(new MoveSelectedRequest(MoveType.TOP), toolBinding()));
 
             MenuItem moveUpSelected = createMenuItem(i18n().tr("Move Up"), UniconsLine.ANGLE_UP);
-            moveUpSelected.setOnAction(e -> eventStudio().broadcast(new MoveSelectedEvent(MoveType.UP), toolBinding()));
+            moveUpSelected.setOnAction(
+                    e -> eventStudio().broadcast(new MoveSelectedRequest(MoveType.UP), toolBinding()));
 
             MenuItem moveDownSelected = createMenuItem(i18n().tr("Move Down"), UniconsLine.ANGLE_DOWN);
             moveDownSelected.setOnAction(
-                    e -> eventStudio().broadcast(new MoveSelectedEvent(MoveType.DOWN), toolBinding()));
+                    e -> eventStudio().broadcast(new MoveSelectedRequest(MoveType.DOWN), toolBinding()));
 
             MenuItem moveBottomSelected = createMenuItem(i18n().tr("Move to Bottom"), UniconsLine.ANGLE_DOUBLE_DOWN);
             moveBottomSelected.setOnAction(
-                    e -> eventStudio().broadcast(new MoveSelectedEvent(MoveType.BOTTOM), toolBinding()));
+                    e -> eventStudio().broadcast(new MoveSelectedRequest(MoveType.BOTTOM), toolBinding()));
 
             contextMenu.getItems().addAll(moveTopSelected, moveUpSelected, moveDownSelected, moveBottomSelected);
 
@@ -210,14 +228,40 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
             });
         }
         if (canDuplicate) {
-            MenuItem duplicateItem = createMenuItem(i18n().tr("Duplicate"), UniconsLine.COPY);
-            duplicateItem.setOnAction(e -> eventStudio().broadcast(new DuplicateSelectedEvent(), toolBinding()));
-            duplicateItem.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.ALT_DOWN));
+            Menu duplicateItem = new Menu(i18n().tr("Duplicate"));
+            duplicateItem.setGraphic(FontIcon.of(UniconsLine.COPY));
+            duplicateItem.setDisable(true);
 
+            MenuItem duplicateTop = createMenuItem(i18n().tr("Duplicate at Top"), null);
+            duplicateTop.setOnAction(
+                    e -> eventStudio().broadcast(new DuplicateSelectedEvent(DuplicateType.TOP), toolBinding()));
+            duplicateTop.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.ALT_DOWN));
+
+            MenuItem duplicateUp = createMenuItem(i18n().tr("Duplicate Up"), null);
+            duplicateUp.setOnAction(
+                    e -> eventStudio().broadcast(new DuplicateSelectedEvent(DuplicateType.UP), toolBinding()));
+            duplicateUp.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT3, KeyCombination.ALT_DOWN));
+
+            MenuItem duplicateDown = createMenuItem(i18n().tr("Duplicate Down"), null);
+            duplicateDown.setOnAction(
+                    e -> eventStudio().broadcast(new DuplicateSelectedEvent(DuplicateType.DOWN), toolBinding()));
+            duplicateDown.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT4, KeyCombination.ALT_DOWN));
+
+            MenuItem duplicateBottom = createMenuItem(i18n().tr("Duplicate at Bottom"), null);
+            duplicateBottom.setOnAction(
+                    e -> eventStudio().broadcast(new DuplicateSelectedEvent(DuplicateType.BOTTOM), toolBinding()));
+            duplicateBottom.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.ALT_DOWN));
+
+            duplicateItem.getItems().addAll(duplicateTop, duplicateUp, duplicateDown, duplicateBottom);
             contextMenu.getItems().add(duplicateItem);
 
-            selectionChangedConsumer = selectionChangedConsumer.andThen(
-                    e -> duplicateItem.setDisable(e.isClearSelection()));
+            selectionChangedConsumer = selectionChangedConsumer.andThen(e -> {
+                duplicateItem.setDisable(e.isClearSelection());
+                duplicateTop.setDisable(e.isClearSelection());
+                duplicateBottom.setDisable(e.isClearSelection());
+                duplicateUp.setDisable(e.isClearSelection());
+                duplicateDown.setDisable(e.isClearSelection());
+            });
         }
     }
 
@@ -258,13 +302,23 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
     private MenuItem createMenuItem(String text, Ikon icon) {
         var item = new MenuItem(text);
-        //TODO set font size 1.1 em
-        item.setGraphic(FontIcon.of(icon));
+        // TODO set font size 1.1 em
+        if (nonNull(icon)) {
+            item.setGraphic(FontIcon.of(icon));
+        }
         item.setDisable(true);
         return item;
     }
 
     private void initDragAndDrop(boolean canMove) {
+        scrollTimeline.setCycleCount(Timeline.INDEFINITE);
+        scrollTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(20), "Scroll", event -> dragScroll()));
+
+        addEventFilter(DragEvent.DRAG_OVER, this::autoscrollIfNeeded);
+        addEventFilter(DragEvent.DRAG_EXITED, this::stopAutoScrollIfNeeded);
+        addEventFilter(DragEvent.DRAG_DROPPED, this::stopAutoScrollIfNeeded);
+        addEventFilter(DragEvent.DRAG_DONE, this::stopAutoScrollIfNeeded);
+
         setOnDragOver(e -> dragConsume(e, this.onDragOverConsumer()));
         setOnDragEntered(e -> dragConsume(e, this.onDragEnteredConsumer()));
         setOnDragExited(this::onDragExited);
@@ -286,9 +340,24 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
                 });
 
                 row.setOnDragOver(e -> {
+                    var rowIndex = row.getIndex();
+                    var affectedRowIndex = (e.getY() > (row.getHeight() / 2)) ? (rowIndex + 1) : rowIndex;
+
+                    hoverIndex.set(affectedRowIndex);
+
+                    if (!row.isEmpty()) {
+                        if (affectedRowIndex > rowIndex) {
+                            activateHoverBottomPsuedoClass(row);
+                        } else {
+                            activateHoverTopPseudoClass(row);
+                        }
+                    } else {
+                        clearHoverPseudoClasses(row);
+                    }
+
                     if (e.getGestureSource() != row && e.getDragboard().hasContent(DND_TABLE_SELECTION_MIME_TYPE)) {
                         if (!((List<Integer>) e.getDragboard().getContent(DND_TABLE_SELECTION_MIME_TYPE)).contains(
-                                row.getIndex())) {
+                                rowIndex)) {
                             e.acceptTransferModes(TransferMode.MOVE);
                             e.consume();
                         }
@@ -303,6 +372,8 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
                     }
                 });
                 row.setOnDragExited(e -> {
+                    clearHoverPseudoClasses(row);
+
                     if (!row.isEmpty() && e.getDragboard().hasContent(DND_TABLE_SELECTION_MIME_TYPE)) {
                         if (!((List<Integer>) e.getDragboard().getContent(DND_TABLE_SELECTION_MIME_TYPE)).contains(
                                 row.getIndex())) {
@@ -312,6 +383,8 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
                 });
 
                 row.setOnDragDropped(e -> {
+                    clearHoverPseudoClasses(row);
+
                     Dragboard db = e.getDragboard();
                     if (db.hasContent(DND_TABLE_SELECTION_MIME_TYPE)) {
                         Optional<SelectionTableRowData> focus = ofNullable(getFocusModel().getFocusedItem());
@@ -350,6 +423,21 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         }
     }
 
+    private static <T> void activateHoverTopPseudoClass(TableRow<T> row) {
+        row.pseudoClassStateChanged(DRAG_HOVERED_TOP_ROW_PSEUDO_CLASS, true);
+        row.pseudoClassStateChanged(DRAG_HOVERED_BOTTOM_ROW_PSEUDO_CLASS, false);
+    }
+
+    private static <T> void activateHoverBottomPsuedoClass(TableRow<T> row) {
+        row.pseudoClassStateChanged(DRAG_HOVERED_TOP_ROW_PSEUDO_CLASS, false);
+        row.pseudoClassStateChanged(DRAG_HOVERED_BOTTOM_ROW_PSEUDO_CLASS, true);
+    }
+
+    private static <T> void clearHoverPseudoClasses(TableRow<T> row) {
+        row.pseudoClassStateChanged(DRAG_HOVERED_TOP_ROW_PSEUDO_CLASS, false);
+        row.pseudoClassStateChanged(DRAG_HOVERED_BOTTOM_ROW_PSEUDO_CLASS, false);
+    }
+
     private void dragConsume(DragEvent e, Consumer<DragEvent> c) {
         if (e.getDragboard().hasFiles()) {
             c.accept(e);
@@ -358,7 +446,9 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     }
 
     private Consumer<DragEvent> onDragOverConsumer() {
-        return (DragEvent e) -> e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        return (DragEvent e) -> {
+            e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        };
     }
 
     private Consumer<DragEvent> onDragEnteredConsumer() {
@@ -386,8 +476,17 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
 
     @EventListener(priority = Integer.MIN_VALUE)
     public void onLoadDocumentsRequest(PdfLoadRequest loadEvent) {
-        getItems().addAll(loadEvent.getDocuments().stream().map(SelectionTableRowData::new).toList());
+        var focus = ofNullable(getFocusModel().getFocusedItem());
+        var toDrop = loadEvent.getDocuments().stream().map(SelectionTableRowData::new).toList();
+        var hoverIndexValue = hoverIndex.get();
+        var itemsCount = getItems().size();
+        var dropIndex = (hoverIndexValue < 0 || hoverIndexValue > itemsCount) ? itemsCount : hoverIndexValue;
+
+        getSortOrder().clear();
+        getItems().addAll(dropIndex, toDrop);
+        focus.map(getItems()::indexOf).ifPresent(getFocusModel()::focus);
         this.sort();
+
         loadEvent.getDocuments().stream().findFirst().ifPresent(
                 f -> eventStudio().broadcast(requestFallbackDestination(f.getFile(), toolBinding()), toolBinding()));
         eventStudio().broadcast(loadEvent);
@@ -396,7 +495,21 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     @EventListener
     public void onDuplicate(final DuplicateSelectedEvent event) {
         LOG.trace("Duplicating selected items");
-        getSelectionModel().getSelectedItems().forEach(i -> getItems().add(i.duplicate()));
+        switch (event.type()) {
+        case TOP -> getSelectionModel().getSelectedItems().stream().map(SelectionTableRowData::duplicate).toList()
+                .reversed().forEach(getItems()::addFirst);
+        case BOTTOM -> getSelectionModel().getSelectedItems().forEach(i -> getItems().addLast(i.duplicate()));
+        case UP -> {
+            var index = getSelectionModel().getSelectedIndices().stream().min(Integer::compareTo).get();
+            getSelectionModel().getSelectedItems().stream().map(SelectionTableRowData::duplicate).toList().reversed()
+                    .forEach(e -> getItems().add(index, e));
+        }
+        case DOWN -> {
+            var index = getSelectionModel().getSelectedIndices().stream().max(Integer::compareTo).get() + 1;
+            getSelectionModel().getSelectedItems().stream().map(SelectionTableRowData::duplicate).toList().reversed()
+                    .forEach(e -> getItems().add(index, e));
+        }
+        }
         this.sort();
     }
 
@@ -417,7 +530,7 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
     }
 
     @EventListener
-    public void onMoveSelected(final MoveSelectedEvent event) {
+    public void onMoveSelected(final MoveSelectedRequest event) {
         getSortOrder().clear();
         ObservableList<Integer> selectedIndices = getSelectionModel().getSelectedIndices();
         Integer[] selected = selectedIndices.toArray(new Integer[0]);
@@ -502,4 +615,81 @@ public class SelectionTable extends TableView<SelectionTableRowData> implements 
         }
 
     }
+
+    public IntegerProperty getHoverIndex() {
+        return hoverIndex;
+    }
+
+    private void dragScroll() {
+        var scrollBar = getVerticalScrollbar();
+
+        if (scrollBar != null) {
+            var newValue = scrollBar.getValue() + scrollDirection;
+
+            newValue = Math.min(newValue, 1.0);
+            newValue = Math.max(newValue, 0.0);
+
+            scrollBar.setValue(newValue);
+        }
+    }
+
+    private ScrollBar getVerticalScrollbar() {
+        ScrollBar verticalScrollBar = null;
+
+        for (var node : lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar bar) {
+                if (bar.getOrientation().equals(Orientation.VERTICAL)) {
+                    verticalScrollBar = bar;
+                }
+            }
+        }
+
+        return verticalScrollBar;
+    }
+
+    private void autoscrollIfNeeded(DragEvent evt) {
+        var hotRegion = (Region) lookup(".clipped-container");
+
+        if (hotRegion.getBoundsInLocal().getWidth() < 1) {
+            hotRegion = this;
+            if (hotRegion.getBoundsInLocal().getWidth() < 1) {
+                stopAutoScrollIfNeeded(evt);
+                return;
+            }
+        }
+
+        var yOffset = 0.0;
+        var delta = evt.getSceneY() - hotRegion.localToScene(0, 0).getY();
+        var proximity = 50.0;
+
+        if (delta < proximity) {
+            yOffset = -(proximity - delta);
+        }
+
+        delta = hotRegion.localToScene(0, 0).getY() + hotRegion.getHeight() - evt.getSceneY();
+
+        if (delta < proximity) {
+            yOffset = proximity - delta;
+        }
+
+        if (yOffset != 0) {
+            autoscroll(yOffset);
+        } else {
+            stopAutoScrollIfNeeded(evt);
+        }
+    }
+
+    private void stopAutoScrollIfNeeded(DragEvent evt) {
+        scrollTimeline.stop();
+    }
+
+    private void autoscroll(double yOffset) {
+        if (yOffset > 0) {
+            scrollDirection = 1.0 / getItems().size();
+        } else {
+            scrollDirection = -1.0 / getItems().size();
+        }
+        scrollTimeline.play();
+    }
+
 }

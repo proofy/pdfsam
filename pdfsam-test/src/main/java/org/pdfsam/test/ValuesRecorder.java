@@ -1,8 +1,8 @@
-package org.pdfsam.model.ui;
+package org.pdfsam.test;
 /*
  * This file is part of the PDF Split And Merge source code
- * Created on 14/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Created on 27/03/24
+ * Copyright 2024 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,28 @@ package org.pdfsam.model.ui;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
- * Request to show the error messages of the application (Log register or similar).
+ * A consumer that records the values it receives.
  *
  * @author Andrea Vacondio
  */
-public record ShowErrorMessagesRequest() {
+public class ValuesRecorder<T> implements Consumer<T> {
+    private final List<T> values = new ArrayList<>();
 
+    @Override
+    public void accept(T t) {
+        values.add(t);
+    }
+
+    public List<T> values() {
+        return values;
+    }
+
+    public void clear() {
+        values.clear();
+    }
 }

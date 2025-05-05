@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 28/nov/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import org.pdfsam.model.tool.ClearToolRequest;
 import org.pdfsam.model.tool.ToolBound;
 import org.pdfsam.ui.components.selection.RemoveSelectedEvent;
 import org.pdfsam.ui.components.selection.ToolbarButton;
-import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedEvent;
+import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedRequest;
 import org.pdfsam.ui.components.selection.multiple.move.MoveType;
 import org.pdfsam.ui.components.support.Style;
 
@@ -98,7 +98,7 @@ class SelectionTableToolbar extends ToolBar implements ToolBound {
             var fileChooser = Choosers.fileChooser(i18n().tr("Select pdf documents to load"), FileType.PDF);
             List<Path> chosenFiles = fileChooser.showOpenMultipleDialog(this.getScene().getWindow());
             if (chosenFiles != null && !chosenFiles.isEmpty()) {
-                PdfLoadRequest loadEvent = new PdfLoadRequest(toolBinding());
+                var loadEvent = new PdfLoadRequest(toolBinding());
                 chosenFiles.stream().map(Path::toFile).map(PdfDocumentDescriptor::newDescriptorNoPassword)
                         .forEach(loadEvent::add);
                 eventStudio().broadcast(loadEvent, toolBinding());
@@ -202,7 +202,7 @@ class SelectionTableToolbar extends ToolBar implements ToolBound {
         }
 
         public void moveOnClick(ActionEvent event) {
-            eventStudio().broadcast(new MoveSelectedEvent(type), toolBinding());
+            eventStudio().broadcast(new MoveSelectedRequest(type), toolBinding());
         }
 
         @EventListener

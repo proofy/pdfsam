@@ -2,7 +2,7 @@ package org.pdfsam.gui.components.sidebar;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 20/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@ import javafx.scene.shape.Circle;
 import org.pdfsam.eventstudio.annotation.EventListener;
 import org.pdfsam.gui.components.content.log.ErrorLoggedEvent;
 import org.pdfsam.gui.components.content.log.LogContentItem;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
 import static org.pdfsam.gui.components.sidebar.SelectableSidebarButton.of;
@@ -37,6 +37,7 @@ public class LogButton extends SelectableSidebarButtonWithNotification {
     @Inject
     public LogButton(LogContentItem logItem) {
         super(of(logItem), SidebarButtonWithNotification.notificationOf(new Circle(5)), SidebarNotificationType.ERROR);
+        this.getWrapped().setOnAction(e -> eventStudio().broadcast(new ShowLogMessagesRequest()));
         eventStudio().addAnnotatedListeners(this);
     }
 
@@ -48,7 +49,7 @@ public class LogButton extends SelectableSidebarButtonWithNotification {
     }
 
     @EventListener
-    public void onShowErrorMessagesRequest(ShowErrorMessagesRequest request) {
+    public void onShowErrorMessagesRequest(ShowLogMessagesRequest request) {
         hideNotification();
     }
 }

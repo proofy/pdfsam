@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 03/set/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,12 +73,14 @@ public class AboutPaneTest {
         when(appBrand.property(BrandableProperty.VERSION)).thenReturn("3.0.0");
         when(appBrand.property(BrandableProperty.HOME_URL)).thenReturn("https://www.pdfsam.org");
         when(appBrand.property(BrandableProperty.HOME_LABEL)).thenReturn("home");
+        when(appBrand.property(BrandableProperty.VENDOR_URL)).thenReturn("https://soberlemur.com");
+        when(appBrand.property(BrandableProperty.COPYRIGHT)).thenReturn("Sober Lemur S.r.l.");
         when(appBrand.property(BrandableProperty.FEED_URL)).thenReturn("https://www.pdfsam.org/feed/");
         when(appBrand.property(BrandableProperty.DOCUMENTATION_URL)).thenReturn("https://www.pdfsam.org/documentation");
         when(appBrand.property(BrandableProperty.SUPPORT_URL)).thenReturn("https://www.pdfsam.org/support");
         when(appBrand.property(BrandableProperty.SCM_URL)).thenReturn("https://www.pdfsam.org/scm");
         when(appBrand.property(BrandableProperty.TRANSLATE_URL)).thenReturn("https://www.pdfsam.org/translate");
-        when(appBrand.property(BrandableProperty.TWITTER_URL)).thenReturn("https://www.pdfsam.org/twitter");
+        when(appBrand.property(BrandableProperty.BLUESKY_URL)).thenReturn("https://www.pdfsam.org/bsky");
         when(appBrand.property(BrandableProperty.DONATE_URL)).thenReturn("https://www.pdfsam.org/donate");
         when(appBrand.property(BrandableProperty.FACEBOOK_URL)).thenReturn("https://www.pdfsam.org/facebook");
         when(appBrand.property(BrandableProperty.LICENSE_NAME)).thenReturn("agpl3");
@@ -88,6 +90,13 @@ public class AboutPaneTest {
         Scene scene = new Scene(new AboutPane(appBrand));
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Test
+    public void clickVendor() {
+        robot.clickOn("Sober Lemur S.r.l.");
+        verify(listener).onEvent(captor.capture());
+        assertEquals("https://soberlemur.com", captor.getValue().url());
     }
 
     @Test
@@ -147,10 +156,10 @@ public class AboutPaneTest {
     }
 
     @Test
-    public void clickTwitter() {
-        robot.clickOn(i18n().tr("Follow us on Twitter"));
+    public void clickBluesky() {
+        robot.clickOn(i18n().tr("Follow us on Bluesky"));
         verify(listener, atLeastOnce()).onEvent(captor.capture());
-        assertEquals("https://www.pdfsam.org/twitter", captor.getValue().url());
+        assertEquals("https://www.pdfsam.org/bsky", captor.getValue().url());
     }
 
     @Test

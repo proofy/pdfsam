@@ -5,13 +5,11 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.pdfsam.eventstudio.Listener;
 import org.pdfsam.gui.components.content.log.ErrorLoggedEvent;
 import org.pdfsam.gui.components.content.log.LogContentItem;
 import org.pdfsam.gui.components.content.log.LogPane;
-import org.pdfsam.model.ui.SetActiveContentItemRequest;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.test.ClearEventStudioExtension;
 import org.testfx.api.FxAssert;
 import org.testfx.api.FxRobot;
@@ -19,7 +17,7 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.base.NodeMatchers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
@@ -27,7 +25,7 @@ import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 20/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,12 +55,10 @@ class LogButtonTest {
 
     @Test
     public void onClick() {
-        Listener<SetActiveContentItemRequest> listener = mock(Listener.class);
-        eventStudio().add(SetActiveContentItemRequest.class, listener);
+        Listener<ShowLogMessagesRequest> listener = mock(Listener.class);
+        eventStudio().add(ShowLogMessagesRequest.class, listener);
         robot.clickOn(victim);
-        ArgumentCaptor<SetActiveContentItemRequest> captor = ArgumentCaptor.forClass(SetActiveContentItemRequest.class);
-        verify(listener).onEvent(captor.capture());
-        assertEquals(LogContentItem.ID, captor.getValue().id());
+        verify(listener).onEvent(any(ShowLogMessagesRequest.class));
     }
 
     @Test
@@ -85,7 +81,7 @@ class LogButtonTest {
     public void onShowErrorMessagesRequest() {
         eventStudio().broadcast(new ErrorLoggedEvent());
         FxAssert.verifyThat(".notification", NodeMatchers.isVisible());
-        eventStudio().broadcast(new ShowErrorMessagesRequest());
+        eventStudio().broadcast(new ShowLogMessagesRequest());
         FxAssert.verifyThat(".notification", NodeMatchers.isInvisible());
     }
 

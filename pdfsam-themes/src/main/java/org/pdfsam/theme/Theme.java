@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,4 +49,17 @@ public interface Theme {
      * @return if the theme is a dark theme
      */
     boolean isDark();
+
+    /**
+     * @return true if it can be picked up as a default theme
+     */
+    boolean isDefault();
+
+    /**
+     * @return the String representation of the default primary color for this theme as specified in
+     * {@link javafx.scene.paint.Color#web(String)} or null if the system accent color should be used
+     */
+    default String defaultPrimary() {
+        return null;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -75,6 +76,7 @@ public class PdfDestinationPaneUITest {
     public void start(Stage stage) {
         app().persistentSettings().set(BooleanPersistentProperty.PDF_COMPRESSION_ENABLED, true);
         app().persistentSettings().set(BooleanPersistentProperty.OVERWRITE_OUTPUT, false);
+        app().persistentSettings().set(BooleanPersistentProperty.DISCARD_BOOKMARKS, false);
         BrowsablePdfInputField destination = new BrowsablePdfInputField();
         victim = new PdfDestinationPane(destination, MODULE, true, DestinationPanelFields.DISCARD_BOOKMARKS);
         Scene scene = new Scene(victim);
@@ -108,6 +110,7 @@ public class PdfDestinationPaneUITest {
     }
 
     @Test
+    @Tag("NoHeadless")
     public void reset() {
         robot.clickOn(".validable-container-field").write("Chuck");
         Set<Node> nodes = robot.lookup(n -> n instanceof CheckBox).queryAll();
@@ -117,6 +120,5 @@ public class PdfDestinationPaneUITest {
         assertFalse(victim.overwrite().isSelected());
         assertFalse(robot.lookup("#discardBookmarksField").queryAs(CheckBox.class).isSelected());
         assertTrue(robot.lookup("#compressField").queryAs(CheckBox.class).isSelected());
-
     }
 }

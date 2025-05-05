@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 30/ott/2013
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,13 +26,13 @@ import org.pdfsam.core.io.Choosers;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.pdfsam.core.context.ApplicationContext.app;
 import static org.pdfsam.i18n.I18nContext.i18n;
 
 /**
@@ -67,7 +67,11 @@ public class BrowsableDirectoryField extends BrowsableField {
             var directoryChooser = Choosers.directoryChooser(getBrowseWindowTitle());
             String currentSelection = getTextField().getText();
             if (isNotBlank(currentSelection)) {
-                Path path = Paths.get(currentSelection);
+                var path = Paths.get(currentSelection);
+                //if not absolute, resolve against working path
+                if (!path.isAbsolute()) {
+                    path = app().runtimeState().workingPathValue().map(w -> w.resolve(currentSelection)).orElse(path);
+                }
                 if (Files.exists(path)) {
                     directoryChooser.setInitialDirectory(path);
                 }

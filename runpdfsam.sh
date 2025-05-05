@@ -5,7 +5,7 @@ git checkout master
 git merge upstream/master
 
 # running PdfSam 
-RUNJAR=pdfsam-community-4.0.8-SNAPSHOT.jar
+RUNJAR=pdfsam-basic-5.0.4-SNAPSHOT.jar
 if [ -f ./pdfsam-basic/target/$RUNJAR ] 
 then
         cd ./pdfsam-basic/

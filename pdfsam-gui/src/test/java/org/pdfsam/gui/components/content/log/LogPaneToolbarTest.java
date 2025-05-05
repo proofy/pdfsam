@@ -32,7 +32,7 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 20/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,7 +69,6 @@ class LogPaneToolbarTest {
 
     @Stop
     public void stop() {
-        victim.dispose();
         app().runtimeState().activeTool(null);
     }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 25/lug/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -147,6 +148,7 @@ public class OpenButtonTest {
     }
 
     @Test
+    @Tag("NoHeadless")
     public void sendToModuleClick(@TempDir Path folder) throws Exception {
         File file = Files.createTempFile(folder, null, null).toFile();
         NotifiableTaskMetadata taskMetadata = new NotifiableTaskMetadata(mock(Task.class));

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 4 mag 2019
- * Copyright 2017 by Sober Lemur S.a.s di Vacondio Andrea (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,12 @@
  */
 package org.pdfsam.ui.components.selection.single;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitMenuButton;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -28,7 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.pdfsam.eventstudio.Listener;
 import org.pdfsam.model.tool.ClearToolRequest;
 import org.pdfsam.test.ClearEventStudioExtension;
-import org.pdfsam.ui.components.selection.single.SingleSelectionPaneToolbar.ClearButton;
+import org.pdfsam.test.HitTestListener;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -60,12 +63,25 @@ public class SingleSelectionPaneToolbarTest {
 
     @Test
     public void clear(FxRobot robot) {
+        HitTestListener<ClearToolRequest> listener = new HitTestListener<>();
+        eventStudio().add(ClearToolRequest.class, listener);
+        robot.clickOn(b -> b instanceof SingleSelectionPaneToolbar.ClearButton);
+        assertTrue(listener.isHit());
+    }
+
+    @Test
+    @Tag("NoHeadless")
+    public void clearAllSettings(FxRobot robot) {
         Listener<ClearToolRequest> listener = mock(Listener.class);
         ArgumentCaptor<ClearToolRequest> captor = ArgumentCaptor.forClass(ClearToolRequest.class);
         eventStudio().add(ClearToolRequest.class, listener);
-        robot.clickOn(b -> b instanceof ClearButton);
+        SplitMenuButton btn = robot.lookup("#clear-button").queryAs(SplitMenuButton.class);
+        for (Node child : btn.getChildrenUnmodifiable()) {
+            if (child.getStyleClass().contains("arrow-button")) {
+                robot.clickOn(child).clickOn(".menu-item");
+            }
+        }
         verify(listener).onEvent(captor.capture());
         assertTrue(captor.getValue().clearEverything());
     }
-
 }

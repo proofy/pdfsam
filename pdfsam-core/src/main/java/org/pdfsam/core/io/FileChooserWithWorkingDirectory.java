@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 28 sep 2022
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -86,7 +86,7 @@ public class FileChooserWithWorkingDirectory {
 
     private Path updateWorkingPath(Path path) {
         if (nonNull(path)) {
-            app().runtimeState().workingPath(path);
+            app().runtimeState().maybeWorkingPath(path);
         }
         return path;
     }

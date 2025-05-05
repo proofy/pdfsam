@@ -2,7 +2,7 @@ package org.pdfsam.core;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 18/09/22
- * Copyright 2022 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2022 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,9 @@ public class ConfigurableSystemProperty {
     public static final String PDFSAM_DISABLE_UI_RESTORE = "org.pdfsam.disable.ui.restore";
     public static final String PDFSAM_DISABLE_SETTINGS_DEPRECATED = "org.pdfsam.settings.panel";
     public static final String PDFSAM_DISABLE_SETTINGS = "org.pdfsam.disable.settings.panel";
+    public static final String DISCARD_BOOKMARKS_PROP = "org.pdfsam.default.discard.bookmarks";
+    public static final String PREFIX_PROP = "org.pdfsam.default.prefix";
+    public static final String PDFVERSION_PROP = "org.pdfsam.default.pdf.version";
 
     private ConfigurableSystemProperty() {
         //NOOP

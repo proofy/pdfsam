@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 11/ago/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,13 @@
  */
 package org.pdfsam.ui.components.selection.multiple;
 
+import javafx.application.Platform;
+import javafx.beans.value.WritableIntegerValue;
 import javafx.collections.FXCollections;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
@@ -45,12 +50,12 @@ import org.pdfsam.model.pdf.PdfDocumentDescriptor;
 import org.pdfsam.model.pdf.PdfLoadRequest;
 import org.pdfsam.model.tool.ClearToolRequest;
 import org.pdfsam.model.ui.SetDestinationRequest;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.model.ui.ShowPdfDescriptorRequest;
 import org.pdfsam.test.ClearEventStudioExtension;
 import org.pdfsam.test.HitTestListener;
 import org.pdfsam.ui.components.selection.RemoveSelectedEvent;
-import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedEvent;
+import org.pdfsam.ui.components.selection.multiple.move.MoveSelectedRequest;
 import org.pdfsam.ui.components.selection.multiple.move.MoveType;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -63,6 +68,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -79,12 +85,14 @@ import static org.mockito.Mockito.verify;
 import static org.pdfsam.core.context.ApplicationContext.app;
 import static org.pdfsam.eventstudio.StaticStudio.eventStudio;
 import static org.pdfsam.i18n.I18nContext.i18n;
+import static org.pdfsam.model.pdf.PdfDocumentDescriptor.newDescriptorNoPassword;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
  * @author Andrea Vacondio
  */
 @ExtendWith(ApplicationExtension.class)
+@Tag("NoHeadless")
 public class SelectionTableTest {
 
     private static final String MODULE = "MODULE";
@@ -370,13 +378,89 @@ public class SelectionTableTest {
         assertFalse(item.get().descriptor().hasReferences());
     }
 
-    @Test
+    /*@Test
     @Tag("NoHeadless")
-    public void duplicate() {
+    public void duplicate() throws InterruptedException {
         robot.rightClickOn("temp.pdf");
-        robot.clickOn(i18n().tr("Duplicate"));
+        robot.moveTo(i18n().tr("Duplicate")).clickOn(i18n().tr("Duplicate Up"));
         assertEquals(2,
                 victim.getItems().stream().filter(i -> "temp.pdf".equals(i.descriptor().getFileName())).count());
+    }*/
+
+    @Test
+    @Tag("NoHeadless")
+    public void scrollsTableWhenEdgeReached() throws Exception {
+        var loadEvent = new PdfLoadRequest(MODULE);
+
+        for (var i = 5; i < 20; i++) {
+            var pdf = Files.createFile(folder.resolve("temp%d.pdf".formatted(i))).toFile();
+            loadEvent.add(newDescriptorNoPassword(pdf));
+        }
+
+        WaitForAsyncUtils.waitForAsyncFx(2000, () -> eventStudio().broadcast(loadEvent, MODULE));
+
+        var mockFileExplorer = new MockFileExplorer(folder);
+
+        Platform.runLater(() -> {
+            var stage = new Stage();
+            var ownerStage = (Stage) victim.getScene().getWindow();
+            var offset = 20;
+            var ownerX = ownerStage.getX();
+            var ownerWidth = ownerStage.getWidth();
+            var stageX = ownerX + ownerWidth + offset;
+            var scene = new Scene(mockFileExplorer);
+
+            stage.setX(stageX);
+            stage.setScene(scene);
+            stage.show();
+        });
+
+        WaitForAsyncUtils.waitForFxEvents();
+
+        var listView = robot.lookup("#file-list").queryAs(ListView.class);
+        var cells = listView.lookupAll(".list-cell");
+        var cell = cells.stream().filter(ListCell.class::isInstance).map(ListCell.class::cast)
+                .filter(c -> Objects.nonNull(c.getItem())).findFirst().orElseThrow();
+
+        robot.drag(cell).dropTo("temp16.pdf");
+
+        WaitForAsyncUtils.waitForFxEvents();
+
+        verifyThat(robot.lookup("temp17.pdf").queryAs(Node.class), Node::isVisible);
+    }
+
+    @Test
+    @Tag("NoHeadless")
+    public void dropsOnFirstIndex() throws Exception {
+
+        var mockFileExplorer = new MockFileExplorer(folder);
+
+        Platform.runLater(() -> {
+            var stage = new Stage();
+            var ownerStage = (Stage) victim.getScene().getWindow();
+            var offset = 20;
+            var ownerX = ownerStage.getX();
+            var ownerWidth = ownerStage.getWidth();
+            var stageX = ownerX + ownerWidth + offset;
+            var scene = new Scene(mockFileExplorer);
+
+            stage.setX(stageX);
+            stage.setScene(scene);
+            stage.show();
+        });
+
+        WaitForAsyncUtils.waitForFxEvents();
+
+        var listView = robot.lookup("#file-list").queryAs(ListView.class);
+        var cells = listView.lookupAll(".list-cell");
+        var cell = cells.stream().filter(ListCell.class::isInstance).map(ListCell.class::cast)
+                .filter(c -> Objects.nonNull(c.getItem())).findFirst().orElseThrow();
+
+        robot.drag(cell).dropTo("temp.pdf");
+
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertThat(victim.getHoverIndex()).extracting(WritableIntegerValue::get).isEqualTo(0);
     }
 
     @Test
@@ -384,7 +468,7 @@ public class SelectionTableTest {
         robot.clickOn("temp.pdf");
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 0);
         WaitForAsyncUtils.waitForAsyncFx(2000,
-                () -> eventStudio().broadcast(new MoveSelectedEvent(MoveType.DOWN), MODULE));
+                () -> eventStudio().broadcast(new MoveSelectedRequest(MoveType.DOWN), MODULE));
         verifyThat("#victim", (SelectionTable n) -> n.getSelectionModel().getSelectedIndex() == 1);
     }
 
@@ -515,8 +599,8 @@ public class SelectionTableTest {
             firstItem.moveStatusTo(PdfDescriptorLoadingStatus.WITH_ERRORS);
         });
         WaitForAsyncUtils.waitForFxEvents();
-        Listener<ShowErrorMessagesRequest> listener = mock(Listener.class);
-        eventStudio().add(ShowErrorMessagesRequest.class, listener);
+        Listener<ShowLogMessagesRequest> listener = mock(Listener.class);
+        eventStudio().add(ShowLogMessagesRequest.class, listener);
         robot.clickOn(".ikonli-font-icon");
         verify(listener).onEvent(any());
     }

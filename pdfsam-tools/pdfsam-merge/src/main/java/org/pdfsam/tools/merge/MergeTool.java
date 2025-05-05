@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 07/apr/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,7 +52,7 @@ public class MergeTool implements Tool {
 
     private final ToolDescriptor descriptor = builder().category(ToolCategory.MERGE)
             .inputTypes(ToolInputOutputType.MULTIPLE_PDF).name(i18n().tr("Merge"))
-            .description(i18n().tr("Merge together multiple PDF documents or subsections of them."))
+            .description(i18n().tr("Merge multiple PDF documents or subsections of them."))
             .priority(ToolPriority.HIGH.getPriority()).supportURL("https://pdfsam.org/pdf-merge/")
             .build();
 

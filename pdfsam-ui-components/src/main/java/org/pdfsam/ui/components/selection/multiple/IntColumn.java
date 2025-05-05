@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 13/ott/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,6 +56,11 @@ public enum IntColumn implements SelectionTableColumn<Integer> {
         @Override
         public Comparator<Integer> comparator() {
             return Comparator.naturalOrder();
+        }
+
+        @Override
+        public Float prefWidth() {
+            return 50F;
         }
 
         @Override

@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 08 nov 2016
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,8 @@ import org.pdfsam.gui.AppContentController;
 import org.pdfsam.gui.RunAcceleratorController;
 import org.pdfsam.gui.WindowStatusController;
 import org.pdfsam.gui.components.content.about.AboutContentItem;
+import org.pdfsam.gui.components.content.home.HomeContentItem;
+import org.pdfsam.gui.components.content.log.LogContentItem;
 import org.pdfsam.gui.components.content.preference.PreferenceContentItem;
 import org.pdfsam.gui.components.dialog.ClearToolConfirmationDialogController;
 import org.pdfsam.gui.components.dialog.CreateOutputDirectoryDialogController;
@@ -50,7 +52,7 @@ import org.pdfsam.injector.Provides;
         OpenWithDialogController.class, OverwriteDialogController.class, CreateOutputDirectoryDialogController.class,
         ClearToolConfirmationDialogController.class, LenientTaskExecutionDialogController.class,
         FilesDropController.class, AppContentController.class, RunAcceleratorController.class, AboutContentItem.class,
-        PreferenceContentItem.class })
+        PreferenceContentItem.class, HomeContentItem.class, LogContentItem.class })
 public class PdfsamConfig {
 
     private final HostServices services;

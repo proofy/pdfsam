@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 09/ott/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package org.pdfsam.gui.components.dialog;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -51,7 +52,6 @@ public class OverwriteConfirmationDialog extends Stage {
     public OverwriteConfirmationDialog(@Named("primaryStage") Stage stage) {
         initModality(Modality.WINDOW_MODAL);
         initStyle(StageStyle.UTILITY);
-        setResizable(false);
         initOwner(stage);
         this.dialogContent = new ConfirmationDialogContent(DialogStyle.WARNING.icon);
         VBox containerPane = new VBox();
@@ -62,7 +62,13 @@ public class OverwriteConfirmationDialog extends Stage {
         Scene scene = new Scene(containerPane);
         setScene(scene);
         app().registerScene(scene);
-        this.setOnShown(e -> requestFocus());
+        this.setOnShown(e -> {
+            Platform.runLater(() -> {
+                setResizable(false);
+                getScene().getWindow().sizeToScene();
+            });
+            requestFocus();
+        });
     }
 
     /**

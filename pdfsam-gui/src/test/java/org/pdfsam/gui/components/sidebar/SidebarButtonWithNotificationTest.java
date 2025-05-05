@@ -10,13 +10,14 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.pdfsam.test.ClearEventStudioExtension;
 import org.pdfsam.test.JavaFxThreadInitializeExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 20/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,16 +48,20 @@ class SidebarButtonWithNotificationTest {
     @Test
     public void showNotification() {
         assertFalse(notification.isVisible());
+        assertThat(victim.getWrapped().getStyleClass()).doesNotContain(SidebarNotificationType.ERROR.getCssClass());
         victim.showNotification();
         assertTrue(notification.isVisible());
+        assertThat(victim.getWrapped().getStyleClass()).contains(SidebarNotificationType.ERROR.getCssClass());
     }
 
     @Test
     public void hideNotification() {
         victim.showNotification();
         assertTrue(notification.isVisible());
+        assertThat(victim.getWrapped().getStyleClass()).contains(SidebarNotificationType.ERROR.getCssClass());
         victim.hideNotification();
         assertFalse(notification.isVisible());
+        assertThat(victim.getWrapped().getStyleClass()).doesNotContain(SidebarNotificationType.ERROR.getCssClass());
     }
 
 }

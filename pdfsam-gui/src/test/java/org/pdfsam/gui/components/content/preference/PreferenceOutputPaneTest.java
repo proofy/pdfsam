@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 12 ott 2016
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.pdfsam.core.context.ApplicationContext;
 import org.pdfsam.core.context.ApplicationPersistentSettings;
 import org.pdfsam.core.context.BooleanPersistentProperty;
+import org.pdfsam.core.context.StringPersistentProperty;
+import org.pdfsam.model.ui.ComboItem;
+import org.sejda.model.pdf.PdfVersion;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -49,16 +52,24 @@ public class PreferenceOutputPaneTest {
     @Start
     public void start(Stage stage) {
         when(appContext.persistentSettings()).thenReturn(persistentSettings);
-        PreferenceRadioButton smartRadio = new PreferenceRadioButton(BooleanPersistentProperty.SMART_OUTPUT, "radio",
-                false, appContext);
+        var smartRadio = new PreferenceRadioButton(BooleanPersistentProperty.SMART_OUTPUT, "radio", false, appContext);
         smartRadio.setId("smartRadio");
-        PreferenceCheckBox compressionEnabled = new PreferenceCheckBox(
-                BooleanPersistentProperty.PDF_COMPRESSION_ENABLED, "compression", true, appContext);
+        var compressionEnabled = new PreferenceCheckBox(BooleanPersistentProperty.PDF_COMPRESSION_ENABLED,
+                "compression", true, appContext);
         compressionEnabled.setId("compressionEnabled");
-        PreferenceCheckBox overwriteOutput = new PreferenceCheckBox(BooleanPersistentProperty.OVERWRITE_OUTPUT,
-                "overwrite", false, appContext);
+        var overwriteOutput = new PreferenceCheckBox(BooleanPersistentProperty.OVERWRITE_OUTPUT, "overwrite", false,
+                appContext);
         overwriteOutput.setId("overwriteOutput");
-        PreferenceOutputPane victim = new PreferenceOutputPane(smartRadio, compressionEnabled, overwriteOutput);
+        var pdfVersionCombo = new PreferenceComboBox<ComboItem<PdfVersion>>(StringPersistentProperty.PDF_VERSION,
+                appContext);
+        pdfVersionCombo.setId("pdfVersionCombo");
+        var discardBookmarks = new PreferenceCheckBox(BooleanPersistentProperty.DISCARD_BOOKMARKS, "discard", false,
+                appContext);
+        discardBookmarks.setId("discardBookmarks");
+        var prefixField = new PreferencePrefixField();
+        prefixField.setId("prefixField");
+        var victim = new PreferenceOutputPane(smartRadio, compressionEnabled, overwriteOutput, discardBookmarks,
+                pdfVersionCombo, prefixField);
         victim.setId("victim");
         Scene scene = new Scene(new HBox(victim));
         stage.setScene(scene);
@@ -86,6 +97,12 @@ public class PreferenceOutputPaneTest {
     public void clickOverwrite() {
         robot.clickOn("#overwriteOutput");
         verify(persistentSettings).set(BooleanPersistentProperty.OVERWRITE_OUTPUT, true);
+    }
+
+    @Test
+    public void discardBookmarks() {
+        robot.clickOn("#discardBookmarks");
+        verify(persistentSettings).set(BooleanPersistentProperty.DISCARD_BOOKMARKS, true);
     }
 
 }

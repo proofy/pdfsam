@@ -2,20 +2,21 @@
 # Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
 # This file is distributed under the same license as the pdfsam package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: pdfsam\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-01-27 11:09+0100\n"
-"PO-Revision-Date: 2023-02-05 12:18+0000\n"
+"POT-Creation-Date: 2024-10-23 17:08+0200\n"
+"PO-Revision-Date: 2025-04-18 09:55+0200\n"
 "Last-Translator: Andi Chandler <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-02-11 08:32+0000\n"
-"X-Generator: Launchpad (build 76fbbe3960b74b1bf6aa937d9f415c99a6b083f0)\n"
+"X-Launchpad-Export-Date: 2025-04-17 17:36+0000\n"
+"X-Generator: Autopo v1.0.1\n"
+"Language: en_GB\n"
 
 msgid "No PDF document has been selected"
 msgstr "No PDF document has been selected"
@@ -41,8 +42,8 @@ msgstr "A separate file for each set of pages"
 msgid "Each continuous series of pages will generate a separate PDF file"
 msgstr "Each continuous series of pages will generate a separate PDF file"
 
-msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
-msgstr "Pages to extract (ex: 2 or 5-23 or 2,5-7,12-)"
+msgid "Pages to extract (ex: 2 or 5-23 or 2,5-7,12- or 3,last)"
+msgstr "Pages to extract (ex: 2 or 5-23 or 2,5-7,12- or 3,last)"
 
 msgid "Invalid page ranges"
 msgstr "Invalid page ranges"
@@ -52,10 +53,10 @@ msgstr "Extract pages:"
 
 msgid ""
 "Comma separated page numbers or ranges to extract (ex: 2 or 5-23 or 2,5-7,12-"
-")"
+" or 3,last)"
 msgstr ""
 "Comma separated page numbers or ranges to extract (ex: 2 or 5-23 or 2,5-7,12-"
-")"
+" or 3,last)"
 
 msgid "Split by bookmarks"
 msgstr "Split by bookmarks"
@@ -115,10 +116,8 @@ msgstr "Odd pages"
 msgid "Split the document after the given page numbers"
 msgstr "Split the document after the given page numbers"
 
-msgid ""
-"Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
-msgstr ""
-"Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
+msgid "Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
+msgstr "Splits the PDF every \"n\" pages creating documents of \"n\" pages each"
 
 msgid "Split after the following page numbers"
 msgstr "Split after the following page numbers"
@@ -184,8 +183,7 @@ msgstr ""
 "Merge two or more PDF documents, taking pages alternately in natural or "
 "reverse order."
 
-msgid ""
-"Double click to set pages you want to mix (ex: 2 or 5-23 or 2,5-7,12-)"
+msgid "Double click to set pages you want to mix (ex: 2 or 5-23 or 2,5-7,12-)"
 msgstr ""
 "Double click to set pages you want to mix (eg: 2 or 5-23 or 2,5-7,12-)"
 
@@ -264,11 +262,11 @@ msgstr ""
 "Set whether pages should be resized to all have the same width as the first "
 "one"
 
-msgid "Merge fields"
-msgstr "Merge fields"
-
 msgid "Merge renaming existing fields"
 msgstr "Merge renaming existing fields"
+
+msgid "Merge fields"
+msgstr "Merge fields"
 
 msgid "Flatten"
 msgstr "Flatten"
@@ -320,8 +318,8 @@ msgstr ""
 msgid "Merge"
 msgstr "Merge"
 
-msgid "Merge together multiple PDF documents or subsections of them."
-msgstr "Merge together multiple PDF documents or subsections of them."
+msgid "Merge multiple PDF documents or subsections of them."
+msgstr "Merge multiple PDF documents or subsections of them."
 
 msgid "Select or drag and drop the PDF whose pages will be repeated"
 msgstr "Select or drag and drop the PDF whose pages will be repeated"
@@ -351,14 +349,17 @@ msgstr "Invalid page number"
 msgid "Repeat the selected pages every \"n\" pages of the original document"
 msgstr "Repeat the selected pages every \"n\" pages of the original document"
 
-msgid "The selected PDF file is invalid"
-msgstr "The selected PDF file is invalid"
+msgid "A .pdf extension is required for the repeating file"
+msgstr "A .pdf extension is required for the repeating file"
 
 msgid "The number of pages must be a positive number"
 msgstr "The number of pages must be a positive number"
 
 msgid "Select or drag and drop the PDF you want to insert pages to"
 msgstr "Select or drag and drop the PDF you want to insert pages to"
+
+msgid "A .pdf destination file extension is required"
+msgstr "A .pdf destination file extension is required"
 
 msgid "Insert and Repeat settings"
 msgstr "Insert and Repeat settings"
@@ -639,6 +640,12 @@ msgstr "Font size:"
 msgid "Set the application font size"
 msgstr "Set the application font size"
 
+msgid "Default PDF version:"
+msgstr "Default PDF version:"
+
+msgid "Default PDF version for generated PDF files"
+msgstr "Default PDF version for generated PDF files"
+
 msgid "Manually selected"
 msgstr "Manually selected"
 
@@ -648,6 +655,22 @@ msgid ""
 msgstr ""
 "Automatically set the destination directory to the selected PDF document "
 "directory"
+
+msgid "Default prefix:"
+msgstr "Default prefix:"
+
+msgid ""
+"Default prefix for output file names, used in tools that generate multiple "
+"files"
+msgstr ""
+"Default prefix for output file names, used in tools that generate multiple "
+"files"
+
+msgid "Some special keywords are replaced with runtime values."
+msgstr "Some special keywords are replaced with runtime values."
+
+msgid "Right click to add these keywords."
+msgstr "Right click to add these keywords."
 
 msgid "Settings"
 msgstr "Settings"
@@ -664,8 +687,7 @@ msgstr "Output"
 msgid "Check for updates now"
 msgstr "Check for updates now"
 
-msgid ""
-"Select a directory where documents will be saved and loaded by default"
+msgid "Select a directory where documents will be saved and loaded by default"
 msgstr ""
 "Select a directory where documents will be saved and loaded by default"
 
@@ -717,11 +739,13 @@ msgstr "Enabled PDF compression"
 msgid "Set whether \"Compress output file\" should be enabled by default"
 msgstr "Set whether \"Compress output file\" should be enabled by default"
 
+msgid "Set whether \"Discard bookmarks\" should be enabled by default"
+msgstr "Set whether \"Discard bookmarks\" should be enabled by default"
+
 msgid "Overwrite files"
 msgstr "Overwrite files"
 
-msgid ""
-"Set whether \"Overwrite if already exists\" should be enabled by default"
+msgid "Set whether \"Overwrite if already exists\" should be enabled by default"
 msgstr ""
 "Set whether \"Overwrite if already exists\" should be enabled by default"
 
@@ -857,6 +881,10 @@ msgstr "This document is encrypted, click to provide a password."
 msgid "An error has occurred, click for more details."
 msgstr "An error has occurred, click for more details."
 
+#, java-format
+msgid "Version {0}"
+msgstr "Version {0}"
+
 msgid "Split tools"
 msgstr "Split tools"
 
@@ -928,12 +956,17 @@ msgstr "Unable to save workspace to {0}"
 msgid "Loading workspace from {0}"
 msgstr "Loading workspace from {0}"
 
-msgid "Workspace loaded"
-msgstr "Workspace loaded"
+#, java-format
+msgid "Workspace loaded: {0}"
+msgstr "Workspace loaded: {0}"
 
 #, java-format
 msgid "Unable to load workspace from {0}"
 msgstr "Unable to load workspace from {0}"
+
+#, java-format
+msgid "The following file already existed and was skipped: {0}"
+msgstr "The following file already existed and was skipped: {0}"
 
 msgid "Light with blue"
 msgstr "Light with blue"
@@ -959,8 +992,8 @@ msgstr "Select the PDF file"
 msgid "_Select PDF"
 msgstr "_Select PDF"
 
-msgid "Clear all settings"
-msgstr "Clear all settings"
+msgid "C_lear all settings"
+msgstr "C_lear all settings"
 
 #, java-format
 msgid "Pages: {0}, PDF Version: {1}"
@@ -1008,6 +1041,18 @@ msgstr "Move to Bottom"
 msgid "Duplicate"
 msgstr "Duplicate"
 
+msgid "Duplicate at Top"
+msgstr "Duplicate at Top"
+
+msgid "Duplicate Up"
+msgstr "Duplicate Up"
+
+msgid "Duplicate Down"
+msgstr "Duplicate Down"
+
+msgid "Duplicate at Bottom"
+msgstr "Duplicate at Bottom"
+
 msgid "Selected pages"
 msgstr "Selected pages"
 
@@ -1050,9 +1095,6 @@ msgstr "_Remove"
 
 msgid "Removes every document"
 msgstr "Removes every document"
-
-msgid "C_lear all settings"
-msgstr "C_lear all settings"
 
 msgid "Moves up selected documents"
 msgstr "Moves up selected documents"
@@ -1125,12 +1167,13 @@ msgstr "Overwrite if already exists"
 
 msgid ""
 "Tick the box if you want to overwrite the output files if they already exist."
+""
 msgstr ""
 "Tick the box if you want to overwrite the output files if they already exist."
+""
 
-#, java-format
-msgid "Version {0}"
-msgstr "Version {0}"
+msgid "The selected PDF file is invalid"
+msgstr "The selected PDF file is invalid"
 
 msgid "Same as the input document"
 msgstr "Same as the input document"
@@ -1160,20 +1203,14 @@ msgstr "Prefix for the generated files names"
 msgid "Add prefix"
 msgstr "Add prefix"
 
-msgid "DEFAULT_PREFIX"
-msgstr "DEFAULT_PREFIX"
-
 msgid "Generated PDF documents name prefix:"
 msgstr "Generated PDF documents name prefix:"
 
 msgid "Prefix for the output files name."
 msgstr "Prefix for the output files name."
 
-msgid "Some special keywords are replaced with runtime values."
-msgstr "Some special keywords are replaced with runtime values."
-
-msgid "Right click to add these keywords."
-msgstr "Right click to add these keywords."
+msgid "DEFAULT_PREFIX"
+msgstr "DEFAULT_PREFIX"
 
 msgid "Run"
 msgstr "Run"
@@ -1197,16 +1234,16 @@ msgstr "Running"
 msgid "Running {0}%"
 msgstr "Running {0}%"
 
-msgid "Error saving log file."
-msgstr "Error saving log file."
+#, java-format
+msgid "Error saving content to file {0}"
+msgstr "Error saving content to file {0}"
 
 #, java-format
-msgid "File {0} saved."
-msgstr "File {0} saved."
+msgid "File {0} saved"
+msgstr "File {0} saved"
 
-#, java-format
-msgid "Invalid range: {0}."
-msgstr "Invalid range: {0}."
+msgid "Error saving content to clipboard"
+msgstr "Error saving content to clipboard"
 
 #, java-format
 msgid ""
@@ -1215,6 +1252,10 @@ msgid ""
 msgstr ""
 "Ambiguous page range definition: {0}. Use following formats: [n] or [n1-n2] "
 "or [-n] or [n-]"
+
+#, java-format
+msgid "Invalid range: {0}."
+msgstr "Invalid range: {0}."
 
 #, java-format
 msgid "Invalid number: {0}."

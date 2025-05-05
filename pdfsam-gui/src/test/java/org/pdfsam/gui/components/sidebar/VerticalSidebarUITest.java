@@ -23,7 +23,7 @@ import org.pdfsam.injector.Key;
 import org.pdfsam.injector.Provides;
 import org.pdfsam.model.lifecycle.ShutdownEvent;
 import org.pdfsam.model.tool.Tool;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.persistence.PreferencesRepository;
 import org.pdfsam.service.ui.RecentWorkspacesService;
 import org.pdfsam.test.ClearEventStudioExtension;
@@ -52,7 +52,7 @@ import static org.pdfsam.i18n.I18nContext.i18n;
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 20/01/23
- * Copyright 2023 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2023 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -138,7 +138,7 @@ class VerticalSidebarUITest {
 
     @Test
     public void showLogs() {
-        eventStudio().broadcast(new ShowErrorMessagesRequest());
+        eventStudio().broadcast(new ShowLogMessagesRequest());
         var logButton = injector.instance(LogButton.class);
         assertTrue(logButton.isSelected());
     }

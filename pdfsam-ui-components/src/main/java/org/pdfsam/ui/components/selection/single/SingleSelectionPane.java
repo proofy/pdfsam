@@ -1,7 +1,7 @@
 /*
  * This file is part of the PDF Split And Merge source code
  * Created on 16/mag/2014
- * Copyright 2017 by Sober Lemur S.r.l. (info@pdfsam.org).
+ * Copyright 2017 by Sober Lemur S.r.l. (info@soberlemur.com).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,7 @@ import org.pdfsam.model.pdf.PdfLoadRequest;
 import org.pdfsam.model.tool.ClearToolRequest;
 import org.pdfsam.model.tool.ToolBound;
 import org.pdfsam.model.ui.ChangedSelectedPdfVersionEvent;
-import org.pdfsam.model.ui.ShowErrorMessagesRequest;
+import org.pdfsam.model.ui.ShowLogMessagesRequest;
 import org.pdfsam.model.ui.ShowPdfDescriptorRequest;
 import org.pdfsam.model.ui.ShowStageRequest;
 import org.pdfsam.model.ui.workspace.RestorableView;
@@ -188,7 +188,7 @@ public class SingleSelectionPane extends VBox implements ToolBound, PdfDocumentD
             if (descriptor.loadingStatus().getValue() == ENCRYPTED) {
                 showPasswordFieldPopup();
             } else if (descriptor.loadingStatus().getValue() == WITH_ERRORS) {
-                eventStudio().broadcast(new ShowErrorMessagesRequest());
+                eventStudio().broadcast(new ShowLogMessagesRequest());
             }
         });
         HBox.setMargin(encryptionIndicator, new Insets(0, 0, 0, 2));
